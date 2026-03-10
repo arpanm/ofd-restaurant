@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OrderTotalResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Order Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.order.dto.response</a> &gt; <span class="el_source">OrderTotalResponse.java</span></div><h1>OrderTotalResponse.java</h1><pre class="source lang-java linenums">package com.foodai.order.dto.response;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+
+/**
+ * Response DTO for order total breakdown.
+ *
+ * @author FoodAI Team
+ */
+<span class="nc bnc" id="L16" title="All 102 branches missed.">@Data</span>
+<span class="pc" id="L17">@Builder</span>
+<span class="nc" id="L18">@NoArgsConstructor</span>
+<span class="fc" id="L19">@AllArgsConstructor</span>
+@Schema(description = &quot;Order total breakdown response&quot;)
+public class OrderTotalResponse {
+
+    @Schema(description = &quot;Subtotal before taxes and fees&quot;)
+<span class="fc" id="L24">    private BigDecimal subtotal;</span>
+
+    @Schema(description = &quot;Delivery fee&quot;)
+<span class="nc" id="L27">    private BigDecimal deliveryFee;</span>
+
+    @Schema(description = &quot;Platform fee&quot;)
+<span class="nc" id="L30">    private BigDecimal platformFee;</span>
+
+    @Schema(description = &quot;Packaging charges&quot;)
+<span class="nc" id="L33">    private BigDecimal packagingCharges;</span>
+
+    @Schema(description = &quot;GST amount&quot;)
+<span class="nc" id="L36">    private BigDecimal gst;</span>
+
+    @Schema(description = &quot;GST percentage&quot;)
+<span class="nc" id="L39">    private BigDecimal gstPercentage;</span>
+
+    @Schema(description = &quot;Discount amount&quot;)
+<span class="nc" id="L42">    private BigDecimal discount;</span>
+
+    @Schema(description = &quot;Applied coupon code&quot;)
+<span class="nc" id="L45">    private String couponCode;</span>
+
+    @Schema(description = &quot;Loyalty points value used&quot;)
+<span class="nc" id="L48">    private BigDecimal loyaltyPointsValue;</span>
+
+    @Schema(description = &quot;Tip amount&quot;)
+<span class="nc" id="L51">    private BigDecimal tip;</span>
+
+    @Schema(description = &quot;Final total amount&quot;)
+<span class="fc" id="L54">    private BigDecimal total;</span>
+
+    @Schema(description = &quot;Currency code&quot;)
+<span class="nc" id="L57">    private String currency;</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

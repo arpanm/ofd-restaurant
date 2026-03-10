@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RestaurantController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Restaurant Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.restaurant.controller</a> &gt; <span class="el_source">RestaurantController.java</span></div><h1>RestaurantController.java</h1><pre class="source lang-java linenums">package com.foodai.restaurant.controller;
+
+import com.foodai.restaurant.dto.request.CreateOutletRequest;
+import com.foodai.restaurant.dto.request.CreateRestaurantRequest;
+import com.foodai.restaurant.dto.request.SearchRestaurantRequest;
+import com.foodai.restaurant.dto.response.ApiResponse;
+import com.foodai.restaurant.dto.response.OutletResponse;
+import com.foodai.restaurant.dto.response.RestaurantResponse;
+import com.foodai.restaurant.service.RestaurantService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * REST controller for Restaurant operations.
+ * Provides endpoints for restaurant CRUD operations and outlet management.
+ */
+@RestController
+@RequestMapping(&quot;/api/v1/restaurants&quot;)
+<span class="fc" id="L33">@RequiredArgsConstructor</span>
+<span class="fc" id="L34">@Slf4j</span>
+@Tag(name = &quot;Restaurant Management&quot;, description = &quot;APIs for managing restaurants and outlets&quot;)
+public class RestaurantController {
+    
+    private final RestaurantService restaurantService;
+    
+    /**
+     * Create a new restaurant.
+     */
+    @PostMapping
+    @Operation(summary = &quot;Create new restaurant&quot;, description = &quot;Create a new restaurant brand with owners and contacts&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;201&quot;, description = &quot;Restaurant created successfully&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid input data&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;409&quot;, description = &quot;Restaurant already exists&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;RestaurantResponse&gt;&gt; createRestaurant(
+        @Valid @RequestBody CreateRestaurantRequest request
+    ) {
+<span class="fc" id="L53">        log.info(&quot;POST /api/v1/restaurants - Creating restaurant: {}&quot;, request.getName());</span>
+        
+<span class="fc" id="L55">        RestaurantResponse response = restaurantService.createRestaurant(request);</span>
+<span class="fc" id="L56">        return ResponseEntity</span>
+<span class="fc" id="L57">            .status(HttpStatus.CREATED)</span>
+<span class="fc" id="L58">            .body(ApiResponse.success(&quot;Restaurant created successfully&quot;, response));</span>
+    }
+    
+    /**
+     * Get restaurant by ID.
+     */
+    @GetMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Get restaurant by ID&quot;, description = &quot;Retrieve restaurant details by ID&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Restaurant found&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Restaurant not found&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;RestaurantResponse&gt;&gt; getRestaurantById(
+        @Parameter(description = &quot;Restaurant ID&quot;) @PathVariable String id
+    ) {
+<span class="fc" id="L73">        log.info(&quot;GET /api/v1/restaurants/{} - Fetching restaurant&quot;, id);</span>
+        
+<span class="fc" id="L75">        RestaurantResponse response = restaurantService.getRestaurantById(id);</span>
+<span class="fc" id="L76">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+    
+    /**
+     * Get all restaurants with pagination.
+     */
+    @GetMapping
+    @Operation(summary = &quot;Get all restaurants&quot;, description = &quot;Retrieve all restaurants with pagination&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Restaurants retrieved successfully&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;Page&lt;RestaurantResponse&gt;&gt;&gt; getAllRestaurants(
+        @PageableDefault(size = 20, sort = &quot;createdAt&quot;, direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+<span class="fc" id="L90">        log.info(&quot;GET /api/v1/restaurants - Fetching all restaurants, page: {}&quot;, pageable.getPageNumber());</span>
+        
+<span class="fc" id="L92">        Page&lt;RestaurantResponse&gt; response = restaurantService.getAllRestaurants(pageable);</span>
+<span class="fc" id="L93">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+    
+    /**
+     * Search restaurants.
+     */
+    @GetMapping(&quot;/search&quot;)
+    @Operation(summary = &quot;Search restaurants&quot;, description = &quot;Search restaurants by name or cuisine&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Search completed successfully&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;Page&lt;RestaurantResponse&gt;&gt;&gt; searchRestaurants(
+        @Parameter(description = &quot;Search term&quot;) @RequestParam String query,
+        @PageableDefault(size = 20) Pageable pageable
+    ) {
+<span class="fc" id="L108">        log.info(&quot;GET /api/v1/restaurants/search?query={}&quot;, query);</span>
+        
+<span class="fc" id="L110">        Page&lt;RestaurantResponse&gt; response = restaurantService.searchRestaurants(query, pageable);</span>
+<span class="fc" id="L111">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+    
+    /**
+     * Get restaurants by owner.
+     */
+    @GetMapping(&quot;/by-owner/{ownerId}&quot;)
+    @Operation(summary = &quot;Get restaurants by owner&quot;, description = &quot;Retrieve all restaurants owned by a specific owner&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Restaurants retrieved successfully&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;List&lt;RestaurantResponse&gt;&gt;&gt; getRestaurantsByOwner(
+        @Parameter(description = &quot;Owner ID&quot;) @PathVariable String ownerId
+    ) {
+<span class="fc" id="L125">        log.info(&quot;GET /api/v1/restaurants/by-owner/{}&quot;, ownerId);</span>
+        
+<span class="fc" id="L127">        List&lt;RestaurantResponse&gt; response = restaurantService.getRestaurantsByOwner(ownerId);</span>
+<span class="fc" id="L128">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+    
+    /**
+     * Update restaurant.
+     */
+    @PutMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Update restaurant&quot;, description = &quot;Update restaurant details&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Restaurant updated successfully&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Restaurant not found&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;RestaurantResponse&gt;&gt; updateRestaurant(
+        @Parameter(description = &quot;Restaurant ID&quot;) @PathVariable String id,
+        @Valid @RequestBody CreateRestaurantRequest request
+    ) {
+<span class="fc" id="L144">        log.info(&quot;PUT /api/v1/restaurants/{} - Updating restaurant&quot;, id);</span>
+        
+<span class="fc" id="L146">        RestaurantResponse response = restaurantService.updateRestaurant(id, request);</span>
+<span class="fc" id="L147">        return ResponseEntity.ok(ApiResponse.success(&quot;Restaurant updated successfully&quot;, response));</span>
+    }
+    
+    /**
+     * Delete restaurant.
+     */
+    @DeleteMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Delete restaurant&quot;, description = &quot;Soft delete a restaurant&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Restaurant deleted successfully&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Restaurant not found&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; deleteRestaurant(
+        @Parameter(description = &quot;Restaurant ID&quot;) @PathVariable String id,
+        @Parameter(description = &quot;User ID who is deleting&quot;) @RequestParam String deletedBy
+    ) {
+<span class="fc" id="L163">        log.info(&quot;DELETE /api/v1/restaurants/{} - Deleting restaurant&quot;, id);</span>
+        
+<span class="fc" id="L165">        restaurantService.deleteRestaurant(id, deletedBy);</span>
+<span class="fc" id="L166">        return ResponseEntity.ok(ApiResponse.success(&quot;Restaurant deleted successfully&quot;, null));</span>
+    }
+    
+    /**
+     * Add outlet to restaurant.
+     */
+    @PostMapping(&quot;/{restaurantId}/outlets&quot;)
+    @Operation(summary = &quot;Add outlet&quot;, description = &quot;Add a new outlet to a restaurant&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;201&quot;, description = &quot;Outlet created successfully&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Restaurant not found&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;OutletResponse&gt;&gt; addOutlet(
+        @Parameter(description = &quot;Restaurant ID&quot;) @PathVariable String restaurantId,
+        @Valid @RequestBody CreateOutletRequest request
+    ) {
+<span class="nc" id="L182">        log.info(&quot;POST /api/v1/restaurants/{}/outlets - Adding outlet&quot;, restaurantId);</span>
+        
+<span class="nc" id="L184">        OutletResponse response = restaurantService.addOutlet(restaurantId, request);</span>
+<span class="nc" id="L185">        return ResponseEntity</span>
+<span class="nc" id="L186">            .status(HttpStatus.CREATED)</span>
+<span class="nc" id="L187">            .body(ApiResponse.success(&quot;Outlet created successfully&quot;, response));</span>
+    }
+    
+    /**
+     * Get outlet by ID.
+     */
+    @GetMapping(&quot;/{restaurantId}/outlets/{outletId}&quot;)
+    @Operation(summary = &quot;Get outlet by ID&quot;, description = &quot;Retrieve outlet details&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Outlet found&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Outlet not found&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;OutletResponse&gt;&gt; getOutletById(
+        @Parameter(description = &quot;Restaurant ID&quot;) @PathVariable String restaurantId,
+        @Parameter(description = &quot;Outlet ID&quot;) @PathVariable String outletId
+    ) {
+<span class="nc" id="L203">        log.info(&quot;GET /api/v1/restaurants/{}/outlets/{}&quot;, restaurantId, outletId);</span>
+        
+<span class="nc" id="L205">        OutletResponse response = restaurantService.getOutletById(restaurantId, outletId);</span>
+<span class="nc" id="L206">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+    
+    /**
+     * Get all outlets for a restaurant.
+     */
+    @GetMapping(&quot;/{restaurantId}/outlets&quot;)
+    @Operation(summary = &quot;Get all outlets&quot;, description = &quot;Retrieve all outlets for a restaurant&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Outlets retrieved successfully&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;List&lt;OutletResponse&gt;&gt;&gt; getOutletsByRestaurant(
+        @Parameter(description = &quot;Restaurant ID&quot;) @PathVariable String restaurantId
+    ) {
+<span class="nc" id="L220">        log.info(&quot;GET /api/v1/restaurants/{}/outlets&quot;, restaurantId);</span>
+        
+<span class="nc" id="L222">        List&lt;OutletResponse&gt; response = restaurantService.getOutletsByRestaurant(restaurantId);</span>
+<span class="nc" id="L223">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+    
+    /**
+     * Approve restaurant.
+     */
+    @PostMapping(&quot;/{restaurantId}/approve&quot;)
+    @Operation(summary = &quot;Approve restaurant&quot;, description = &quot;Approve a restaurant for operations&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Restaurant approved successfully&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Restaurant not found&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;RestaurantResponse&gt;&gt; approveRestaurant(
+        @Parameter(description = &quot;Restaurant ID&quot;) @PathVariable String restaurantId,
+        @Parameter(description = &quot;User ID who is approving&quot;) @RequestParam String approvedBy
+    ) {
+<span class="fc" id="L239">        log.info(&quot;POST /api/v1/restaurants/{}/approve - Approving restaurant&quot;, restaurantId);</span>
+        
+<span class="fc" id="L241">        RestaurantResponse response = restaurantService.approveRestaurant(restaurantId, approvedBy);</span>
+<span class="fc" id="L242">        return ResponseEntity.ok(ApiResponse.success(&quot;Restaurant approved successfully&quot;, response));</span>
+    }
+    
+    /**
+     * Advanced search for restaurants or outlets with multiple filters.
+     * 
+     * Query Parameters:
+     * - deliveryPincode (required): 6-digit pincode for delivery location
+     * - cuisineTypes: Comma-separated list of cuisines (e.g., &quot;Italian,Chinese&quot;)
+     * - budgetType: BUDGET, AFFORDABLE, MID_RANGE, PREMIUM, LUXURY
+     * - minRating: Minimum rating filter (0-5)
+     * - maxRating: Maximum rating filter (0-5)
+     * - searchTerm: Search in restaurant/outlet names
+     * - returnOutlets: true to return individual outlets, false for restaurants (default: false)
+     * - vegetarianOnly: Filter for vegetarian-only restaurants
+     * - currentlyOpen: Filter for currently open restaurants
+     * - minPrice: Minimum price (cost for two)
+     * - maxPrice: Maximum price (cost for two)
+     * - sortBy: rating, price, distance, popularity (default: rating)
+     * - sortDirection: asc, desc (default: desc)
+     * - page: Page number (default: 0)
+     * - size: Page size (default: 20, max: 100)
+     */
+    @PostMapping(&quot;/search&quot;)
+    @Operation(
+        summary = &quot;Advanced restaurant search&quot;,
+        description = &quot;Search for restaurants or outlets with multiple filters including delivery pincode (required), cuisine, budget, ratings, and more&quot;
+    )
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Search completed successfully&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid search parameters&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;Page&lt;?&gt;&gt;&gt; searchRestaurants(
+        @Valid @RequestBody SearchRestaurantRequest request
+    ) {
+<span class="fc" id="L277">        log.info(&quot;POST /api/v1/restaurants/search - Searching with filters: pincode={}, cuisine={}, budget={}&quot;, </span>
+<span class="fc" id="L278">                request.getDeliveryPincode(), request.getCuisineTypes(), request.getBudgetType());</span>
+        
+<span class="fc" id="L280">        Page&lt;?&gt; results = restaurantService.searchRestaurants(request);</span>
+        
+<span class="fc" id="L282">        String message = String.format(&quot;Found %d %s&quot;, </span>
+<span class="fc" id="L283">                results.getTotalElements(),</span>
+<span class="fc bfc" id="L284" title="All 2 branches covered.">                Boolean.TRUE.equals(request.getReturnOutlets()) ? &quot;outlets&quot; : &quot;restaurants&quot;);</span>
+        
+<span class="fc" id="L286">        return ResponseEntity.ok(ApiResponse.success(message, results));</span>
+    }
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

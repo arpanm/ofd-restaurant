@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DietPlan.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.user.domain.model</a> &gt; <span class="el_source">DietPlan.java</span></div><h1>DietPlan.java</h1><pre class="source lang-java linenums">package com.foodai.user.domain.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Diet Plan Entity.
+ * Manages user's diet plans including scheduled meals and nutritional tracking.
+ *
+ * &lt;p&gt;Covers features from:
+ * &lt;ul&gt;
+ *   &lt;li&gt;DIET_PLANNER.md - Diet plan creation, meal scheduling&lt;/li&gt;
+ *   &lt;li&gt;DIET_PLANNER_ORDER_TRACKING.md - Plan order tracking&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * @author FoodAI Team
+ */
+@Document(collection = &quot;diet_plans&quot;)
+@CompoundIndexes({
+    @CompoundIndex(name = &quot;user_status_idx&quot;, def = &quot;{'userId': 1, 'status': 1}&quot;),
+    @CompoundIndex(name = &quot;user_dates_idx&quot;, def = &quot;{'userId': 1, 'startDate': 1, 'endDate': 1}&quot;)
+})
+<span class="nc bnc" id="L37" title="All 234 branches missed.">@Data</span>
+<span class="nc bnc" id="L38" title="All 26 branches missed.">@Builder</span>
+<span class="nc" id="L39">@NoArgsConstructor</span>
+<span class="nc" id="L40">@AllArgsConstructor</span>
+public class DietPlan {
+
+    /**
+     * Unique diet plan identifier
+     */
+    @Id
+<span class="nc" id="L47">    private String id;</span>
+
+    /**
+     * User ID this plan belongs to
+     */
+    @Indexed
+<span class="nc" id="L53">    private String userId;</span>
+
+    /**
+     * Plan name (e.g., &quot;Weight Loss Plan&quot;, &quot;Muscle Building&quot;)
+     */
+<span class="nc" id="L58">    private String name;</span>
+
+    /**
+     * Plan description
+     */
+<span class="nc" id="L63">    private String description;</span>
+
+    /**
+     * Plan type
+     */
+<span class="nc" id="L68">    private DietPlanType planType;</span>
+
+    /**
+     * Plan duration in days
+     */
+<span class="nc" id="L73">    private Integer durationDays;</span>
+
+    /**
+     * Plan start date
+     */
+<span class="nc" id="L78">    private LocalDate startDate;</span>
+
+    /**
+     * Plan end date
+     */
+<span class="nc" id="L83">    private LocalDate endDate;</span>
+
+    /**
+     * Daily calorie target
+     */
+<span class="nc" id="L88">    private Integer dailyCalorieTarget;</span>
+
+    /**
+     * Daily protein target (grams)
+     */
+<span class="nc" id="L93">    private Integer dailyProteinTarget;</span>
+
+    /**
+     * Daily carb target (grams)
+     */
+<span class="nc" id="L98">    private Integer dailyCarbTarget;</span>
+
+    /**
+     * Daily fat target (grams)
+     */
+<span class="nc" id="L103">    private Integer dailyFatTarget;</span>
+
+    /**
+     * Scheduled meals in this plan
+     */
+    @Builder.Default
+<span class="nc" id="L109">    private List&lt;DietMealVO&gt; meals = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Health goals for this plan
+     */
+    @Builder.Default
+<span class="nc" id="L115">    private List&lt;String&gt; healthGoals = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Dietary restrictions to consider
+     */
+    @Builder.Default
+<span class="nc" id="L121">    private List&lt;String&gt; restrictions = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Preferred cuisines for meal suggestions
+     */
+    @Builder.Default
+<span class="nc" id="L127">    private List&lt;String&gt; preferredCuisines = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Budget per meal (in INR)
+     */
+<span class="nc" id="L132">    private Double budgetPerMeal;</span>
+
+    /**
+     * Total budget for the plan (in INR)
+     */
+<span class="nc" id="L137">    private Double totalBudget;</span>
+
+    /**
+     * Actual amount spent (in INR)
+     */
+    @Builder.Default
+<span class="nc" id="L143">    private Double actualSpent = 0.0;</span>
+
+    /**
+     * Number of meals completed
+     */
+    @Builder.Default
+<span class="nc" id="L149">    private Integer mealsCompleted = 0;</span>
+
+    /**
+     * Number of meals skipped
+     */
+    @Builder.Default
+<span class="nc" id="L155">    private Integer mealsSkipped = 0;</span>
+
+    /**
+     * Plan completion percentage
+     */
+    @Builder.Default
+<span class="nc" id="L161">    private Integer completionPercentage = 0;</span>
+
+    /**
+     * Whether this is an AI-generated plan
+     */
+    @Builder.Default
+<span class="nc" id="L167">    private boolean aiGenerated = false;</span>
+
+    /**
+     * Whether auto-ordering is enabled
+     */
+    @Builder.Default
+<span class="nc" id="L173">    private boolean autoOrderEnabled = false;</span>
+
+    /**
+     * Minutes before meal time to auto-order
+     */
+    @Builder.Default
+<span class="nc" id="L179">    private Integer autoOrderLeadTime = 60;</span>
+
+    /**
+     * Plan status
+     */
+    @Indexed
+    @Builder.Default
+<span class="nc" id="L186">    private DietPlanStatus status = DietPlanStatus.DRAFT;</span>
+
+    /**
+     * Reminder settings
+     */
+<span class="nc" id="L191">    private DietReminderSettingsVO reminderSettings;</span>
+
+    /**
+     * Creation timestamp
+     */
+    @CreatedDate
+<span class="nc" id="L197">    private Instant createdAt;</span>
+
+    /**
+     * Last update timestamp
+     */
+    @LastModifiedDate
+<span class="nc" id="L203">    private Instant updatedAt;</span>
+
+    /**
+     * Soft delete flag
+     */
+    @Builder.Default
+<span class="nc" id="L209">    private boolean deleted = false;</span>
+
+    // ==================== Domain Methods ====================
+
+    /**
+     * Adds a meal to the plan.
+     *
+     * @param meal the meal to add
+     */
+    public void addMeal(DietMealVO meal) {
+<span class="nc bnc" id="L219" title="All 2 branches missed.">        if (this.meals == null) {</span>
+<span class="nc" id="L220">            this.meals = new ArrayList&lt;&gt;();</span>
+        }
+<span class="nc" id="L222">        this.meals.add(meal);</span>
+<span class="nc" id="L223">    }</span>
+
+    /**
+     * Marks a meal as completed.
+     *
+     * @param mealId the meal ID
+     * @param orderId the order ID (if ordered)
+     * @param actualCalories actual calories consumed
+     */
+    public void completeMeal(String mealId, String orderId, Integer actualCalories) {
+<span class="nc bnc" id="L233" title="All 2 branches missed.">        if (this.meals == null) return;</span>
+        
+<span class="nc" id="L235">        this.meals.stream()</span>
+<span class="nc" id="L236">            .filter(m -&gt; m.getId().equals(mealId))</span>
+<span class="nc" id="L237">            .findFirst()</span>
+<span class="nc" id="L238">            .ifPresent(meal -&gt; {</span>
+<span class="nc" id="L239">                meal.setStatus(DietMealStatus.COMPLETED);</span>
+<span class="nc" id="L240">                meal.setOrderId(orderId);</span>
+<span class="nc" id="L241">                meal.setActualCalories(actualCalories);</span>
+<span class="nc" id="L242">                meal.setCompletedAt(Instant.now());</span>
+<span class="nc" id="L243">            });</span>
+        
+<span class="nc" id="L245">        this.mealsCompleted++;</span>
+<span class="nc" id="L246">        updateCompletionPercentage();</span>
+<span class="nc" id="L247">    }</span>
+
+    /**
+     * Marks a meal as skipped.
+     *
+     * @param mealId the meal ID
+     * @param reason the skip reason
+     */
+    public void skipMeal(String mealId, String reason) {
+<span class="nc bnc" id="L256" title="All 2 branches missed.">        if (this.meals == null) return;</span>
+        
+<span class="nc" id="L258">        this.meals.stream()</span>
+<span class="nc" id="L259">            .filter(m -&gt; m.getId().equals(mealId))</span>
+<span class="nc" id="L260">            .findFirst()</span>
+<span class="nc" id="L261">            .ifPresent(meal -&gt; {</span>
+<span class="nc" id="L262">                meal.setStatus(DietMealStatus.SKIPPED);</span>
+<span class="nc" id="L263">                meal.setSkipReason(reason);</span>
+<span class="nc" id="L264">            });</span>
+        
+<span class="nc" id="L266">        this.mealsSkipped++;</span>
+<span class="nc" id="L267">        updateCompletionPercentage();</span>
+<span class="nc" id="L268">    }</span>
+
+    /**
+     * Updates the completion percentage.
+     */
+    private void updateCompletionPercentage() {
+<span class="nc bnc" id="L274" title="All 4 branches missed.">        if (this.meals == null || this.meals.isEmpty()) {</span>
+<span class="nc" id="L275">            this.completionPercentage = 0;</span>
+<span class="nc" id="L276">            return;</span>
+        }
+<span class="nc" id="L278">        int totalMeals = this.meals.size();</span>
+<span class="nc" id="L279">        this.completionPercentage = (this.mealsCompleted * 100) / totalMeals;</span>
+<span class="nc" id="L280">    }</span>
+
+    /**
+     * Activates the plan.
+     */
+    public void activate() {
+<span class="nc" id="L286">        this.status = DietPlanStatus.ACTIVE;</span>
+<span class="nc" id="L287">    }</span>
+
+    /**
+     * Pauses the plan.
+     */
+    public void pause() {
+<span class="nc" id="L293">        this.status = DietPlanStatus.PAUSED;</span>
+<span class="nc" id="L294">    }</span>
+
+    /**
+     * Completes the plan.
+     */
+    public void complete() {
+<span class="nc" id="L300">        this.status = DietPlanStatus.COMPLETED;</span>
+<span class="nc" id="L301">    }</span>
+
+    /**
+     * Cancels the plan.
+     */
+    public void cancel() {
+<span class="nc" id="L307">        this.status = DietPlanStatus.CANCELLED;</span>
+<span class="nc" id="L308">    }</span>
+
+    /**
+     * Gets today's meals.
+     *
+     * @return list of today's meals
+     */
+    public List&lt;DietMealVO&gt; getTodaysMeals() {
+<span class="nc" id="L316">        LocalDate today = LocalDate.now();</span>
+<span class="nc" id="L317">        return this.meals.stream()</span>
+<span class="nc" id="L318">            .filter(m -&gt; m.getScheduledDate().equals(today))</span>
+<span class="nc" id="L319">            .toList();</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

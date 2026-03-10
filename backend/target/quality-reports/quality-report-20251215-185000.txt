@@ -1,0 +1,55 @@
+================================================================================
+FoodAI Platform - Quality Validation Report
+================================================================================
+Generated: Mon Dec 15 18:50:00 IST 2025
+Mode: all
+Target: 
+================================================================================
+
+Java Version: openjdk version "21.0.6" 2025-01-21 LTS
+
+================================================================
+Service: user-service
+================================================================
+[user-service] Compilation: PASSED
+[user-service] Code Formatting: PASSED
+[user-service] Checkstyle: PASSED
+[user-service] Tests: PASSED - [INFO] Tests run: 112, Failures: 0, Errors: 0, Skipped: 0
+[user-service] Coverage: Line=20%, Branch=20%
+[user-service] Coverage Thresholds: MET
+[user-service] SpotBugs: PASSED
+[user-service] PMD: PASSED
+[user-service] RESULT: PASSED
+
+================================================================
+Service: restaurant-service
+================================================================
+[restaurant-service] Compilation: PASSED
+[restaurant-service] Code Formatting: PASSED
+[restaurant-service] Checkstyle: PASSED
+[restaurant-service] Tests: PASSED - [INFO] Tests run: 66, Failures: 0, Errors: 0, Skipped: 0
+[restaurant-service] Coverage: Line=22%, Branch=22%
+[restaurant-service] Coverage Thresholds: MET
+[restaurant-service] SpotBugs: PASSED
+[restaurant-service] PMD: PASSED
+[restaurant-service] RESULT: PASSED
+
+================================================================
+Service: menu-service
+================================================================
+[menu-service] Compilation: PASSED
+[menu-service] Code Formatting: PASSED
+[menu-service] Checkstyle: PASSED
+[menu-service] Tests: FAILED - [ERROR] Tests run: 180, Failures: 0, Errors: 83, Skipped: 50
+[menu-service] Coverage: Line=26%, Branch=26%
+[menu-service] Coverage Thresholds: NOT MET
+[menu-service] SpotBugs: PASSED
+[menu-service] PMD: PASSED
+[menu-service] RESULT: FAILED (2 checks)
+
+================================================================
+Service: order-service
+================================================================
+[order-service] Compilation: PASSED
+[order-service] Code Formatting: PASSED
+[order-service] Checkstyle: PASSED

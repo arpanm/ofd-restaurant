@@ -1,0 +1,51 @@
+spring:
+  data:
+    mongodb:
+      # Use local MongoDB for tests
+      host: localhost
+      port: 27017
+      database: menu-service-test
+    redis:
+      # Disable Redis for tests
+      enabled: false
+
+  # Exclude embedded MongoDB and Redis auto-configuration for tests
+  autoconfigure:
+    exclude:
+      - de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+      - org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration
+
+  # Allow bean definition overriding for tests
+  main:
+    allow-bean-definition-overriding: true
+
+  # Kafka configuration for tests
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        max.block.ms: 1000
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+  cache:
+    type: none
+
+# Logging configuration for tests
+logging:
+  level:
+    com.foodai.menu: DEBUG
+    org.springframework.data.mongodb: WARN
+    org.springframework.boot: WARN
+    org.mongodb: WARN
+
+# Test-specific configuration
+menu:
+  service:
+    test-mode: true

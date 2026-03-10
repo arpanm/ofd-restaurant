@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.user.exception</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package com.foodai.user.exception;
+
+import com.foodai.user.dto.response.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Global exception handler for the user service.
+ *
+ * @author FoodAI Team
+ */
+@RestControllerAdvice
+<span class="fc" id="L21">@Slf4j</span>
+<span class="fc" id="L22">public class GlobalExceptionHandler {</span>
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; handleUserNotFoundException(UserNotFoundException ex) {
+<span class="fc" id="L26">        log.warn(&quot;User not found: {}&quot;, ex.getMessage());</span>
+<span class="fc" id="L27">        return ResponseEntity</span>
+<span class="fc" id="L28">            .status(HttpStatus.NOT_FOUND)</span>
+<span class="fc" id="L29">            .body(ApiResponse.error(ex.getMessage()));</span>
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+<span class="fc" id="L34">        log.warn(&quot;User already exists: {}&quot;, ex.getMessage());</span>
+<span class="fc" id="L35">        return ResponseEntity</span>
+<span class="fc" id="L36">            .status(HttpStatus.CONFLICT)</span>
+<span class="fc" id="L37">            .body(ApiResponse.error(ex.getMessage()));</span>
+    }
+
+    @ExceptionHandler(LoyaltyAccountNotFoundException.class)
+    public ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; handleLoyaltyAccountNotFoundException(LoyaltyAccountNotFoundException ex) {
+<span class="fc" id="L42">        log.warn(&quot;Loyalty account not found: {}&quot;, ex.getMessage());</span>
+<span class="fc" id="L43">        return ResponseEntity</span>
+<span class="fc" id="L44">            .status(HttpStatus.NOT_FOUND)</span>
+<span class="fc" id="L45">            .body(ApiResponse.error(ex.getMessage()));</span>
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; handleIllegalArgumentException(IllegalArgumentException ex) {
+<span class="fc" id="L50">        log.warn(&quot;Invalid argument: {}&quot;, ex.getMessage());</span>
+<span class="fc" id="L51">        return ResponseEntity</span>
+<span class="fc" id="L52">            .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L53">            .body(ApiResponse.error(ex.getMessage()));</span>
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; handleIllegalStateException(IllegalStateException ex) {
+<span class="fc" id="L58">        log.warn(&quot;Invalid state: {}&quot;, ex.getMessage());</span>
+<span class="fc" id="L59">        return ResponseEntity</span>
+<span class="fc" id="L60">            .status(HttpStatus.CONFLICT)</span>
+<span class="fc" id="L61">            .body(ApiResponse.error(ex.getMessage()));</span>
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity&lt;ApiResponse&lt;Map&lt;String, String&gt;&gt;&gt; handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+<span class="fc" id="L67">        Map&lt;String, String&gt; errors = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L68">        ex.getBindingResult().getAllErrors().forEach(error -&gt; {</span>
+<span class="fc" id="L69">            String fieldName = ((FieldError) error).getField();</span>
+<span class="fc" id="L70">            String errorMessage = error.getDefaultMessage();</span>
+<span class="fc" id="L71">            errors.put(fieldName, errorMessage);</span>
+<span class="fc" id="L72">        });</span>
+<span class="fc" id="L73">        log.warn(&quot;Validation failed: {}&quot;, errors);</span>
+        
+<span class="fc" id="L75">        ApiResponse&lt;Map&lt;String, String&gt;&gt; response = ApiResponse.&lt;Map&lt;String, String&gt;&gt;builder()</span>
+<span class="fc" id="L76">            .success(false)</span>
+<span class="fc" id="L77">            .message(&quot;Validation failed&quot;)</span>
+<span class="fc" id="L78">            .data(errors)</span>
+<span class="fc" id="L79">            .build();</span>
+        
+<span class="fc" id="L81">        return ResponseEntity</span>
+<span class="fc" id="L82">            .status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L83">            .body(response);</span>
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; handleGenericException(Exception ex) {
+<span class="nc" id="L88">        log.error(&quot;Unexpected error occurred&quot;, ex);</span>
+<span class="nc" id="L89">        return ResponseEntity</span>
+<span class="nc" id="L90">            .status(HttpStatus.INTERNAL_SERVER_ERROR)</span>
+<span class="nc" id="L91">            .body(ApiResponse.error(&quot;An unexpected error occurred. Please try again later.&quot;));</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

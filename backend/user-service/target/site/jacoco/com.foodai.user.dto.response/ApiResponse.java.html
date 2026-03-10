@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ApiResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.user.dto.response</a> &gt; <span class="el_source">ApiResponse.java</span></div><h1>ApiResponse.java</h1><pre class="source lang-java linenums">package com.foodai.user.dto.response;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.Instant;
+import java.util.UUID;
+
+/**
+ * Standard API response wrapper.
+ *
+ * @param &lt;T&gt; the type of data in the response
+ * @author FoodAI Team
+ */
+<span class="nc bnc" id="L18" title="All 42 branches missed.">@Data</span>
+<span class="pc bpc" id="L19" title="2 of 4 branches missed.">@Builder</span>
+<span class="nc" id="L20">@NoArgsConstructor</span>
+<span class="fc" id="L21">@AllArgsConstructor</span>
+@Schema(description = &quot;Standard API response&quot;)
+public class ApiResponse&lt;T&gt; {
+
+    @Schema(description = &quot;Whether the request was successful&quot;)
+<span class="fc" id="L26">    private boolean success;</span>
+
+    @Schema(description = &quot;Response message&quot;)
+<span class="fc" id="L29">    private String message;</span>
+
+    @Schema(description = &quot;Response data&quot;)
+<span class="fc" id="L32">    private T data;</span>
+
+    @Schema(description = &quot;Response timestamp&quot;)
+    @Builder.Default
+<span class="fc" id="L36">    private Instant timestamp = Instant.now();</span>
+
+    @Schema(description = &quot;Request ID for tracing&quot;)
+    @Builder.Default
+<span class="fc" id="L40">    private String requestId = UUID.randomUUID().toString();</span>
+
+    /**
+     * Creates a successful response with data.
+     *
+     * @param data the response data
+     * @param &lt;T&gt;  the type of data
+     * @return ApiResponse with success status
+     */
+    public static &lt;T&gt; ApiResponse&lt;T&gt; success(T data) {
+<span class="fc" id="L50">        return ApiResponse.&lt;T&gt;builder()</span>
+<span class="fc" id="L51">            .success(true)</span>
+<span class="fc" id="L52">            .data(data)</span>
+<span class="fc" id="L53">            .build();</span>
+    }
+
+    /**
+     * Creates a successful response with message and data.
+     *
+     * @param message the response message
+     * @param data    the response data
+     * @param &lt;T&gt;     the type of data
+     * @return ApiResponse with success status
+     */
+    public static &lt;T&gt; ApiResponse&lt;T&gt; success(String message, T data) {
+<span class="fc" id="L65">        return ApiResponse.&lt;T&gt;builder()</span>
+<span class="fc" id="L66">            .success(true)</span>
+<span class="fc" id="L67">            .message(message)</span>
+<span class="fc" id="L68">            .data(data)</span>
+<span class="fc" id="L69">            .build();</span>
+    }
+
+    /**
+     * Creates an error response.
+     *
+     * @param message the error message
+     * @param &lt;T&gt;     the type of data
+     * @return ApiResponse with error status
+     */
+    public static &lt;T&gt; ApiResponse&lt;T&gt; error(String message) {
+<span class="fc" id="L80">        return ApiResponse.&lt;T&gt;builder()</span>
+<span class="fc" id="L81">            .success(false)</span>
+<span class="fc" id="L82">            .message(message)</span>
+<span class="fc" id="L83">            .build();</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

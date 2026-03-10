@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RestaurantMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Restaurant Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.restaurant.mapper</a> &gt; <span class="el_source">RestaurantMapper.java</span></div><h1>RestaurantMapper.java</h1><pre class="source lang-java linenums">package com.foodai.restaurant.mapper;
+
+import com.foodai.restaurant.domain.model.*;
+import com.foodai.restaurant.dto.request.*;
+import com.foodai.restaurant.dto.response.*;
+import org.mapstruct.*;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * MapStruct mapper for Restaurant entity and DTOs.
+ * Handles mapping between domain models and request/response DTOs.
+ */
+@Mapper(componentModel = &quot;spring&quot;, 
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+public interface RestaurantMapper {
+    
+    // ========== Restaurant Mappings ==========
+    
+    /**
+     * Map CreateRestaurantRequest to Restaurant entity.
+     */
+    @Mapping(target = &quot;id&quot;, expression = &quot;java(generateId())&quot;)
+    @Mapping(target = &quot;outlets&quot;, ignore = true)
+    @Mapping(target = &quot;averageRating&quot;, constant = &quot;0.0&quot;)
+    @Mapping(target = &quot;totalReviews&quot;, constant = &quot;0&quot;)
+    @Mapping(target = &quot;totalOrders&quot;, constant = &quot;0&quot;)
+    @Mapping(target = &quot;acceptsOrders&quot;, constant = &quot;true&quot;)
+    @Mapping(target = &quot;status&quot;, constant = &quot;PENDING&quot;)
+    @Mapping(target = &quot;createdAt&quot;, expression = &quot;java(now())&quot;)
+    @Mapping(target = &quot;updatedAt&quot;, expression = &quot;java(now())&quot;)
+    @Mapping(target = &quot;deleted&quot;, constant = &quot;false&quot;)
+    @Mapping(target = &quot;onboardingType&quot;, constant = &quot;SELF_SERVICE&quot;)
+    Restaurant toEntity(CreateRestaurantRequest request);
+    
+    /**
+     * Map Restaurant entity to RestaurantResponse.
+     */
+    RestaurantResponse toResponse(Restaurant restaurant);
+    
+    /**
+     * Map list of Restaurant to list of RestaurantResponse.
+     */
+    List&lt;RestaurantResponse&gt; toResponseList(List&lt;Restaurant&gt; restaurants);
+    
+    // ========== Outlet Mappings ==========
+    
+    /**
+     * Map CreateOutletRequest to RestaurantOutlet entity.
+     */
+    @Mapping(target = &quot;outletId&quot;, expression = &quot;java(generateId())&quot;)
+    @Mapping(target = &quot;status&quot;, constant = &quot;NOT_ONBOARDED&quot;)
+    @Mapping(target = &quot;acceptsOrders&quot;, constant = &quot;false&quot;)
+    @Mapping(target = &quot;averageRating&quot;, constant = &quot;0.0&quot;)
+    @Mapping(target = &quot;totalReviews&quot;, constant = &quot;0&quot;)
+    @Mapping(target = &quot;totalOrders&quot;, constant = &quot;0&quot;)
+    @Mapping(target = &quot;currentOrderQueue&quot;, constant = &quot;0&quot;)
+    @Mapping(target = &quot;createdAt&quot;, expression = &quot;java(now())&quot;)
+    @Mapping(target = &quot;updatedAt&quot;, expression = &quot;java(now())&quot;)
+    @Mapping(target = &quot;deleted&quot;, constant = &quot;false&quot;)
+    RestaurantOutlet toOutletEntity(CreateOutletRequest request);
+    
+    /**
+     * Map RestaurantOutlet to OutletResponse.
+     */
+    OutletResponse toOutletResponse(RestaurantOutlet outlet);
+    
+    /**
+     * Map list of outlets to response list.
+     */
+    List&lt;OutletResponse&gt; toOutletResponseList(List&lt;RestaurantOutlet&gt; outlets);
+    
+    // ========== Value Object Mappings ==========
+    
+    OwnerVO toOwnerVO(OwnerDTO dto);
+    OwnerResponse toOwnerResponse(OwnerVO vo);
+    List&lt;OwnerVO&gt; toOwnerVOList(List&lt;OwnerDTO&gt; dtos);
+    List&lt;OwnerResponse&gt; toOwnerResponseList(List&lt;OwnerVO&gt; vos);
+    
+    ContactVO toContactVO(ContactDTO dto);
+    ContactResponse toContactResponse(ContactVO vo);
+    List&lt;ContactVO&gt; toContactVOList(List&lt;ContactDTO&gt; dtos);
+    List&lt;ContactResponse&gt; toContactResponseList(List&lt;ContactVO&gt; vos);
+    
+    DocumentVO toDocumentVO(DocumentDTO dto);
+    DocumentResponse toDocumentResponse(DocumentVO vo);
+    List&lt;DocumentVO&gt; toDocumentVOList(List&lt;DocumentDTO&gt; dtos);
+    List&lt;DocumentResponse&gt; toDocumentResponseList(List&lt;DocumentVO&gt; vos);
+    
+    AddressVO toAddressVO(AddressDTO dto);
+    AddressResponse toAddressResponse(AddressVO vo);
+    
+    OperatingHoursVO toOperatingHoursVO(OperatingHoursDTO dto);
+    OperatingHoursResponse toOperatingHoursResponse(OperatingHoursVO vo);
+    List&lt;OperatingHoursVO&gt; toOperatingHoursVOList(List&lt;OperatingHoursDTO&gt; dtos);
+    List&lt;OperatingHoursResponse&gt; toOperatingHoursResponseList(List&lt;OperatingHoursVO&gt; vos);
+    
+    // ========== Contract Mappings ==========
+    
+    @Mapping(target = &quot;contractId&quot;, expression = &quot;java(generateId())&quot;)
+    @Mapping(target = &quot;signed&quot;, constant = &quot;false&quot;)
+    @Mapping(target = &quot;validFrom&quot;, expression = &quot;java(now())&quot;)
+    @Mapping(target = &quot;createdAt&quot;, expression = &quot;java(now())&quot;)
+    @Mapping(target = &quot;updatedAt&quot;, expression = &quot;java(now())&quot;)
+    ContractVO toContractVO(ContractDTO dto);
+    
+    ContractResponse toContractResponse(ContractVO vo);
+    
+    PlatformFeeConfig toPlatformFeeConfig(PlatformFeeDTO dto);
+    DeliveryFeeConfig toDeliveryFeeConfig(DeliveryFeeDTO dto);
+    PaymentGatewayFeeConfig toPaymentGatewayFeeConfig(PaymentGatewayFeeDTO dto);
+    
+    // ========== Serviceability Mappings ==========
+    
+    @Mapping(target = &quot;rules.excludedPincodes&quot;, ignore = true)
+    ServiceabilityConfig toServiceabilityConfig(ServiceabilityConfigDTO dto);
+    
+    ServiceabilityResponse toServiceabilityResponse(ServiceabilityConfig config);
+    
+    // ========== TAT Mappings ==========
+    
+    @Mapping(target = &quot;peakHours&quot;, ignore = true)
+    TATConfig toTATConfig(TATConfigDTO dto);
+    
+    TATConfigResponse toTATConfigResponse(TATConfig config);
+    
+    // ========== Helper Methods ==========
+    
+    default String generateId() {
+<span class="fc" id="L133">        return UUID.randomUUID().toString();</span>
+    }
+    
+    default Instant now() {
+<span class="fc" id="L137">        return Instant.now();</span>
+    }
+    
+    /**
+     * Update Restaurant entity from request, preserving system fields.
+     */
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = &quot;id&quot;, ignore = true)
+    @Mapping(target = &quot;outlets&quot;, ignore = true)
+    @Mapping(target = &quot;averageRating&quot;, ignore = true)
+    @Mapping(target = &quot;totalReviews&quot;, ignore = true)
+    @Mapping(target = &quot;totalOrders&quot;, ignore = true)
+    @Mapping(target = &quot;status&quot;, ignore = true)
+    @Mapping(target = &quot;createdAt&quot;, ignore = true)
+    @Mapping(target = &quot;createdBy&quot;, ignore = true)
+    @Mapping(target = &quot;updatedAt&quot;, expression = &quot;java(now())&quot;)
+    @Mapping(target = &quot;deleted&quot;, ignore = true)
+    @Mapping(target = &quot;deletedAt&quot;, ignore = true)
+    @Mapping(target = &quot;deletedBy&quot;, ignore = true)
+    void updateEntityFromRequest(@MappingTarget Restaurant restaurant, CreateRestaurantRequest request);
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

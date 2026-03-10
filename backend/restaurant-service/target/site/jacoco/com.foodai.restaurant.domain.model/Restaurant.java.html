@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Restaurant.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Restaurant Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.restaurant.domain.model</a> &gt; <span class="el_source">Restaurant.java</span></div><h1>Restaurant.java</h1><pre class="source lang-java linenums">package com.foodai.restaurant.domain.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.Instant;
+import java.util.List;
+
+/**
+ * Restaurant Aggregate Root.
+ * Represents a restaurant brand/chain that can have multiple outlets.
+ * This is the main entity for restaurant management.
+ */
+@Document(collection = &quot;restaurants&quot;)
+@CompoundIndexes({
+    @CompoundIndex(name = &quot;owner_idx&quot;, def = &quot;{'owners.ownerId': 1}&quot;)
+    // Note: Compound indexes spanning multiple array fields (outlets, cuisineTypes) 
+    // are not supported by MongoDB. Use separate simple indexes instead.
+})
+<span class="pc bnc" id="L29" title="All 218 branches missed.">@lombok.Data</span>
+<span class="pc" id="L30">@lombok.Builder</span>
+<span class="fc" id="L31">@lombok.NoArgsConstructor</span>
+<span class="fc" id="L32">@lombok.AllArgsConstructor</span>
+public class Restaurant {
+    /**
+     * Unique restaurant identifier
+     */
+    @Id
+<span class="fc" id="L38">    private String id;</span>
+    
+    /**
+     * Restaurant brand name
+     */
+    @Indexed
+<span class="fc" id="L44">    private String name;</span>
+    
+    /**
+     * Restaurant description
+     */
+<span class="fc" id="L49">    private String description;</span>
+    
+    /**
+     * Logo URL
+     */
+<span class="fc" id="L54">    private String logo;</span>
+    
+    /**
+     * Cover image URL
+     */
+<span class="fc" id="L59">    private String coverImage;</span>
+    
+    /**
+     * Multiple owners/partners (can have multiple with ownership percentages)
+     */
+<span class="fc" id="L64">    private List&lt;OwnerVO&gt; owners;</span>
+    
+    /**
+     * Brand-level contact details (primary, secondary, emergency contacts)
+     */
+<span class="fc" id="L69">    private List&lt;ContactVO&gt; contacts;</span>
+    
+    /**
+     * Cuisine types offered (common across all outlets)
+     */
+    @Indexed
+<span class="fc" id="L75">    private List&lt;String&gt; cuisineTypes;</span>
+    
+    /**
+     * Documents for verification (brand level)
+     */
+<span class="fc" id="L80">    private List&lt;DocumentVO&gt; documents;</span>
+    
+    /**
+     * Contract with fee structures and penalties
+     */
+<span class="fc" id="L85">    private ContractVO contract;</span>
+    
+    /**
+     * Onboarding type
+     */
+<span class="fc" id="L90">    private OnboardingType onboardingType;</span>
+    
+    /**
+     * User ID of operations agent (if assisted onboarding)
+     */
+<span class="fc" id="L95">    private String onboardedBy;</span>
+    
+    /**
+     * Multiple outlets for this restaurant
+     */
+<span class="fc" id="L100">    private List&lt;RestaurantOutlet&gt; outlets;</span>
+    
+    /**
+     * Average rating (aggregated from all outlets)
+     */
+<span class="fc" id="L105">    private Double averageRating;</span>
+    
+    /**
+     * Total reviews (aggregated from all outlets)
+     */
+<span class="fc" id="L110">    private Integer totalReviews;</span>
+    
+    /**
+     * Total orders (aggregated from all outlets)
+     */
+<span class="fc" id="L115">    private Integer totalOrders;</span>
+    
+    /**
+     * Average cost for two people (in INR)
+     */
+<span class="fc" id="L120">    private Double averageCostForTwo;</span>
+    
+    /**
+     * Whether the restaurant serves only vegetarian food
+     */
+<span class="fc" id="L125">    private Boolean vegetarianOnly;</span>
+    
+    /**
+     * Master switch to accept orders (affects all outlets)
+     */
+<span class="fc" id="L130">    private Boolean acceptsOrders;</span>
+    
+    /**
+     * Restaurant brand status
+     */
+    @Indexed
+<span class="fc" id="L136">    private RestaurantStatus status;</span>
+    
+    /**
+     * User ID who created this restaurant
+     */
+<span class="fc" id="L141">    private String createdBy;</span>
+    
+    /**
+     * Creation timestamp
+     */
+    @CreatedDate
+<span class="fc" id="L147">    private Instant createdAt;</span>
+    
+    /**
+     * User ID who last updated this restaurant
+     */
+<span class="fc" id="L152">    private String updatedBy;</span>
+    
+    /**
+     * Last update timestamp
+     */
+    @LastModifiedDate
+<span class="fc" id="L158">    private Instant updatedAt;</span>
+    
+    /**
+     * Soft delete flag
+     */
+    @Indexed
+<span class="fc" id="L164">    private boolean deleted;</span>
+    
+    /**
+     * User ID who deleted this restaurant
+     */
+<span class="fc" id="L169">    private String deletedBy;</span>
+    
+    /**
+     * Deletion timestamp
+     */
+<span class="fc" id="L174">    private Instant deletedAt;</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

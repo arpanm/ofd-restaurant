@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Order.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Order Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.order.domain.model</a> &gt; <span class="el_source">Order.java</span></div><h1>Order.java</h1><pre class="source lang-java linenums">package com.foodai.order.domain.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Main Order entity representing a customer order.
+ *
+ * &lt;p&gt;This is the aggregate root for the Order bounded context.
+ *
+ * @author FoodAI Team
+ */
+@Entity
+@Table(name = &quot;orders&quot;, indexes = {
+    @Index(name = &quot;idx_order_user_id&quot;, columnList = &quot;userId&quot;),
+    @Index(name = &quot;idx_order_status&quot;, columnList = &quot;status&quot;),
+    @Index(name = &quot;idx_order_number&quot;, columnList = &quot;orderNumber&quot;, unique = true),
+    @Index(name = &quot;idx_order_created_at&quot;, columnList = &quot;createdAt&quot;)
+})
+<span class="pc bpc" id="L30" title="285 of 286 branches missed.">@Data</span>
+<span class="pc bpc" id="L31" title="3 of 12 branches missed.">@Builder</span>
+<span class="nc" id="L32">@NoArgsConstructor</span>
+<span class="fc" id="L33">@AllArgsConstructor</span>
+public class Order {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+<span class="fc" id="L38">    private String id;</span>
+
+    /**
+     * Human-readable order number (e.g., ORD-20250115-001).
+     */
+    @Column(nullable = false, unique = true, length = 30)
+<span class="fc" id="L44">    private String orderNumber;</span>
+
+    /**
+     * User ID who placed the order.
+     */
+    @Column(nullable = false)
+<span class="fc" id="L50">    private String userId;</span>
+
+    /**
+     * Type of order (single restaurant, multi-restaurant, AI chat, etc.).
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+<span class="fc" id="L57">    private OrderType orderType;</span>
+
+    /**
+     * Current status of the order.
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+<span class="fc" id="L65">    private OrderStatus status = OrderStatus.CREATED;</span>
+
+    /**
+     * Order items.
+     */
+    @OneToMany(mappedBy = &quot;order&quot;, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+<span class="fc" id="L72">    private List&lt;OrderItem&gt; items = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Delivery address for this order.
+     */
+    @Embedded
+<span class="fc" id="L78">    private DeliveryAddressVO deliveryAddress;</span>
+
+    /**
+     * Order total breakdown.
+     */
+    @Embedded
+<span class="fc" id="L84">    private OrderTotalVO orderTotal;</span>
+
+    /**
+     * Payment method used.
+     */
+    @Enumerated(EnumType.STRING)
+<span class="fc" id="L90">    private PaymentMethod paymentMethod;</span>
+
+    /**
+     * Payment status.
+     */
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+<span class="fc" id="L97">    private PaymentStatus paymentStatus = PaymentStatus.PENDING;</span>
+
+    /**
+     * Payment gateway transaction ID.
+     */
+<span class="nc" id="L102">    private String paymentTransactionId;</span>
+
+    /**
+     * Payment gateway order ID.
+     */
+<span class="nc" id="L107">    private String paymentGatewayOrderId;</span>
+
+    /**
+     * Order timeline/history.
+     */
+    @ElementCollection
+    @CollectionTable(name = &quot;order_timeline&quot;, joinColumns = @JoinColumn(name = &quot;order_id&quot;))
+    @OrderBy(&quot;timestamp DESC&quot;)
+    @Builder.Default
+<span class="fc" id="L116">    private List&lt;OrderTimelineEntryVO&gt; timeline = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Special instructions for the entire order.
+     */
+    @Column(length = 1000)
+<span class="fc" id="L122">    private String specialInstructions;</span>
+
+    /**
+     * Delivery instructions.
+     */
+    @Column(length = 500)
+<span class="fc" id="L128">    private String deliveryInstructions;</span>
+
+    /**
+     * Scheduled delivery time (null for ASAP).
+     */
+<span class="fc" id="L133">    private Instant scheduledDeliveryTime;</span>
+
+    /**
+     * Estimated delivery time.
+     */
+<span class="fc" id="L138">    private Instant estimatedDeliveryTime;</span>
+
+    /**
+     * Actual delivery time.
+     */
+<span class="fc" id="L143">    private Instant actualDeliveryTime;</span>
+
+    /**
+     * Assigned rider ID.
+     */
+<span class="fc" id="L148">    private String riderId;</span>
+
+    /**
+     * Rider name.
+     */
+<span class="fc" id="L153">    private String riderName;</span>
+
+    /**
+     * Rider phone number.
+     */
+<span class="fc" id="L158">    private String riderPhone;</span>
+
+    /**
+     * Diet plan ID if this order is part of a diet plan.
+     */
+<span class="fc" id="L163">    private String dietPlanId;</span>
+
+    /**
+     * Party plan ID if this order is for a party/event.
+     */
+<span class="fc" id="L168">    private String partyPlanId;</span>
+
+    /**
+     * AI chat session ID if ordered via AI chat.
+     */
+<span class="nc" id="L173">    private String chatSessionId;</span>
+
+    /**
+     * Reference to original order if this is a reorder.
+     */
+<span class="nc" id="L178">    private String reorderFromOrderId;</span>
+
+    /**
+     * Cancellation reason if cancelled.
+     */
+    @Column(length = 500)
+<span class="fc" id="L184">    private String cancellationReason;</span>
+
+    /**
+     * Who initiated cancellation.
+     */
+<span class="fc" id="L189">    private String cancelledBy;</span>
+
+    /**
+     * Loyalty points earned for this order.
+     */
+<span class="fc" id="L194">    private Integer loyaltyPointsEarned;</span>
+
+    /**
+     * Loyalty points redeemed for this order.
+     */
+<span class="nc" id="L199">    private Integer loyaltyPointsRedeemed;</span>
+
+    /**
+     * Customer rating for this order (1-5).
+     */
+<span class="fc" id="L204">    private Integer customerRating;</span>
+
+    /**
+     * Customer review/feedback.
+     */
+    @Column(length = 1000)
+<span class="fc" id="L210">    private String customerReview;</span>
+
+    /**
+     * Whether the order has been reviewed.
+     */
+    @Builder.Default
+<span class="fc" id="L216">    private Boolean reviewed = false;</span>
+
+    /**
+     * Soft delete flag.
+     */
+    @Builder.Default
+<span class="pc" id="L222">    private Boolean deleted = false;</span>
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+<span class="fc" id="L226">    private Instant createdAt;</span>
+
+    @LastModifiedDate
+<span class="fc" id="L229">    private Instant updatedAt;</span>
+
+    @PrePersist
+    protected void onCreate() {
+<span class="nc bnc" id="L233" title="All 2 branches missed.">        if (createdAt == null) {</span>
+<span class="nc" id="L234">            createdAt = Instant.now();</span>
+        }
+<span class="nc" id="L236">        updatedAt = Instant.now();</span>
+<span class="nc" id="L237">        addTimelineEntry(OrderStatus.CREATED, &quot;Order created&quot;, &quot;SYSTEM&quot;);</span>
+<span class="nc" id="L238">    }</span>
+
+    @PreUpdate
+    protected void onUpdate() {
+<span class="nc" id="L242">        updatedAt = Instant.now();</span>
+<span class="nc" id="L243">    }</span>
+
+    /**
+     * Adds an item to the order.
+     *
+     * @param item the order item to add
+     */
+    public void addItem(OrderItem item) {
+<span class="fc" id="L251">        items.add(item);</span>
+<span class="fc" id="L252">        item.setOrder(this);</span>
+<span class="fc" id="L253">    }</span>
+
+    /**
+     * Removes an item from the order.
+     *
+     * @param item the order item to remove
+     */
+    public void removeItem(OrderItem item) {
+<span class="fc" id="L261">        items.remove(item);</span>
+<span class="fc" id="L262">        item.setOrder(null);</span>
+<span class="fc" id="L263">    }</span>
+
+    /**
+     * Adds a timeline entry.
+     *
+     * @param status the order status
+     * @param description description of the status change
+     * @param updatedBy who made the change
+     */
+    public void addTimelineEntry(OrderStatus status, String description, String updatedBy) {
+<span class="fc" id="L273">        OrderTimelineEntryVO entry = OrderTimelineEntryVO.builder()</span>
+<span class="fc" id="L274">            .status(status)</span>
+<span class="fc" id="L275">            .description(description)</span>
+<span class="fc" id="L276">            .timestamp(Instant.now())</span>
+<span class="fc" id="L277">            .updatedBy(updatedBy)</span>
+<span class="fc" id="L278">            .build();</span>
+<span class="fc" id="L279">        timeline.add(entry);</span>
+<span class="fc" id="L280">    }</span>
+
+    /**
+     * Updates the order status and adds a timeline entry.
+     *
+     * @param newStatus the new status
+     * @param description description of the status change
+     * @param updatedBy who made the change
+     */
+    public void updateStatus(OrderStatus newStatus, String description, String updatedBy) {
+<span class="fc" id="L290">        this.status = newStatus;</span>
+<span class="fc" id="L291">        addTimelineEntry(newStatus, description, updatedBy);</span>
+<span class="fc" id="L292">    }</span>
+
+    /**
+     * Confirms the order after payment.
+     */
+    public void confirm() {
+<span class="fc bfc" id="L298" title="All 2 branches covered.">        if (this.status != OrderStatus.CREATED) {</span>
+<span class="fc" id="L299">            throw new IllegalStateException(&quot;Can only confirm orders in CREATED status&quot;);</span>
+        }
+<span class="fc" id="L301">        this.status = OrderStatus.CONFIRMED;</span>
+<span class="fc" id="L302">        addTimelineEntry(OrderStatus.CONFIRMED, &quot;Order confirmed&quot;, &quot;SYSTEM&quot;);</span>
+<span class="fc" id="L303">    }</span>
+
+    /**
+     * Marks order as preparing.
+     *
+     * @param restaurantId the restaurant that started preparation
+     */
+    public void startPreparing(String restaurantId) {
+<span class="pc bpc" id="L311" title="1 of 2 branches missed.">        if (this.status != OrderStatus.CONFIRMED) {</span>
+<span class="nc" id="L312">            throw new IllegalStateException(&quot;Can only start preparing orders in CONFIRMED status&quot;);</span>
+        }
+<span class="fc" id="L314">        this.status = OrderStatus.PREPARING;</span>
+<span class="fc" id="L315">        addTimelineEntry(OrderStatus.PREPARING, &quot;Restaurant started preparation&quot;, restaurantId);</span>
+<span class="fc" id="L316">    }</span>
+
+    /**
+     * Marks order as ready for pickup.
+     *
+     * @param restaurantId the restaurant that prepared the order
+     */
+    public void markReady(String restaurantId) {
+<span class="pc bpc" id="L324" title="1 of 2 branches missed.">        if (this.status != OrderStatus.PREPARING) {</span>
+<span class="nc" id="L325">            throw new IllegalStateException(&quot;Can only mark ready orders in PREPARING status&quot;);</span>
+        }
+<span class="fc" id="L327">        this.status = OrderStatus.READY;</span>
+<span class="fc" id="L328">        addTimelineEntry(OrderStatus.READY, &quot;Order ready for pickup&quot;, restaurantId);</span>
+<span class="fc" id="L329">    }</span>
+
+    /**
+     * Marks order as picked up by rider.
+     *
+     * @param riderId the rider who picked up the order
+     * @param riderName rider's name
+     * @param riderPhone rider's phone
+     */
+    public void markPickedUp(String riderId, String riderName, String riderPhone) {
+<span class="pc bpc" id="L339" title="1 of 2 branches missed.">        if (this.status != OrderStatus.READY) {</span>
+<span class="nc" id="L340">            throw new IllegalStateException(&quot;Can only pick up orders in READY status&quot;);</span>
+        }
+<span class="fc" id="L342">        this.riderId = riderId;</span>
+<span class="fc" id="L343">        this.riderName = riderName;</span>
+<span class="fc" id="L344">        this.riderPhone = riderPhone;</span>
+<span class="fc" id="L345">        this.status = OrderStatus.PICKED_UP;</span>
+<span class="fc" id="L346">        addTimelineEntry(OrderStatus.PICKED_UP, &quot;Order picked up by &quot; + riderName, riderId);</span>
+<span class="fc" id="L347">    }</span>
+
+    /**
+     * Marks order as in transit.
+     */
+    public void markInTransit() {
+<span class="pc bpc" id="L353" title="1 of 2 branches missed.">        if (this.status != OrderStatus.PICKED_UP) {</span>
+<span class="nc" id="L354">            throw new IllegalStateException(&quot;Can only mark in transit orders in PICKED_UP status&quot;);</span>
+        }
+<span class="fc" id="L356">        this.status = OrderStatus.IN_TRANSIT;</span>
+<span class="fc" id="L357">        addTimelineEntry(OrderStatus.IN_TRANSIT, &quot;Order is on the way&quot;, riderId);</span>
+<span class="fc" id="L358">    }</span>
+
+    /**
+     * Marks order as delivered.
+     */
+    public void markDelivered() {
+<span class="pc bpc" id="L364" title="3 of 4 branches missed.">        if (this.status != OrderStatus.IN_TRANSIT &amp;&amp; this.status != OrderStatus.PICKED_UP) {</span>
+<span class="nc" id="L365">            throw new IllegalStateException(&quot;Can only deliver orders in IN_TRANSIT or PICKED_UP status&quot;);</span>
+        }
+<span class="fc" id="L367">        this.status = OrderStatus.DELIVERED;</span>
+<span class="fc" id="L368">        this.actualDeliveryTime = Instant.now();</span>
+<span class="pc bpc" id="L369" title="1 of 2 branches missed.">        addTimelineEntry(OrderStatus.DELIVERED, &quot;Order delivered&quot;, riderId != null ? riderId : &quot;SYSTEM&quot;);</span>
+<span class="fc" id="L370">    }</span>
+
+    /**
+     * Cancels the order.
+     *
+     * @param reason cancellation reason
+     * @param cancelledBy who cancelled the order
+     */
+    public void cancel(String reason, String cancelledBy) {
+<span class="pc bpc" id="L379" title="1 of 4 branches missed.">        if (this.status == OrderStatus.DELIVERED || this.status == OrderStatus.CANCELLED) {</span>
+<span class="fc" id="L380">            throw new IllegalStateException(&quot;Cannot cancel delivered or already cancelled orders&quot;);</span>
+        }
+<span class="fc" id="L382">        this.status = OrderStatus.CANCELLED;</span>
+<span class="fc" id="L383">        this.cancellationReason = reason;</span>
+<span class="fc" id="L384">        this.cancelledBy = cancelledBy;</span>
+<span class="fc" id="L385">        addTimelineEntry(OrderStatus.CANCELLED, &quot;Order cancelled: &quot; + reason, cancelledBy);</span>
+<span class="fc" id="L386">    }</span>
+
+    /**
+     * Checks if the order can be cancelled.
+     *
+     * @return true if the order can be cancelled
+     */
+    public boolean canCancel() {
+<span class="pc bpc" id="L394" title="1 of 6 branches missed.">        return this.status != OrderStatus.DELIVERED </span>
+            &amp;&amp; this.status != OrderStatus.CANCELLED
+            &amp;&amp; this.status != OrderStatus.RETURNED;
+    }
+
+    /**
+     * Checks if the order can be refunded.
+     *
+     * @return true if the order can be refunded
+     */
+    public boolean canRefund() {
+<span class="pc bpc" id="L405" title="5 of 8 branches missed.">        return this.paymentStatus == PaymentStatus.SUCCESS</span>
+            &amp;&amp; (this.status == OrderStatus.CANCELLED 
+                || this.status == OrderStatus.DELIVERED
+                || this.status == OrderStatus.DELIVERY_FAILED);
+    }
+
+    /**
+     * Calculates the total from items and updates orderTotal.
+     */
+    public void calculateTotal() {
+<span class="pc bpc" id="L415" title="1 of 2 branches missed.">        if (orderTotal == null) {</span>
+<span class="fc" id="L416">            orderTotal = new OrderTotalVO();</span>
+        }
+        
+<span class="fc" id="L419">        BigDecimal subtotal = items.stream()</span>
+<span class="fc" id="L420">            .map(OrderItem::getTotalPrice)</span>
+<span class="fc" id="L421">            .reduce(BigDecimal.ZERO, BigDecimal::add);</span>
+        
+<span class="fc" id="L423">        orderTotal.setSubtotal(subtotal);</span>
+<span class="fc" id="L424">        orderTotal.calculateTotal();</span>
+<span class="fc" id="L425">    }</span>
+
+    /**
+     * Gets distinct restaurant IDs in this order.
+     *
+     * @return list of restaurant IDs
+     */
+    public List&lt;String&gt; getRestaurantIds() {
+<span class="fc" id="L433">        return items.stream()</span>
+<span class="fc" id="L434">            .map(OrderItem::getRestaurantId)</span>
+<span class="fc" id="L435">            .distinct()</span>
+<span class="fc" id="L436">            .toList();</span>
+    }
+
+    /**
+     * Checks if this is a multi-restaurant order.
+     *
+     * @return true if order contains items from multiple restaurants
+     */
+    public boolean isMultiRestaurantOrder() {
+<span class="fc bfc" id="L445" title="All 2 branches covered.">        return getRestaurantIds().size() &gt; 1;</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

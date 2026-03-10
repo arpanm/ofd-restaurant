@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OwnerDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Restaurant Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.restaurant.dto.request</a> &gt; <span class="el_source">OwnerDTO.java</span></div><h1>OwnerDTO.java</h1><pre class="source lang-java linenums">package com.foodai.restaurant.dto.request;
+
+import com.foodai.restaurant.domain.model.OwnerRole;
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * DTO for restaurant owner information.
+ */
+<span class="pc bnc" id="L13" title="All 62 branches missed.">@Data</span>
+<span class="pc" id="L14">@Builder</span>
+<span class="fc" id="L15">@NoArgsConstructor</span>
+<span class="fc" id="L16">@AllArgsConstructor</span>
+public class OwnerDTO {
+    
+<span class="fc" id="L19">    private String ownerId;</span>
+    
+    @NotBlank(message = &quot;Owner name is required&quot;)
+    @Size(min = 2, max = 100, message = &quot;Owner name must be between 2 and 100 characters&quot;)
+<span class="fc" id="L23">    private String ownerName;</span>
+    
+    @NotBlank(message = &quot;Owner email is required&quot;)
+    @Email(message = &quot;Invalid email format&quot;)
+<span class="fc" id="L27">    private String ownerEmail;</span>
+    
+    @NotBlank(message = &quot;Owner phone is required&quot;)
+    @Pattern(regexp = &quot;^[6-9]\\d{9}$&quot;, message = &quot;Phone must be a valid 10-digit Indian mobile number&quot;)
+<span class="fc" id="L31">    private String ownerPhone;</span>
+    
+    @NotNull(message = &quot;Ownership percentage is required&quot;)
+    @Min(value = 0, message = &quot;Ownership percentage must be at least 0&quot;)
+    @Max(value = 100, message = &quot;Ownership percentage cannot exceed 100&quot;)
+<span class="fc" id="L36">    private Double ownershipPercentage;</span>
+    
+    @NotNull(message = &quot;Owner role is required&quot;)
+<span class="fc" id="L39">    private OwnerRole role;</span>
+    
+    @NotNull(message = &quot;Primary contact flag is required&quot;)
+<span class="fc" id="L42">    private Boolean isPrimaryContact;</span>
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

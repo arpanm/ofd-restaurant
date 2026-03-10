@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OrderController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Order Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.order.controller</a> &gt; <span class="el_source">OrderController.java</span></div><h1>OrderController.java</h1><pre class="source lang-java linenums">package com.foodai.order.controller;
+
+import com.foodai.order.domain.model.OrderStatus;
+import com.foodai.order.dto.request.*;
+import com.foodai.order.dto.response.ApiResponse;
+import com.foodai.order.dto.response.OrderResponse;
+import com.foodai.order.service.OrderService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * REST controller for order operations.
+ *
+ * @author FoodAI Team
+ */
+@RestController
+@RequestMapping(&quot;/api/v1/orders&quot;)
+<span class="fc" id="L32">@RequiredArgsConstructor</span>
+<span class="fc" id="L33">@Slf4j</span>
+@Tag(name = &quot;Order Management&quot;, description = &quot;APIs for managing orders&quot;)
+public class OrderController {
+
+    private final OrderService orderService;
+
+    /**
+     * Creates a new order.
+     */
+    @PostMapping
+    @Operation(summary = &quot;Create Order&quot;, description = &quot;Creates a new order from the user's cart&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;201&quot;, description = &quot;Order created successfully&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid request&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;OrderResponse&gt;&gt; createOrder(
+            @Valid @RequestBody CreateOrderRequest request) {
+<span class="fc" id="L50">        log.info(&quot;Request to create order for user: {}&quot;, request.getUserId());</span>
+<span class="fc" id="L51">        OrderResponse response = orderService.createOrder(request);</span>
+<span class="fc" id="L52">        return ResponseEntity</span>
+<span class="fc" id="L53">            .status(HttpStatus.CREATED)</span>
+<span class="fc" id="L54">            .body(ApiResponse.success(&quot;Order created successfully&quot;, response));</span>
+    }
+
+    /**
+     * Gets an order by ID.
+     */
+    @GetMapping(&quot;/{orderId}&quot;)
+    @Operation(summary = &quot;Get Order&quot;, description = &quot;Gets an order by its ID&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Order found&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Order not found&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;OrderResponse&gt;&gt; getOrder(
+            @Parameter(description = &quot;Order ID&quot;) @PathVariable String orderId) {
+<span class="fc" id="L68">        log.info(&quot;Request to get order: {}&quot;, orderId);</span>
+<span class="fc" id="L69">        OrderResponse response = orderService.getOrder(orderId);</span>
+<span class="fc" id="L70">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Gets an order by order number.
+     */
+    @GetMapping(&quot;/number/{orderNumber}&quot;)
+    @Operation(summary = &quot;Get Order by Number&quot;, description = &quot;Gets an order by its order number&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Order found&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Order not found&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;OrderResponse&gt;&gt; getOrderByNumber(
+            @Parameter(description = &quot;Order Number&quot;) @PathVariable String orderNumber) {
+<span class="fc" id="L84">        log.info(&quot;Request to get order by number: {}&quot;, orderNumber);</span>
+<span class="fc" id="L85">        OrderResponse response = orderService.getOrderByNumber(orderNumber);</span>
+<span class="fc" id="L86">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Gets orders for a user.
+     */
+    @GetMapping(&quot;/user/{userId}&quot;)
+    @Operation(summary = &quot;Get User Orders&quot;, description = &quot;Gets all orders for a user with pagination&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;Page&lt;OrderResponse&gt;&gt;&gt; getUserOrders(
+            @Parameter(description = &quot;User ID&quot;) @PathVariable String userId,
+            @Parameter(description = &quot;Page number&quot;) @RequestParam(defaultValue = &quot;0&quot;) int page,
+            @Parameter(description = &quot;Page size&quot;) @RequestParam(defaultValue = &quot;20&quot;) int size) {
+<span class="fc" id="L98">        log.info(&quot;Request to get orders for user: {}&quot;, userId);</span>
+<span class="fc" id="L99">        Pageable pageable = PageRequest.of(page, size, Sort.by(&quot;createdAt&quot;).descending());</span>
+<span class="fc" id="L100">        Page&lt;OrderResponse&gt; response = orderService.getUserOrders(userId, pageable);</span>
+<span class="fc" id="L101">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Gets active orders for a user.
+     */
+    @GetMapping(&quot;/user/{userId}/active&quot;)
+    @Operation(summary = &quot;Get Active Orders&quot;, description = &quot;Gets all active (non-completed) orders for a user&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;List&lt;OrderResponse&gt;&gt;&gt; getActiveOrders(
+            @Parameter(description = &quot;User ID&quot;) @PathVariable String userId) {
+<span class="fc" id="L111">        log.info(&quot;Request to get active orders for user: {}&quot;, userId);</span>
+<span class="fc" id="L112">        List&lt;OrderResponse&gt; response = orderService.getActiveOrders(userId);</span>
+<span class="fc" id="L113">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Gets past orders for a user.
+     */
+    @GetMapping(&quot;/user/{userId}/past&quot;)
+    @Operation(summary = &quot;Get Past Orders&quot;, description = &quot;Gets all past (completed) orders for a user&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;Page&lt;OrderResponse&gt;&gt;&gt; getPastOrders(
+            @Parameter(description = &quot;User ID&quot;) @PathVariable String userId,
+            @Parameter(description = &quot;Page number&quot;) @RequestParam(defaultValue = &quot;0&quot;) int page,
+            @Parameter(description = &quot;Page size&quot;) @RequestParam(defaultValue = &quot;20&quot;) int size) {
+<span class="nc" id="L125">        log.info(&quot;Request to get past orders for user: {}&quot;, userId);</span>
+<span class="nc" id="L126">        Pageable pageable = PageRequest.of(page, size, Sort.by(&quot;createdAt&quot;).descending());</span>
+<span class="nc" id="L127">        Page&lt;OrderResponse&gt; response = orderService.getPastOrders(userId, pageable);</span>
+<span class="nc" id="L128">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Gets orders for a restaurant.
+     */
+    @GetMapping(&quot;/restaurant/{restaurantId}&quot;)
+    @Operation(summary = &quot;Get Restaurant Orders&quot;, description = &quot;Gets all orders for a restaurant&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;Page&lt;OrderResponse&gt;&gt;&gt; getRestaurantOrders(
+            @Parameter(description = &quot;Restaurant ID&quot;) @PathVariable String restaurantId,
+            @Parameter(description = &quot;Status filter&quot;) @RequestParam(required = false) OrderStatus status,
+            @Parameter(description = &quot;Page number&quot;) @RequestParam(defaultValue = &quot;0&quot;) int page,
+            @Parameter(description = &quot;Page size&quot;) @RequestParam(defaultValue = &quot;20&quot;) int size) {
+<span class="nc" id="L141">        log.info(&quot;Request to get orders for restaurant: {}&quot;, restaurantId);</span>
+<span class="nc" id="L142">        Pageable pageable = PageRequest.of(page, size, Sort.by(&quot;createdAt&quot;).descending());</span>
+<span class="nc" id="L143">        Page&lt;OrderResponse&gt; response = orderService.getRestaurantOrders(restaurantId, status, pageable);</span>
+<span class="nc" id="L144">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Updates order status.
+     */
+    @PatchMapping(&quot;/{orderId}/status&quot;)
+    @Operation(summary = &quot;Update Order Status&quot;, description = &quot;Updates the status of an order&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Status updated successfully&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Order not found&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;409&quot;, description = &quot;Invalid status transition&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;OrderResponse&gt;&gt; updateOrderStatus(
+            @Parameter(description = &quot;Order ID&quot;) @PathVariable String orderId,
+            @Valid @RequestBody UpdateOrderStatusRequest request) {
+<span class="fc" id="L160">        log.info(&quot;Request to update order {} status to {}&quot;, orderId, request.getStatus());</span>
+<span class="fc" id="L161">        OrderResponse response = orderService.updateOrderStatus(orderId, request);</span>
+<span class="fc" id="L162">        return ResponseEntity.ok(ApiResponse.success(&quot;Order status updated&quot;, response));</span>
+    }
+
+    /**
+     * Cancels an order.
+     */
+    @PostMapping(&quot;/{orderId}/cancel&quot;)
+    @Operation(summary = &quot;Cancel Order&quot;, description = &quot;Cancels an order&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Order cancelled successfully&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Order not found&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;409&quot;, description = &quot;Cannot cancel order&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;OrderResponse&gt;&gt; cancelOrder(
+            @Parameter(description = &quot;Order ID&quot;) @PathVariable String orderId,
+            @Valid @RequestBody CancelOrderRequest request) {
+<span class="fc" id="L178">        log.info(&quot;Request to cancel order: {}&quot;, orderId);</span>
+<span class="fc" id="L179">        OrderResponse response = orderService.cancelOrder(orderId, request);</span>
+<span class="fc" id="L180">        return ResponseEntity.ok(ApiResponse.success(&quot;Order cancelled&quot;, response));</span>
+    }
+
+    /**
+     * Assigns a rider to an order.
+     */
+    @PostMapping(&quot;/{orderId}/assign-rider&quot;)
+    @Operation(summary = &quot;Assign Rider&quot;, description = &quot;Assigns a delivery rider to an order&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Rider assigned successfully&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Order not found&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;409&quot;, description = &quot;Cannot assign rider&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;OrderResponse&gt;&gt; assignRider(
+            @Parameter(description = &quot;Order ID&quot;) @PathVariable String orderId,
+            @Valid @RequestBody AssignRiderRequest request) {
+<span class="fc" id="L196">        log.info(&quot;Request to assign rider {} to order {}&quot;, request.getRiderId(), orderId);</span>
+<span class="fc" id="L197">        OrderResponse response = orderService.assignRider(orderId, request);</span>
+<span class="fc" id="L198">        return ResponseEntity.ok(ApiResponse.success(&quot;Rider assigned&quot;, response));</span>
+    }
+
+    /**
+     * Rates an order.
+     */
+    @PostMapping(&quot;/{orderId}/rate&quot;)
+    @Operation(summary = &quot;Rate Order&quot;, description = &quot;Rates a delivered order&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Order rated successfully&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Order not found&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;409&quot;, description = &quot;Cannot rate order&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;OrderResponse&gt;&gt; rateOrder(
+            @Parameter(description = &quot;Order ID&quot;) @PathVariable String orderId,
+            @Valid @RequestBody RateOrderRequest request) {
+<span class="fc" id="L214">        log.info(&quot;Request to rate order {}: {}&quot;, orderId, request.getRating());</span>
+<span class="fc" id="L215">        OrderResponse response = orderService.rateOrder(orderId, request);</span>
+<span class="fc" id="L216">        return ResponseEntity.ok(ApiResponse.success(&quot;Order rated&quot;, response));</span>
+    }
+
+    /**
+     * Reorders from a previous order.
+     */
+    @PostMapping(&quot;/{orderId}/reorder&quot;)
+    @Operation(summary = &quot;Reorder&quot;, description = &quot;Creates a new cart with items from a previous order&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Reorder created successfully&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Order not found&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;OrderResponse&gt;&gt; reorder(
+            @Parameter(description = &quot;Original Order ID&quot;) @PathVariable String orderId,
+            @Parameter(description = &quot;User ID&quot;) @RequestParam String userId) {
+<span class="fc" id="L231">        log.info(&quot;Request to reorder from order {} for user {}&quot;, orderId, userId);</span>
+<span class="fc" id="L232">        OrderResponse response = orderService.reorder(orderId, userId);</span>
+<span class="fc" id="L233">        return ResponseEntity.ok(ApiResponse.success(&quot;Items added to cart from previous order&quot;, response));</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

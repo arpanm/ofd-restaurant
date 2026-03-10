@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OrderMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Order Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.order.mapper</a> &gt; <span class="el_source">OrderMapperImpl.java</span></div><h1>OrderMapperImpl.java</h1><pre class="source lang-java linenums">package com.foodai.order.mapper;
+
+import com.foodai.order.domain.model.CartItem;
+import com.foodai.order.domain.model.CartItemCustomization;
+import com.foodai.order.domain.model.DeliveryAddressVO;
+import com.foodai.order.domain.model.Order;
+import com.foodai.order.domain.model.OrderItem;
+import com.foodai.order.domain.model.OrderItemCustomizationVO;
+import com.foodai.order.domain.model.OrderItemStatus;
+import com.foodai.order.domain.model.OrderTimelineEntryVO;
+import com.foodai.order.domain.model.OrderTotalVO;
+import com.foodai.order.dto.request.DeliveryAddressDTO;
+import com.foodai.order.dto.response.DeliveryAddressResponse;
+import com.foodai.order.dto.response.OrderItemCustomizationResponse;
+import com.foodai.order.dto.response.OrderItemResponse;
+import com.foodai.order.dto.response.OrderResponse;
+import com.foodai.order.dto.response.OrderTimelineEntryResponse;
+import com.foodai.order.dto.response.OrderTotalResponse;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2025-12-15T18:17:43+0530&quot;,
+    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 21.0.6 (Eclipse Adoptium)&quot;
+)
+@Component
+<span class="fc" id="L30">public class OrderMapperImpl implements OrderMapper {</span>
+
+    @Override
+    public OrderResponse toResponse(Order order) {
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        if ( order == null ) {</span>
+<span class="fc" id="L35">            return null;</span>
+        }
+
+<span class="fc" id="L38">        OrderResponse.OrderResponseBuilder orderResponse = OrderResponse.builder();</span>
+
+<span class="fc" id="L40">        orderResponse.id( order.getId() );</span>
+<span class="fc" id="L41">        orderResponse.orderNumber( order.getOrderNumber() );</span>
+<span class="fc" id="L42">        orderResponse.userId( order.getUserId() );</span>
+<span class="fc" id="L43">        orderResponse.orderType( order.getOrderType() );</span>
+<span class="fc" id="L44">        orderResponse.status( order.getStatus() );</span>
+<span class="fc" id="L45">        orderResponse.items( toItemResponseList( order.getItems() ) );</span>
+<span class="fc" id="L46">        orderResponse.deliveryAddress( toAddressResponse( order.getDeliveryAddress() ) );</span>
+<span class="fc" id="L47">        orderResponse.orderTotal( toTotalResponse( order.getOrderTotal() ) );</span>
+<span class="fc" id="L48">        orderResponse.paymentMethod( order.getPaymentMethod() );</span>
+<span class="fc" id="L49">        orderResponse.paymentStatus( order.getPaymentStatus() );</span>
+<span class="fc" id="L50">        orderResponse.timeline( toTimelineResponseList( order.getTimeline() ) );</span>
+<span class="fc" id="L51">        orderResponse.specialInstructions( order.getSpecialInstructions() );</span>
+<span class="fc" id="L52">        orderResponse.deliveryInstructions( order.getDeliveryInstructions() );</span>
+<span class="fc" id="L53">        orderResponse.scheduledDeliveryTime( order.getScheduledDeliveryTime() );</span>
+<span class="fc" id="L54">        orderResponse.estimatedDeliveryTime( order.getEstimatedDeliveryTime() );</span>
+<span class="fc" id="L55">        orderResponse.actualDeliveryTime( order.getActualDeliveryTime() );</span>
+<span class="fc" id="L56">        orderResponse.riderId( order.getRiderId() );</span>
+<span class="fc" id="L57">        orderResponse.riderName( order.getRiderName() );</span>
+<span class="fc" id="L58">        orderResponse.riderPhone( order.getRiderPhone() );</span>
+<span class="fc" id="L59">        orderResponse.dietPlanId( order.getDietPlanId() );</span>
+<span class="fc" id="L60">        orderResponse.partyPlanId( order.getPartyPlanId() );</span>
+<span class="fc" id="L61">        orderResponse.cancellationReason( order.getCancellationReason() );</span>
+<span class="fc" id="L62">        orderResponse.loyaltyPointsEarned( order.getLoyaltyPointsEarned() );</span>
+<span class="fc" id="L63">        orderResponse.customerRating( order.getCustomerRating() );</span>
+<span class="fc" id="L64">        orderResponse.customerReview( order.getCustomerReview() );</span>
+<span class="fc" id="L65">        orderResponse.reviewed( order.getReviewed() );</span>
+<span class="fc" id="L66">        orderResponse.createdAt( order.getCreatedAt() );</span>
+<span class="fc" id="L67">        orderResponse.updatedAt( order.getUpdatedAt() );</span>
+
+<span class="fc" id="L69">        orderResponse.restaurantIds( order.getRestaurantIds() );</span>
+<span class="fc" id="L70">        orderResponse.isMultiRestaurantOrder( order.isMultiRestaurantOrder() );</span>
+<span class="fc" id="L71">        orderResponse.canCancel( order.canCancel() );</span>
+<span class="fc" id="L72">        orderResponse.canRefund( order.canRefund() );</span>
+
+<span class="fc" id="L74">        return orderResponse.build();</span>
+    }
+
+    @Override
+    public List&lt;OrderResponse&gt; toResponseList(List&lt;Order&gt; orders) {
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        if ( orders == null ) {</span>
+<span class="fc" id="L80">            return null;</span>
+        }
+
+<span class="fc" id="L83">        List&lt;OrderResponse&gt; list = new ArrayList&lt;OrderResponse&gt;( orders.size() );</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        for ( Order order : orders ) {</span>
+<span class="fc" id="L85">            list.add( toResponse( order ) );</span>
+<span class="fc" id="L86">        }</span>
+
+<span class="fc" id="L88">        return list;</span>
+    }
+
+    @Override
+    public OrderItemResponse toItemResponse(OrderItem item) {
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        if ( item == null ) {</span>
+<span class="fc" id="L94">            return null;</span>
+        }
+
+<span class="fc" id="L97">        OrderItemResponse.OrderItemResponseBuilder orderItemResponse = OrderItemResponse.builder();</span>
+
+<span class="fc" id="L99">        orderItemResponse.id( item.getId() );</span>
+<span class="fc" id="L100">        orderItemResponse.menuItemId( item.getMenuItemId() );</span>
+<span class="fc" id="L101">        orderItemResponse.name( item.getName() );</span>
+<span class="fc" id="L102">        orderItemResponse.description( item.getDescription() );</span>
+<span class="fc" id="L103">        orderItemResponse.restaurantId( item.getRestaurantId() );</span>
+<span class="fc" id="L104">        orderItemResponse.restaurantName( item.getRestaurantName() );</span>
+<span class="fc" id="L105">        orderItemResponse.imageUrl( item.getImageUrl() );</span>
+<span class="fc" id="L106">        orderItemResponse.unitPrice( item.getUnitPrice() );</span>
+<span class="fc" id="L107">        orderItemResponse.quantity( item.getQuantity() );</span>
+<span class="fc" id="L108">        orderItemResponse.totalPrice( item.getTotalPrice() );</span>
+<span class="fc" id="L109">        orderItemResponse.customizations( orderItemCustomizationVOListToOrderItemCustomizationResponseList( item.getCustomizations() ) );</span>
+<span class="fc" id="L110">        orderItemResponse.specialInstructions( item.getSpecialInstructions() );</span>
+<span class="fc" id="L111">        orderItemResponse.vegetarian( item.getVegetarian() );</span>
+<span class="fc" id="L112">        orderItemResponse.spiceLevel( item.getSpiceLevel() );</span>
+<span class="fc" id="L113">        orderItemResponse.itemStatus( item.getItemStatus() );</span>
+
+<span class="fc" id="L115">        return orderItemResponse.build();</span>
+    }
+
+    @Override
+    public List&lt;OrderItemResponse&gt; toItemResponseList(List&lt;OrderItem&gt; items) {
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        if ( items == null ) {</span>
+<span class="fc" id="L121">            return null;</span>
+        }
+
+<span class="fc" id="L124">        List&lt;OrderItemResponse&gt; list = new ArrayList&lt;OrderItemResponse&gt;( items.size() );</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        for ( OrderItem orderItem : items ) {</span>
+<span class="fc" id="L126">            list.add( toItemResponse( orderItem ) );</span>
+<span class="fc" id="L127">        }</span>
+
+<span class="fc" id="L129">        return list;</span>
+    }
+
+    @Override
+    public OrderItemCustomizationResponse toCustomizationResponse(OrderItemCustomizationVO vo) {
+<span class="pc bpc" id="L134" title="1 of 2 branches missed.">        if ( vo == null ) {</span>
+<span class="nc" id="L135">            return null;</span>
+        }
+
+<span class="fc" id="L138">        OrderItemCustomizationResponse.OrderItemCustomizationResponseBuilder orderItemCustomizationResponse = OrderItemCustomizationResponse.builder();</span>
+
+<span class="fc" id="L140">        orderItemCustomizationResponse.customizationId( vo.getCustomizationId() );</span>
+<span class="fc" id="L141">        orderItemCustomizationResponse.customizationName( vo.getCustomizationName() );</span>
+<span class="fc" id="L142">        orderItemCustomizationResponse.optionId( vo.getOptionId() );</span>
+<span class="fc" id="L143">        orderItemCustomizationResponse.optionName( vo.getOptionName() );</span>
+<span class="fc" id="L144">        orderItemCustomizationResponse.additionalCost( vo.getAdditionalCost() );</span>
+
+<span class="fc" id="L146">        return orderItemCustomizationResponse.build();</span>
+    }
+
+    @Override
+    public DeliveryAddressResponse toAddressResponse(DeliveryAddressVO address) {
+<span class="fc bfc" id="L151" title="All 2 branches covered.">        if ( address == null ) {</span>
+<span class="fc" id="L152">            return null;</span>
+        }
+
+<span class="fc" id="L155">        DeliveryAddressResponse.DeliveryAddressResponseBuilder deliveryAddressResponse = DeliveryAddressResponse.builder();</span>
+
+<span class="fc" id="L157">        deliveryAddressResponse.label( address.getLabel() );</span>
+<span class="fc" id="L158">        deliveryAddressResponse.recipientName( address.getRecipientName() );</span>
+<span class="fc" id="L159">        deliveryAddressResponse.contactPhone( address.getContactPhone() );</span>
+<span class="fc" id="L160">        deliveryAddressResponse.flatNumber( address.getFlatNumber() );</span>
+<span class="fc" id="L161">        deliveryAddressResponse.building( address.getBuilding() );</span>
+<span class="fc" id="L162">        deliveryAddressResponse.street( address.getStreet() );</span>
+<span class="fc" id="L163">        deliveryAddressResponse.landmark( address.getLandmark() );</span>
+<span class="fc" id="L164">        deliveryAddressResponse.area( address.getArea() );</span>
+<span class="fc" id="L165">        deliveryAddressResponse.city( address.getCity() );</span>
+<span class="fc" id="L166">        deliveryAddressResponse.state( address.getState() );</span>
+<span class="fc" id="L167">        deliveryAddressResponse.pincode( address.getPincode() );</span>
+<span class="fc" id="L168">        deliveryAddressResponse.latitude( address.getLatitude() );</span>
+<span class="fc" id="L169">        deliveryAddressResponse.longitude( address.getLongitude() );</span>
+<span class="fc" id="L170">        deliveryAddressResponse.deliveryInstructions( address.getDeliveryInstructions() );</span>
+
+<span class="fc" id="L172">        deliveryAddressResponse.fullAddress( address.getFullAddress() );</span>
+
+<span class="fc" id="L174">        return deliveryAddressResponse.build();</span>
+    }
+
+    @Override
+    public DeliveryAddressVO toAddressVO(DeliveryAddressDTO dto) {
+<span class="fc bfc" id="L179" title="All 2 branches covered.">        if ( dto == null ) {</span>
+<span class="fc" id="L180">            return null;</span>
+        }
+
+<span class="fc" id="L183">        DeliveryAddressVO.DeliveryAddressVOBuilder deliveryAddressVO = DeliveryAddressVO.builder();</span>
+
+<span class="fc" id="L185">        deliveryAddressVO.label( dto.getLabel() );</span>
+<span class="fc" id="L186">        deliveryAddressVO.recipientName( dto.getRecipientName() );</span>
+<span class="fc" id="L187">        deliveryAddressVO.contactPhone( dto.getContactPhone() );</span>
+<span class="fc" id="L188">        deliveryAddressVO.flatNumber( dto.getFlatNumber() );</span>
+<span class="fc" id="L189">        deliveryAddressVO.building( dto.getBuilding() );</span>
+<span class="fc" id="L190">        deliveryAddressVO.street( dto.getStreet() );</span>
+<span class="fc" id="L191">        deliveryAddressVO.landmark( dto.getLandmark() );</span>
+<span class="fc" id="L192">        deliveryAddressVO.area( dto.getArea() );</span>
+<span class="fc" id="L193">        deliveryAddressVO.city( dto.getCity() );</span>
+<span class="fc" id="L194">        deliveryAddressVO.state( dto.getState() );</span>
+<span class="fc" id="L195">        deliveryAddressVO.pincode( dto.getPincode() );</span>
+<span class="fc" id="L196">        deliveryAddressVO.latitude( dto.getLatitude() );</span>
+<span class="fc" id="L197">        deliveryAddressVO.longitude( dto.getLongitude() );</span>
+<span class="fc" id="L198">        deliveryAddressVO.deliveryInstructions( dto.getDeliveryInstructions() );</span>
+
+<span class="fc" id="L200">        return deliveryAddressVO.build();</span>
+    }
+
+    @Override
+    public OrderTotalResponse toTotalResponse(OrderTotalVO total) {
+<span class="fc bfc" id="L205" title="All 2 branches covered.">        if ( total == null ) {</span>
+<span class="fc" id="L206">            return null;</span>
+        }
+
+<span class="fc" id="L209">        OrderTotalResponse.OrderTotalResponseBuilder orderTotalResponse = OrderTotalResponse.builder();</span>
+
+<span class="fc" id="L211">        orderTotalResponse.subtotal( total.getSubtotal() );</span>
+<span class="fc" id="L212">        orderTotalResponse.deliveryFee( total.getDeliveryFee() );</span>
+<span class="fc" id="L213">        orderTotalResponse.platformFee( total.getPlatformFee() );</span>
+<span class="fc" id="L214">        orderTotalResponse.packagingCharges( total.getPackagingCharges() );</span>
+<span class="fc" id="L215">        orderTotalResponse.gst( total.getGst() );</span>
+<span class="fc" id="L216">        orderTotalResponse.gstPercentage( total.getGstPercentage() );</span>
+<span class="fc" id="L217">        orderTotalResponse.discount( total.getDiscount() );</span>
+<span class="fc" id="L218">        orderTotalResponse.couponCode( total.getCouponCode() );</span>
+<span class="fc" id="L219">        orderTotalResponse.loyaltyPointsValue( total.getLoyaltyPointsValue() );</span>
+<span class="fc" id="L220">        orderTotalResponse.tip( total.getTip() );</span>
+<span class="fc" id="L221">        orderTotalResponse.total( total.getTotal() );</span>
+<span class="fc" id="L222">        orderTotalResponse.currency( total.getCurrency() );</span>
+
+<span class="fc" id="L224">        return orderTotalResponse.build();</span>
+    }
+
+    @Override
+    public OrderTimelineEntryResponse toTimelineResponse(OrderTimelineEntryVO entry) {
+<span class="fc bfc" id="L229" title="All 2 branches covered.">        if ( entry == null ) {</span>
+<span class="fc" id="L230">            return null;</span>
+        }
+
+<span class="fc" id="L233">        OrderTimelineEntryResponse.OrderTimelineEntryResponseBuilder orderTimelineEntryResponse = OrderTimelineEntryResponse.builder();</span>
+
+<span class="fc" id="L235">        orderTimelineEntryResponse.status( entry.getStatus() );</span>
+<span class="fc" id="L236">        orderTimelineEntryResponse.description( entry.getDescription() );</span>
+<span class="fc" id="L237">        orderTimelineEntryResponse.timestamp( entry.getTimestamp() );</span>
+<span class="fc" id="L238">        orderTimelineEntryResponse.updatedBy( entry.getUpdatedBy() );</span>
+<span class="fc" id="L239">        orderTimelineEntryResponse.notes( entry.getNotes() );</span>
+
+<span class="fc" id="L241">        return orderTimelineEntryResponse.build();</span>
+    }
+
+    @Override
+    public List&lt;OrderTimelineEntryResponse&gt; toTimelineResponseList(List&lt;OrderTimelineEntryVO&gt; entries) {
+<span class="fc bfc" id="L246" title="All 2 branches covered.">        if ( entries == null ) {</span>
+<span class="fc" id="L247">            return null;</span>
+        }
+
+<span class="fc" id="L250">        List&lt;OrderTimelineEntryResponse&gt; list = new ArrayList&lt;OrderTimelineEntryResponse&gt;( entries.size() );</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">        for ( OrderTimelineEntryVO orderTimelineEntryVO : entries ) {</span>
+<span class="fc" id="L252">            list.add( toTimelineResponse( orderTimelineEntryVO ) );</span>
+<span class="fc" id="L253">        }</span>
+
+<span class="fc" id="L255">        return list;</span>
+    }
+
+    @Override
+    public OrderItem cartItemToOrderItem(CartItem cartItem) {
+<span class="fc bfc" id="L260" title="All 2 branches covered.">        if ( cartItem == null ) {</span>
+<span class="fc" id="L261">            return null;</span>
+        }
+
+<span class="fc" id="L264">        OrderItem.OrderItemBuilder orderItem = OrderItem.builder();</span>
+
+<span class="fc" id="L266">        orderItem.customizations( toOrderItemCustomizationList( cartItem.getCustomizations() ) );</span>
+<span class="fc" id="L267">        orderItem.menuItemId( cartItem.getMenuItemId() );</span>
+<span class="fc" id="L268">        orderItem.name( cartItem.getName() );</span>
+<span class="fc" id="L269">        orderItem.description( cartItem.getDescription() );</span>
+<span class="fc" id="L270">        orderItem.restaurantId( cartItem.getRestaurantId() );</span>
+<span class="fc" id="L271">        orderItem.restaurantName( cartItem.getRestaurantName() );</span>
+<span class="fc" id="L272">        orderItem.imageUrl( cartItem.getImageUrl() );</span>
+<span class="fc" id="L273">        orderItem.unitPrice( cartItem.getUnitPrice() );</span>
+<span class="fc" id="L274">        orderItem.quantity( cartItem.getQuantity() );</span>
+<span class="fc" id="L275">        orderItem.totalPrice( cartItem.getTotalPrice() );</span>
+<span class="fc" id="L276">        orderItem.specialInstructions( cartItem.getSpecialInstructions() );</span>
+<span class="fc" id="L277">        orderItem.vegetarian( cartItem.getVegetarian() );</span>
+<span class="fc" id="L278">        orderItem.spiceLevel( cartItem.getSpiceLevel() );</span>
+
+<span class="fc" id="L280">        orderItem.itemStatus( OrderItemStatus.PENDING );</span>
+
+<span class="fc" id="L282">        return orderItem.build();</span>
+    }
+
+    @Override
+    public OrderItemCustomizationVO toOrderItemCustomization(CartItemCustomization cartCustomization) {
+<span class="fc bfc" id="L287" title="All 2 branches covered.">        if ( cartCustomization == null ) {</span>
+<span class="fc" id="L288">            return null;</span>
+        }
+
+<span class="fc" id="L291">        OrderItemCustomizationVO.OrderItemCustomizationVOBuilder orderItemCustomizationVO = OrderItemCustomizationVO.builder();</span>
+
+<span class="fc" id="L293">        orderItemCustomizationVO.customizationId( cartCustomization.getCustomizationId() );</span>
+<span class="fc" id="L294">        orderItemCustomizationVO.customizationName( cartCustomization.getCustomizationName() );</span>
+<span class="fc" id="L295">        orderItemCustomizationVO.optionId( cartCustomization.getOptionId() );</span>
+<span class="fc" id="L296">        orderItemCustomizationVO.optionName( cartCustomization.getOptionName() );</span>
+<span class="fc" id="L297">        orderItemCustomizationVO.additionalCost( cartCustomization.getAdditionalCost() );</span>
+
+<span class="fc" id="L299">        return orderItemCustomizationVO.build();</span>
+    }
+
+    @Override
+    public List&lt;OrderItemCustomizationVO&gt; toOrderItemCustomizationList(List&lt;CartItemCustomization&gt; customizations) {
+<span class="fc bfc" id="L304" title="All 2 branches covered.">        if ( customizations == null ) {</span>
+<span class="fc" id="L305">            return null;</span>
+        }
+
+<span class="fc" id="L308">        List&lt;OrderItemCustomizationVO&gt; list = new ArrayList&lt;OrderItemCustomizationVO&gt;( customizations.size() );</span>
+<span class="fc bfc" id="L309" title="All 2 branches covered.">        for ( CartItemCustomization cartItemCustomization : customizations ) {</span>
+<span class="fc" id="L310">            list.add( toOrderItemCustomization( cartItemCustomization ) );</span>
+<span class="fc" id="L311">        }</span>
+
+<span class="fc" id="L313">        return list;</span>
+    }
+
+    protected List&lt;OrderItemCustomizationResponse&gt; orderItemCustomizationVOListToOrderItemCustomizationResponseList(List&lt;OrderItemCustomizationVO&gt; list) {
+<span class="pc bpc" id="L317" title="1 of 2 branches missed.">        if ( list == null ) {</span>
+<span class="nc" id="L318">            return null;</span>
+        }
+
+<span class="fc" id="L321">        List&lt;OrderItemCustomizationResponse&gt; list1 = new ArrayList&lt;OrderItemCustomizationResponse&gt;( list.size() );</span>
+<span class="pc bpc" id="L322" title="1 of 2 branches missed.">        for ( OrderItemCustomizationVO orderItemCustomizationVO : list ) {</span>
+<span class="nc" id="L323">            list1.add( toCustomizationResponse( orderItemCustomizationVO ) );</span>
+<span class="nc" id="L324">        }</span>
+
+<span class="fc" id="L326">        return list1;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

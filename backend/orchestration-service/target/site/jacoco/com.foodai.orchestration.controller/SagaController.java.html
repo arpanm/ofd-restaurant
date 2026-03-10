@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SagaController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Orchestration Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.orchestration.controller</a> &gt; <span class="el_source">SagaController.java</span></div><h1>SagaController.java</h1><pre class="source lang-java linenums">package com.foodai.orchestration.controller;
+
+import com.foodai.orchestration.domain.model.SagaStatus;
+import com.foodai.orchestration.domain.model.SagaType;
+import com.foodai.orchestration.dto.request.SagaCallbackRequest;
+import com.foodai.orchestration.dto.request.StartSagaRequest;
+import com.foodai.orchestration.dto.response.ApiResponse;
+import com.foodai.orchestration.dto.response.SagaResponse;
+import com.foodai.orchestration.service.SagaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+/**
+ * REST controller for saga management.
+ *
+ * @author FoodAI Team
+ */
+@RestController
+@RequestMapping(&quot;/api/v1/sagas&quot;)
+<span class="fc" id="L34">@RequiredArgsConstructor</span>
+<span class="fc" id="L35">@Slf4j</span>
+@Tag(name = &quot;Saga Management&quot;, description = &quot;APIs for managing saga orchestration&quot;)
+public class SagaController {
+
+    private final SagaService sagaService;
+
+    /**
+     * Starts a new saga.
+     *
+     * @param request start saga request
+     * @return created saga
+     */
+    @PostMapping
+    @Operation(summary = &quot;Start a new saga&quot;, description = &quot;Initiates a new saga workflow&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;201&quot;, description = &quot;Saga created&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid request&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;SagaResponse&gt;&gt; startSaga(
+            @Valid @RequestBody StartSagaRequest request) {
+<span class="fc" id="L55">        log.info(&quot;Received request to start saga: type={}&quot;, request.getType());</span>
+<span class="fc" id="L56">        SagaResponse response = sagaService.startSaga(request);</span>
+<span class="fc" id="L57">        return ResponseEntity.status(HttpStatus.CREATED)</span>
+<span class="fc" id="L58">            .body(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Gets a saga by ID.
+     *
+     * @param sagaId saga ID
+     * @return saga details
+     */
+    @GetMapping(&quot;/{sagaId}&quot;)
+    @Operation(summary = &quot;Get saga by ID&quot;, description = &quot;Retrieves saga details by ID&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Saga found&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Saga not found&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;SagaResponse&gt;&gt; getSaga(
+            @Parameter(description = &quot;Saga ID&quot;) @PathVariable String sagaId) {
+<span class="fc" id="L75">        log.debug(&quot;Received request to get saga: sagaId={}&quot;, sagaId);</span>
+<span class="fc" id="L76">        SagaResponse response = sagaService.getSaga(sagaId);</span>
+<span class="fc" id="L77">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Gets a saga by correlation ID.
+     *
+     * @param correlationId correlation ID
+     * @return saga details
+     */
+    @GetMapping(&quot;/correlation/{correlationId}&quot;)
+    @Operation(summary = &quot;Get saga by correlation ID&quot;, description = &quot;Retrieves saga by correlation ID&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;SagaResponse&gt;&gt; getSagaByCorrelationId(
+            @Parameter(description = &quot;Correlation ID&quot;) @PathVariable String correlationId) {
+<span class="fc" id="L90">        log.debug(&quot;Received request to get saga by correlationId: {}&quot;, correlationId);</span>
+<span class="fc" id="L91">        SagaResponse response = sagaService.getSagaByCorrelationId(correlationId);</span>
+<span class="fc" id="L92">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Gets sagas by user ID.
+     *
+     * @param userId user ID
+     * @param page page number
+     * @param size page size
+     * @return page of sagas
+     */
+    @GetMapping(&quot;/user/{userId}&quot;)
+    @Operation(summary = &quot;Get sagas by user&quot;, description = &quot;Retrieves sagas for a user&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;Page&lt;SagaResponse&gt;&gt;&gt; getSagasByUser(
+            @Parameter(description = &quot;User ID&quot;) @PathVariable String userId,
+            @RequestParam(defaultValue = &quot;0&quot;) int page,
+            @RequestParam(defaultValue = &quot;20&quot;) int size) {
+<span class="fc" id="L109">        log.debug(&quot;Received request to get sagas by user: userId={}&quot;, userId);</span>
+<span class="fc" id="L110">        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, &quot;createdAt&quot;));</span>
+<span class="fc" id="L111">        Page&lt;SagaResponse&gt; response = sagaService.getSagasByUserId(userId, pageable);</span>
+<span class="fc" id="L112">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Gets sagas by type and status.
+     *
+     * @param type saga type
+     * @param status saga status
+     * @param page page number
+     * @param size page size
+     * @return page of sagas
+     */
+    @GetMapping(&quot;/filter&quot;)
+    @Operation(summary = &quot;Filter sagas&quot;, description = &quot;Retrieves sagas by type and status&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;Page&lt;SagaResponse&gt;&gt;&gt; filterSagas(
+            @Parameter(description = &quot;Saga type&quot;) @RequestParam SagaType type,
+            @Parameter(description = &quot;Saga status&quot;) @RequestParam SagaStatus status,
+            @RequestParam(defaultValue = &quot;0&quot;) int page,
+            @RequestParam(defaultValue = &quot;20&quot;) int size) {
+<span class="fc" id="L131">        log.debug(&quot;Received request to filter sagas: type={}, status={}&quot;, type, status);</span>
+<span class="fc" id="L132">        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, &quot;createdAt&quot;));</span>
+<span class="fc" id="L133">        Page&lt;SagaResponse&gt; response = sagaService.getSagasByTypeAndStatus(type, status, pageable);</span>
+<span class="fc" id="L134">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Handles saga step callback.
+     *
+     * @param request callback request
+     * @return updated saga
+     */
+    @PostMapping(&quot;/callback&quot;)
+    @Operation(summary = &quot;Handle step callback&quot;, description = &quot;Processes callback from a saga step&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;SagaResponse&gt;&gt; handleCallback(
+            @Valid @RequestBody SagaCallbackRequest request) {
+<span class="fc" id="L147">        log.info(&quot;Received saga callback: sagaId={}, stepId={}, success={}&quot;,</span>
+<span class="fc" id="L148">            request.getSagaId(), request.getStepId(), request.isSuccess());</span>
+<span class="fc" id="L149">        SagaResponse response = sagaService.handleCallback(request);</span>
+<span class="fc" id="L150">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Cancels a saga.
+     *
+     * @param sagaId saga ID
+     * @return cancelled saga
+     */
+    @PostMapping(&quot;/{sagaId}/cancel&quot;)
+    @Operation(summary = &quot;Cancel saga&quot;, description = &quot;Cancels a running saga&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Saga cancelled&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Saga not found&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;409&quot;, description = &quot;Cannot cancel saga&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;SagaResponse&gt;&gt; cancelSaga(
+            @Parameter(description = &quot;Saga ID&quot;) @PathVariable String sagaId) {
+<span class="fc" id="L168">        log.info(&quot;Received request to cancel saga: sagaId={}&quot;, sagaId);</span>
+<span class="fc" id="L169">        SagaResponse response = sagaService.cancelSaga(sagaId);</span>
+<span class="fc" id="L170">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Retries a failed saga.
+     *
+     * @param sagaId saga ID
+     * @return retried saga
+     */
+    @PostMapping(&quot;/{sagaId}/retry&quot;)
+    @Operation(summary = &quot;Retry saga&quot;, description = &quot;Retries a failed saga&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Saga retry initiated&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Saga not found&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;409&quot;, description = &quot;Cannot retry saga&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;SagaResponse&gt;&gt; retrySaga(
+            @Parameter(description = &quot;Saga ID&quot;) @PathVariable String sagaId) {
+<span class="fc" id="L188">        log.info(&quot;Received request to retry saga: sagaId={}&quot;, sagaId);</span>
+<span class="fc" id="L189">        SagaResponse response = sagaService.retrySaga(sagaId);</span>
+<span class="fc" id="L190">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Gets saga statistics.
+     *
+     * @param type optional saga type filter
+     * @return statistics
+     */
+    @GetMapping(&quot;/statistics&quot;)
+    @Operation(summary = &quot;Get saga statistics&quot;, description = &quot;Retrieves saga statistics&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;Map&lt;String, Object&gt;&gt;&gt; getStatistics(
+            @Parameter(description = &quot;Saga type filter&quot;) @RequestParam(required = false) SagaType type) {
+<span class="fc" id="L203">        log.debug(&quot;Received request for saga statistics: type={}&quot;, type);</span>
+<span class="fc" id="L204">        Map&lt;String, Object&gt; stats = sagaService.getStatistics(type);</span>
+<span class="fc" id="L205">        return ResponseEntity.ok(ApiResponse.success(stats));</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

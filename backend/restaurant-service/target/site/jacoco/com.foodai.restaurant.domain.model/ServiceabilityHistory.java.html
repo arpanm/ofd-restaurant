@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServiceabilityHistory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Restaurant Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.restaurant.domain.model</a> &gt; <span class="el_source">ServiceabilityHistory.java</span></div><h1>ServiceabilityHistory.java</h1><pre class="source lang-java linenums">package com.foodai.restaurant.domain.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.Instant;
+import java.util.List;
+
+/**
+ * History tracking for Serviceability configuration changes.
+ * Tracks pincode additions/removals and radius changes.
+ */
+@Document(collection = &quot;serviceability_history&quot;)
+@CompoundIndexes({
+    @CompoundIndex(name = &quot;serviceability_outlet_time&quot;, def = &quot;{'outletId': 1, 'changedAt': -1}&quot;),
+    @CompoundIndex(name = &quot;serviceability_restaurant_time&quot;, def = &quot;{'restaurantId': 1, 'changedAt': -1}&quot;)
+})
+<span class="nc bnc" id="L25" title="All 94 branches missed.">@Data</span>
+<span class="nc" id="L26">@Builder</span>
+<span class="nc" id="L27">@NoArgsConstructor</span>
+<span class="nc" id="L28">@AllArgsConstructor</span>
+public class ServiceabilityHistory {
+    /**
+     * Unique history entry ID
+     */
+    @Id
+<span class="nc" id="L34">    private String id;</span>
+    
+    /**
+     * Reference to restaurant
+     */
+    @Indexed
+<span class="nc" id="L40">    private String restaurantId;</span>
+    
+    /**
+     * Reference to outlet
+     */
+    @Indexed
+<span class="nc" id="L46">    private String outletId;</span>
+    
+    /**
+     * Type of change (PINCODE_ADDED, PINCODE_REMOVED, RADIUS_CHANGED, RULES_UPDATED)
+     */
+<span class="nc" id="L51">    private String changeType;</span>
+    
+    /**
+     * Pincodes that were added
+     */
+<span class="nc" id="L56">    private List&lt;String&gt; addedPincodes;</span>
+    
+    /**
+     * Pincodes that were removed
+     */
+<span class="nc" id="L61">    private List&lt;String&gt; removedPincodes;</span>
+    
+    /**
+     * Old delivery radius
+     */
+<span class="nc" id="L66">    private Double oldRadius;</span>
+    
+    /**
+     * New delivery radius
+     */
+<span class="nc" id="L71">    private Double newRadius;</span>
+    
+    /**
+     * User ID who made the change
+     */
+    @Indexed
+<span class="nc" id="L77">    private String changedBy;</span>
+    
+    /**
+     * Timestamp of change
+     */
+    @Indexed
+<span class="nc" id="L83">    private Instant changedAt;</span>
+    
+    /**
+     * Reason for change
+     */
+<span class="nc" id="L88">    private String changeReason;</span>
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

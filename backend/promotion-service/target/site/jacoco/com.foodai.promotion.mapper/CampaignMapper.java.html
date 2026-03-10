@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CampaignMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Promotion Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.promotion.mapper</a> &gt; <span class="el_source">CampaignMapper.java</span></div><h1>CampaignMapper.java</h1><pre class="source lang-java linenums">package com.foodai.promotion.mapper;
+
+import com.foodai.promotion.domain.model.Campaign;
+import com.foodai.promotion.domain.model.CampaignStatus;
+import com.foodai.promotion.domain.model.ScheduleVO;
+import com.foodai.promotion.dto.request.CreateCampaignRequest;
+import com.foodai.promotion.dto.response.CampaignResponse;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.Named;
+
+/**
+ * MapStruct mapper for Campaign entity and DTOs.
+ *
+ * @author FoodAI Team
+ */
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface CampaignMapper {
+
+  /**
+   * Maps create request to entity.
+   *
+   * @param request the create request
+   * @return the campaign entity
+   */
+  @Mapping(target = &quot;id&quot;, ignore = true)
+  @Mapping(target = &quot;createdAt&quot;, ignore = true)
+  @Mapping(target = &quot;updatedAt&quot;, ignore = true)
+  @Mapping(target = &quot;deleted&quot;, constant = &quot;false&quot;)
+  @Mapping(target = &quot;createdBy&quot;, ignore = true)
+  @Mapping(target = &quot;status&quot;, constant = &quot;DRAFT&quot;)
+  @Mapping(target = &quot;spent&quot;, ignore = true)
+  @Mapping(target = &quot;performance&quot;, ignore = true)
+  @Mapping(target = &quot;aiSuggested&quot;, constant = &quot;false&quot;)
+  @Mapping(target = &quot;schedule&quot;, source = &quot;request&quot;, qualifiedByName = &quot;toScheduleVO&quot;)
+  @Mapping(target = &quot;creatives&quot;, source = &quot;creatives&quot;, qualifiedByName = &quot;toCreatives&quot;)
+  Campaign toEntity(CreateCampaignRequest request);
+
+  /**
+   * Maps entity to response.
+   *
+   * @param entity the campaign entity
+   * @return the response DTO
+   */
+  @Mapping(target = &quot;startDate&quot;, source = &quot;schedule.startDate&quot;)
+  @Mapping(target = &quot;endDate&quot;, source = &quot;schedule.endDate&quot;)
+  @Mapping(target = &quot;startTime&quot;, source = &quot;schedule.startTime&quot;)
+  @Mapping(target = &quot;frequency&quot;, source = &quot;schedule.frequency&quot;)
+  @Mapping(target = &quot;daysOfWeek&quot;, source = &quot;schedule.daysOfWeek&quot;)
+  @Mapping(target = &quot;creatives&quot;, source = &quot;creatives&quot;, qualifiedByName = &quot;toCreativeResponses&quot;)
+  @Mapping(target = &quot;performance&quot;, source = &quot;performance&quot;, qualifiedByName = &quot;toPerformanceResponse&quot;)
+  CampaignResponse toResponse(Campaign entity);
+
+  /**
+   * Creates ScheduleVO from request.
+   *
+   * @param request the request
+   * @return the schedule VO
+   */
+  @Named(&quot;toScheduleVO&quot;)
+  default ScheduleVO toScheduleVO(CreateCampaignRequest request) {
+<span class="nc bnc" id="L65" title="All 2 branches missed.">    if (request == null) {</span>
+<span class="nc" id="L66">      return null;</span>
+    }
+<span class="nc" id="L68">    return ScheduleVO.builder()</span>
+<span class="nc" id="L69">        .startDate(request.getStartDate())</span>
+<span class="nc" id="L70">        .endDate(request.getEndDate())</span>
+<span class="nc" id="L71">        .startTime(request.getStartTime())</span>
+<span class="nc" id="L72">        .frequency(request.getFrequency())</span>
+<span class="nc" id="L73">        .daysOfWeek(request.getDaysOfWeek())</span>
+<span class="nc" id="L74">        .build();</span>
+  }
+
+  /**
+   * Maps creative requests to entities.
+   *
+   * @param creatives the creative requests
+   * @return the creative entities
+   */
+  @Named(&quot;toCreatives&quot;)
+  default List&lt;Campaign.CampaignCreative&gt; toCreatives(
+      List&lt;CreateCampaignRequest.CampaignCreativeRequest&gt; creatives) {
+<span class="nc bnc" id="L86" title="All 2 branches missed.">    if (creatives == null) {</span>
+<span class="nc" id="L87">      return null;</span>
+    }
+<span class="nc" id="L89">    return creatives.stream()</span>
+<span class="nc" id="L90">        .map(</span>
+            c -&gt;
+<span class="nc" id="L92">                Campaign.CampaignCreative.builder()</span>
+<span class="nc" id="L93">                    .id(java.util.UUID.randomUUID().toString())</span>
+<span class="nc" id="L94">                    .type(c.getType())</span>
+<span class="nc" id="L95">                    .content(c.getContent())</span>
+<span class="nc" id="L96">                    .mediaUrl(c.getMediaUrl())</span>
+<span class="nc" id="L97">                    .aiGenerated(false)</span>
+<span class="nc" id="L98">                    .build())</span>
+<span class="nc" id="L99">        .collect(Collectors.toList());</span>
+  }
+
+  /**
+   * Maps creative entities to responses.
+   *
+   * @param creatives the creative entities
+   * @return the creative responses
+   */
+  @Named(&quot;toCreativeResponses&quot;)
+  default List&lt;CampaignResponse.CreativeResponse&gt; toCreativeResponses(
+      List&lt;Campaign.CampaignCreative&gt; creatives) {
+<span class="nc bnc" id="L111" title="All 2 branches missed.">    if (creatives == null) {</span>
+<span class="nc" id="L112">      return null;</span>
+    }
+<span class="nc" id="L114">    return creatives.stream()</span>
+<span class="nc" id="L115">        .map(</span>
+            c -&gt;
+<span class="nc" id="L117">                CampaignResponse.CreativeResponse.builder()</span>
+<span class="nc" id="L118">                    .id(c.getId())</span>
+<span class="nc" id="L119">                    .type(c.getType())</span>
+<span class="nc" id="L120">                    .content(c.getContent())</span>
+<span class="nc" id="L121">                    .mediaUrl(c.getMediaUrl())</span>
+<span class="nc" id="L122">                    .aiGenerated(c.isAiGenerated())</span>
+<span class="nc" id="L123">                    .build())</span>
+<span class="nc" id="L124">        .collect(Collectors.toList());</span>
+  }
+
+  /**
+   * Maps performance entity to response.
+   *
+   * @param performance the performance entity
+   * @return the performance response
+   */
+  @Named(&quot;toPerformanceResponse&quot;)
+  default CampaignResponse.PerformanceResponse toPerformanceResponse(
+      Campaign.CampaignPerformance performance) {
+<span class="nc bnc" id="L136" title="All 2 branches missed.">    if (performance == null) {</span>
+<span class="nc" id="L137">      return null;</span>
+    }
+<span class="nc" id="L139">    return CampaignResponse.PerformanceResponse.builder()</span>
+<span class="nc" id="L140">        .sent(performance.getSent())</span>
+<span class="nc" id="L141">        .delivered(performance.getDelivered())</span>
+<span class="nc" id="L142">        .opened(performance.getOpened())</span>
+<span class="nc" id="L143">        .clicked(performance.getClicked())</span>
+<span class="nc" id="L144">        .converted(performance.getConverted())</span>
+<span class="nc" id="L145">        .revenue(performance.getRevenue())</span>
+<span class="nc" id="L146">        .cost(performance.getCost())</span>
+<span class="nc" id="L147">        .deliveryRate(performance.getDeliveryRate())</span>
+<span class="nc" id="L148">        .openRate(performance.getOpenRate())</span>
+<span class="nc" id="L149">        .clickRate(performance.getClickRate())</span>
+<span class="nc" id="L150">        .conversionRate(performance.getConversionRate())</span>
+<span class="nc" id="L151">        .roi(performance.getRoi())</span>
+<span class="nc" id="L152">        .build();</span>
+  }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -1,0 +1,1440 @@
+# FoodAI Platform - Backend Development Rules & Guardrails
+# Version: 2.0.0 - Production-Grade Quality Standards
+# Last Updated: December 2025
+
+================================================================================
+## EXECUTIVE SUMMARY - CRITICAL QUALITY GATES
+================================================================================
+
+All code MUST pass these mandatory quality gates before being considered complete:
+
+| Quality Gate              | Threshold         | Enforcement      | Blocking |
+|---------------------------|-------------------|------------------|----------|
+| Unit Test Coverage (Line) | ≥ 80%            | JaCoCo           | YES      |
+| Unit Test Coverage (Branch)| ≥ 75%           | JaCoCo           | YES      |
+| All Tests Pass            | 100%             | Surefire/Failsafe| YES      |
+| Critical/High Vulnerabilities| 0             | OWASP/Snyk       | YES      |
+| Code Smells               | < 10             | SonarQube        | YES      |
+| Bugs                      | 0                | SonarQube        | YES      |
+| Technical Debt Ratio      | < 5%             | SonarQube        | YES      |
+| Duplicated Lines          | < 3%             | SonarQube        | YES      |
+| Cyclomatic Complexity     | < 15 per method  | PMD/SonarQube    | YES      |
+| Cognitive Complexity      | < 20 per method  | SonarQube        | YES      |
+| API Documentation         | 100% endpoints   | Springdoc        | YES      |
+| Checkstyle Violations     | 0                | Checkstyle       | YES      |
+| SpotBugs Issues           | 0 (High/Medium)  | SpotBugs         | YES      |
+
+================================================================================
+## 1. ARCHITECTURE PRINCIPLES
+================================================================================
+
+### 1.1 Domain-Driven Design (DDD) - MANDATORY
+- Follow DDD patterns: Entities, Value Objects, Aggregates, Repositories, Domain Services
+- Each microservice represents a bounded context
+- NO cross-domain database access - use APIs or events
+- Domain logic stays in domain layer, NOT in controllers or repositories
+- Use Ubiquitous Language - domain terms must match business terminology
+
+### 1.2 Layered Architecture (MANDATORY)
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  Controller Layer (REST API)                                                │
+│  - Input validation (DTOs)                                                  │
+│  - HTTP concerns only                                                       │
+│  - NO business logic                                                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  Application Service Layer (Orchestration)                                  │
+│  - Transaction management                                                   │
+│  - Use case coordination                                                    │
+│  - Cross-cutting concerns                                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  Domain Layer (Business Logic) - PURE, NO FRAMEWORK DEPENDENCIES            │
+│  - Entities & Value Objects                                                 │
+│  - Domain Services                                                          │
+│  - Business rules & invariants                                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  Infrastructure Layer (Technical Concerns)                                  │
+│  - Repository Implementations                                               │
+│  - External API Clients                                                     │
+│  - Messaging (Kafka)                                                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 1.3 Microservices Uniformity
+- All microservices MUST follow the same structure
+- All CRUD operations follow the same pattern
+- All error handling is consistent
+- All logging is structured and uniform
+- All configuration follows the same pattern
+
+### 1.4 SOLID Principles (MANDATORY)
+- **S**ingle Responsibility: One class = one reason to change
+- **O**pen/Closed: Open for extension, closed for modification
+- **L**iskov Substitution: Subtypes must be substitutable for base types
+- **I**nterface Segregation: Many specific interfaces > one general interface
+- **D**ependency Inversion: Depend on abstractions, not concretions
+
+================================================================================
+## 2. TECHNOLOGY STACK (STANDARDIZED VERSIONS)
+================================================================================
+
+### 2.1 Core Technologies
+| Technology       | Version    | Notes                              |
+|------------------|------------|-------------------------------------|
+| Java             | 21 (LTS)   | Use modern features (records, sealed classes, pattern matching) |
+| Spring Boot      | 3.2.1      | Latest stable                      |
+| Spring Cloud     | 2023.0.0   | For distributed systems            |
+| Maven            | 3.9.x+     | Build tool                         |
+
+### 2.2 Databases
+| Database         | Version    | Use Case                           |
+|------------------|------------|-------------------------------------|
+| MongoDB          | 7.x        | Document data (flexible schema)    |
+| PostgreSQL       | 16.x       | Transactional data (ACID required) |
+| Redis            | 7.x        | Caching, sessions, rate limiting   |
+| Elasticsearch    | 8.11.x     | Full-text search, analytics        |
+
+### 2.3 Messaging & Integration
+| Technology       | Version    | Use Case                           |
+|------------------|------------|-------------------------------------|
+| Apache Kafka     | 3.6.x      | Event streaming, async messaging   |
+| gRPC             | Latest     | Internal service-to-service        |
+
+### 2.4 Development & Build
+| Tool             | Version    | Purpose                            |
+|------------------|------------|-------------------------------------|
+| MapStruct        | 1.5.5.Final| DTO mapping (compile-time)         |
+| Lombok           | 1.18.30    | Boilerplate reduction              |
+| Springdoc        | 2.3.0      | OpenAPI 3.0 documentation          |
+| Logstash Encoder | 7.4        | Structured JSON logging            |
+
+### 2.5 Testing
+| Tool             | Version    | Purpose                            |
+|------------------|------------|-------------------------------------|
+| JUnit Jupiter    | 5.10.1     | Unit testing framework             |
+| Mockito          | 5.14.0     | Mocking framework                  |
+| Testcontainers   | 1.19.3     | Integration test containers        |
+| REST Assured     | 5.4.0      | API testing                        |
+| ArchUnit         | 1.2.1      | Architecture testing               |
+
+### 2.6 Code Quality
+| Tool             | Version    | Purpose                            |
+|------------------|------------|-------------------------------------|
+| JaCoCo           | 0.8.13     | Code coverage                      |
+| SpotBugs         | 4.8.3      | Static bug detection               |
+| PMD              | 7.0.0      | Code analysis                      |
+| Checkstyle       | 10.12.7    | Code style enforcement             |
+| Spotless         | 2.42.0     | Code formatting                    |
+| OWASP Dep Check  | 9.0.9      | Vulnerability scanning             |
+| SonarQube        | 10.x       | Continuous code quality            |
+
+================================================================================
+## 3. CODE STRUCTURE (MANDATORY FOR ALL MICROSERVICES)
+================================================================================
+
+```
+{service-name}-service/
+├── pom.xml                           # Maven configuration (inherit from parent)
+├── mvnw.sh                           # Maven wrapper script
+├── CURSOR_PROMPT.md                  # Service generation prompt
+├── README.md                         # Service documentation
+├── scripts/
+│   ├── SET_JAVA_21.sh                # Java environment setup
+│   └── load-mock-data.sh             # Test data loading
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/foodai/{domain}/
+│   │   │       ├── {Domain}Application.java    # Spring Boot main class
+│   │   │       ├── controller/                 # REST Controllers
+│   │   │       │   └── {Entity}Controller.java
+│   │   │       ├── service/                    # Application Services
+│   │   │       │   └── {Entity}Service.java
+│   │   │       ├── domain/                     # Domain Layer (PURE)
+│   │   │       │   ├── model/                  # Entities, VOs, Enums
+│   │   │       │   │   ├── {Entity}.java
+│   │   │       │   │   ├── {Name}VO.java
+│   │   │       │   │   └── {Name}Status.java   # Enums
+│   │   │       │   ├── repository/             # Repository Interfaces
+│   │   │       │   │   └── {Entity}Repository.java
+│   │   │       │   └── service/                # Domain Services (if needed)
+│   │   │       │       └── {Name}DomainService.java
+│   │   │       ├── infrastructure/             # Infrastructure Layer
+│   │   │       │   ├── persistence/            # Repository Implementations
+│   │   │       │   ├── messaging/              # Kafka producers/consumers
+│   │   │       │   │   ├── {Domain}EventPublisher.java
+│   │   │       │   │   └── {Domain}EventConsumer.java
+│   │   │       │   └── client/                 # External API clients
+│   │   │       ├── dto/                        # Data Transfer Objects
+│   │   │       │   ├── request/
+│   │   │       │   │   ├── Create{Entity}Request.java
+│   │   │       │   │   └── Update{Entity}Request.java
+│   │   │       │   └── response/
+│   │   │       │       ├── {Entity}Response.java
+│   │   │       │       └── ApiResponse.java
+│   │   │       ├── mapper/                     # MapStruct mappers
+│   │   │       │   └── {Entity}Mapper.java
+│   │   │       ├── config/                     # Configuration classes
+│   │   │       │   ├── MongoConfig.java
+│   │   │       │   ├── RedisConfig.java
+│   │   │       │   ├── KafkaConfig.java
+│   │   │       │   └── OpenApiConfig.java
+│   │   │       └── exception/                  # Custom exceptions
+│   │   │           ├── {Entity}NotFoundException.java
+│   │   │           ├── {Entity}AlreadyExistsException.java
+│   │   │           └── GlobalExceptionHandler.java
+│   │   └── resources/
+│   │       ├── application.yml                 # Base configuration
+│   │       ├── application-dev.yml             # Development config
+│   │       ├── application-test.yml            # Test config
+│   │       ├── application-staging.yml         # Staging config
+│   │       ├── application-prod.yml            # Production config
+│   │       ├── logback-spring.xml              # Logging configuration
+│   │       └── db/migration/                   # Flyway migrations (PostgreSQL)
+│   │           ├── V1__initial_schema.sql
+│   │           └── V2__add_indexes.sql
+│   └── test/
+│       ├── java/
+│       │   └── com/foodai/{domain}/
+│       │       ├── {Domain}ApplicationTests.java   # Context load test
+│       │       ├── controller/                     # Controller tests
+│       │       │   └── {Entity}ControllerTest.java
+│       │       ├── service/                        # Service tests
+│       │       │   └── {Entity}ServiceTest.java
+│       │       ├── domain/
+│       │       │   └── model/                      # Domain model tests
+│       │       │       └── {Entity}Test.java
+│       │       ├── mapper/                         # Mapper tests
+│       │       │   └── {Entity}MapperTest.java
+│       │       ├── repository/                     # Repository tests
+│       │       │   └── {Entity}RepositoryTest.java
+│       │       ├── integration/                    # Integration tests
+│       │       │   └── {Entity}IntegrationTest.java
+│       │       └── architecture/                   # Architecture tests
+│       │           └── ArchitectureTest.java
+│       └── resources/
+│           └── application-test.yml
+```
+
+================================================================================
+## 4. NAMING CONVENTIONS (STRICT)
+================================================================================
+
+### 4.1 Packages
+- Base: `com.foodai.{domain}` (e.g., `com.foodai.order`, `com.foodai.user`)
+- Domain in lowercase, single word preferred
+
+### 4.2 Classes
+| Type              | Convention                    | Example                          |
+|-------------------|-------------------------------|----------------------------------|
+| Entity            | `{Name}`                      | `User`, `Order`, `Restaurant`    |
+| Value Object      | `{Name}VO`                    | `AddressVO`, `MoneyVO`           |
+| Enum              | `{Name}Status/Type`           | `OrderStatus`, `PaymentMethod`   |
+| DTO Request       | `Create/Update{Name}Request`  | `CreateOrderRequest`             |
+| DTO Response      | `{Name}Response`              | `OrderResponse`                  |
+| Controller        | `{Name}Controller`            | `UserController`                 |
+| Service           | `{Name}Service`               | `OrderService`                   |
+| Domain Service    | `{Name}DomainService`         | `PricingDomainService`           |
+| Repository        | `{Name}Repository`            | `UserRepository`                 |
+| Mapper            | `{Name}Mapper`                | `OrderMapper`                    |
+| Exception         | `{Name}Exception`             | `OrderNotFoundException`         |
+| Event             | `{Name}Event`                 | `OrderCreatedEvent`              |
+| Config            | `{Name}Config`                | `KafkaConfig`                    |
+
+### 4.3 Methods
+| Type              | Convention                    | Example                          |
+|-------------------|-------------------------------|----------------------------------|
+| CRUD Create       | `create{Entity}`              | `createOrder()`                  |
+| CRUD Read (one)   | `findById`, `getById`         | `findById(id)`                   |
+| CRUD Read (many)  | `findAll`, `findBy{Criteria}` | `findByUserId(userId)`           |
+| CRUD Update       | `update{Entity}`              | `updateOrder(id, dto)`           |
+| CRUD Delete       | `delete{Entity}`, `deleteById`| `deleteById(id)`                 |
+| Boolean check     | `is{Condition}`, `has{Thing}` | `isActive()`, `hasPermission()`  |
+| Business action   | `{verb}{Noun}`                | `processOrder()`, `cancelOrder()`|
+
+### 4.4 Variables
+- camelCase: `userId`, `orderTotal`, `restaurantName`
+- Constants: UPPER_SNAKE_CASE: `MAX_RETRY_COUNT`, `DEFAULT_PAGE_SIZE`
+- Collections: plural nouns: `orders`, `items`, `users`
+
+### 4.5 Database
+| Database   | Tables/Collections | Columns/Fields  |
+|------------|-------------------|-----------------|
+| PostgreSQL | snake_case        | snake_case      |
+| MongoDB    | camelCase         | camelCase       |
+
+================================================================================
+## 5. CRUD API STANDARDS (MANDATORY)
+================================================================================
+
+### 5.1 Endpoint Patterns
+```
+POST   /api/v1/{resource}              - Create
+GET    /api/v1/{resource}/{id}         - Get by ID
+GET    /api/v1/{resource}              - Get all (with pagination)
+PUT    /api/v1/{resource}/{id}         - Update (full)
+PATCH  /api/v1/{resource}/{id}         - Update (partial)
+DELETE /api/v1/{resource}/{id}         - Delete
+GET    /api/v1/{resource}/search       - Search with filters
+POST   /api/v1/{resource}/{id}/{action}- Custom actions (e.g., /orders/{id}/cancel)
+```
+
+### 5.2 HTTP Status Codes (STRICT)
+| Code | Meaning                  | When to Use                                |
+|------|--------------------------|--------------------------------------------|
+| 200  | OK                       | Successful GET, PUT, PATCH                 |
+| 201  | Created                  | Successful POST (return Location header)   |
+| 204  | No Content               | Successful DELETE                          |
+| 400  | Bad Request              | Validation errors, malformed request       |
+| 401  | Unauthorized             | Authentication required                    |
+| 403  | Forbidden                | Insufficient permissions                   |
+| 404  | Not Found                | Resource not found                         |
+| 409  | Conflict                 | Business rule violation (duplicate, etc.)  |
+| 422  | Unprocessable Entity     | Semantic validation failure                |
+| 429  | Too Many Requests        | Rate limiting                              |
+| 500  | Internal Server Error    | Unexpected server errors                   |
+| 503  | Service Unavailable      | Dependency failures                        |
+
+### 5.3 Response Format (MANDATORY)
+```json
+// Success Response
+{
+  "success": true,
+  "data": { /* entity or list */ },
+  "timestamp": "2025-01-15T10:30:00Z",
+  "requestId": "uuid",
+  "path": "/api/v1/orders/123"
+}
+
+// Error Response
+{
+  "success": false,
+  "error": {
+    "code": "ORDER_NOT_FOUND",
+    "message": "Order with id 123 not found",
+    "details": [],
+    "timestamp": "2025-01-15T10:30:00Z",
+    "requestId": "uuid",
+    "path": "/api/v1/orders/123"
+  }
+}
+
+// Validation Error Response
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Validation failed",
+    "details": [
+      {
+        "field": "email",
+        "message": "Email is required",
+        "rejectedValue": null,
+        "code": "NotBlank"
+      }
+    ],
+    "timestamp": "2025-01-15T10:30:00Z",
+    "requestId": "uuid"
+  }
+}
+```
+
+### 5.4 Pagination (MANDATORY for list endpoints)
+```
+GET /api/v1/users?page=0&size=20&sort=createdAt,desc
+
+Response:
+{
+  "success": true,
+  "data": {
+    "content": [ /* items */ ],
+    "page": 0,
+    "size": 20,
+    "totalElements": 150,
+    "totalPages": 8,
+    "first": true,
+    "last": false,
+    "hasNext": true,
+    "hasPrevious": false
+  }
+}
+```
+
+================================================================================
+## 6. ERROR HANDLING (MANDATORY)
+================================================================================
+
+### 6.1 Exception Hierarchy
+```java
+// Business Exceptions (4xx errors)
+BusinessException (extends RuntimeException)
+    ├── ValidationException         // 400 - Invalid input
+    ├── NotFoundException           // 404 - Resource not found
+    ├── ConflictException           // 409 - Business conflict
+    ├── UnauthorizedException       // 401 - Auth required
+    ├── ForbiddenException          // 403 - Access denied
+    └── UnprocessableEntityException// 422 - Semantic validation
+
+// Technical Exceptions (5xx errors)
+TechnicalException (extends RuntimeException)
+    ├── DatabaseException           // 500 - DB errors
+    ├── MessagingException          // 500 - Kafka errors
+    ├── ExternalServiceException    // 503 - External API failures
+    └── CacheException              // 500 - Redis errors
+```
+
+### 6.2 Global Exception Handler Requirements
+- MUST have `@RestControllerAdvice` class
+- MUST catch all exceptions and return standardized error response
+- MUST log all errors with correlation ID
+- MUST NOT expose stack traces in production
+- MUST include request path in error response
+- MUST use appropriate HTTP status codes
+
+### 6.3 Exception Handling Pattern
+```java
+@RestControllerAdvice
+@Slf4j
+public class GlobalExceptionHandler {
+    
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResponse<Void> handleNotFound(NotFoundException ex, WebRequest request) {
+        log.warn("Resource not found: {}", ex.getMessage(), 
+            kv("path", request.getDescription(false)),
+            kv("errorCode", ex.getErrorCode()));
+        return ApiResponse.error(ex.getErrorCode(), ex.getMessage());
+    }
+    
+    // Handle all other business exceptions...
+    
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiResponse<Void> handleGeneric(Exception ex, WebRequest request) {
+        log.error("Unexpected error", ex,
+            kv("path", request.getDescription(false)));
+        return ApiResponse.error("INTERNAL_ERROR", "An unexpected error occurred");
+    }
+}
+```
+
+================================================================================
+## 7. LOGGING STANDARDS (MANDATORY)
+================================================================================
+
+### 7.1 Log Levels
+| Level | Usage                                                         |
+|-------|---------------------------------------------------------------|
+| ERROR | Exceptions, critical issues requiring immediate attention     |
+| WARN  | Recoverable errors, deprecated usage, rate limiting           |
+| INFO  | Important business events (order created, user registered)    |
+| DEBUG | Detailed diagnostic information (for development)             |
+| TRACE | Very detailed diagnostic (method entry/exit, variable values) |
+
+### 7.2 Structured Logging (JSON format - MANDATORY)
+```java
+// Use key-value pairs for structured logging
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
+log.info("Order created successfully",
+    kv("orderId", orderId),
+    kv("userId", userId),
+    kv("amount", amount),
+    kv("correlationId", correlationId));
+```
+
+### 7.3 Required Fields in All Logs
+| Field           | Description                              | Example                    |
+|-----------------|------------------------------------------|----------------------------|
+| timestamp       | ISO-8601 timestamp                       | 2025-01-15T10:30:00.123Z   |
+| level           | Log level                                | INFO, ERROR, etc.          |
+| logger          | Logger name                              | c.f.o.service.OrderService |
+| message         | Log message                              | Order created successfully |
+| correlationId   | Request correlation ID (MDC)             | uuid                       |
+| spanId          | Distributed tracing span ID              | abc123                     |
+| traceId         | Distributed tracing trace ID             | xyz789                     |
+| serviceName     | Name of the microservice                 | order-service              |
+| environment     | Deployment environment                   | prod, staging, dev         |
+
+### 7.4 What NOT to Log
+- Passwords, tokens, secrets
+- Full credit card numbers
+- Personal Identifiable Information (PII) - mask or hash
+- Request/response bodies (unless DEBUG level and sanitized)
+
+================================================================================
+## 8. TESTING REQUIREMENTS (MANDATORY)
+================================================================================
+
+### 8.1 Coverage Thresholds (BLOCKING)
+| Metric          | Threshold | Enforcement |
+|-----------------|-----------|-------------|
+| Line Coverage   | ≥ 80%    | JaCoCo      |
+| Branch Coverage | ≥ 75%    | JaCoCo      |
+| Method Coverage | ≥ 80%    | JaCoCo      |
+
+### 8.2 Coverage by Layer
+| Layer           | Line Coverage | Branch Coverage |
+|-----------------|---------------|-----------------|
+| Domain Model    | ≥ 90%        | ≥ 85%          |
+| Services        | ≥ 85%        | ≥ 80%          |
+| Controllers     | ≥ 80%        | ≥ 75%          |
+| Mappers         | ≥ 80%        | ≥ 75%          |
+| Repository      | ≥ 70%        | ≥ 65%          |
+
+### 8.3 Test Types (ALL REQUIRED)
+
+#### Unit Tests (JUnit 5 + Mockito)
+- Test each method in isolation
+- Mock all dependencies
+- Fast execution (< 100ms per test)
+- Test both happy path and edge cases
+- Test all exception scenarios
+
+#### Integration Tests (Spring Boot Test + Testcontainers)
+- Test with real databases (Testcontainers)
+- Test API endpoints end-to-end
+- Test Kafka producers/consumers
+- Use `@IntegrationTest` suffix
+
+#### Controller Tests (MockMvc)
+- Test all HTTP methods
+- Test request validation
+- Test response serialization
+- Test error responses
+
+#### Repository Tests (Testcontainers)
+- Test custom queries
+- Test pagination
+- Test indexing effectiveness
+
+#### Architecture Tests (ArchUnit)
+- Enforce layered architecture
+- Enforce package dependencies
+- Enforce naming conventions
+
+### 8.4 Test Naming Convention
+```java
+@Test
+void shouldCreateUserSuccessfully_whenValidInput() { }
+
+@Test
+void shouldThrowNotFoundException_whenUserDoesNotExist() { }
+
+@Test
+void shouldReturnEmptyList_whenNoUsersExist() { }
+```
+
+### 8.5 Test Structure (AAA Pattern)
+```java
+@Test
+void testName() {
+    // Arrange - Setup test data and mocks
+    User user = User.builder().id("1").name("John").build();
+    when(userRepository.findById("1")).thenReturn(Optional.of(user));
+    
+    // Act - Execute the method under test
+    UserResponse result = userService.findById("1");
+    
+    // Assert - Verify the results
+    assertThat(result).isNotNull();
+    assertThat(result.getName()).isEqualTo("John");
+    verify(userRepository).findById("1");
+}
+```
+
+### 8.6 Test Execution Rules
+- **ALL tests MUST pass before code is considered complete**
+- **Code coverage MUST meet thresholds**
+- **No test should be @Disabled without JIRA ticket reference**
+- **Tests MUST be deterministic (no flaky tests)**
+- **Tests MUST be independent (no order dependency)**
+- **Tests MUST clean up after themselves**
+
+### 8.7 Mocking Best Practices
+- Use `@Mock` for dependencies
+- Use `@InjectMocks` for the class under test
+- Use `@ExtendWith(MockitoExtension.class)`
+- Verify interactions with `verify()`
+- Use `ArgumentCaptor` for complex assertions
+
+================================================================================
+## 9. SECURITY REQUIREMENTS (MANDATORY)
+================================================================================
+
+### 9.1 Authentication & Authorization
+- Use JWT tokens for authentication
+- Validate JWT in API Gateway
+- Use `@PreAuthorize` for method-level security
+- Implement role-based access control (RBAC)
+- Never trust client-side data
+
+### 9.2 Input Validation (Defense in Depth)
+```java
+// Controller Layer - DTO validation
+public ResponseEntity<UserResponse> createUser(
+    @Valid @RequestBody CreateUserRequest request) { }
+
+// Service Layer - Business validation
+public User createUser(CreateUserRequest request) {
+    if (userRepository.existsByEmail(request.getEmail())) {
+        throw new ConflictException("User with email already exists");
+    }
+    // ...
+}
+```
+
+### 9.3 OWASP Top 10 Mitigations
+| Vulnerability              | Mitigation                                    |
+|---------------------------|-----------------------------------------------|
+| Injection                 | Parameterized queries, input validation       |
+| Broken Authentication     | JWT validation, secure session management     |
+| Sensitive Data Exposure   | Encryption at rest/transit, masking PII       |
+| XXE                       | Disable DTD processing                        |
+| Broken Access Control     | RBAC, resource ownership validation           |
+| Security Misconfiguration | Secure defaults, disable debug in prod        |
+| XSS                       | Output encoding, Content-Security-Policy      |
+| Insecure Deserialization  | Whitelist allowed classes                     |
+| Components with Vulns     | OWASP Dependency Check, regular updates       |
+| Insufficient Logging      | Structured logging, security event monitoring |
+
+### 9.4 Secrets Management
+- NEVER hardcode secrets in code
+- Use environment variables or GCP Secret Manager
+- Rotate credentials every 90 days minimum
+- Use different credentials per environment
+- Audit secret access
+
+### 9.5 Data Protection
+```java
+// Sensitive data must be masked in logs
+@ToString.Exclude
+private String password;
+
+@JsonIgnore
+private String apiKey;
+
+// Use encryption for sensitive fields
+@Convert(converter = EncryptedStringConverter.class)
+private String ssn;
+```
+
+================================================================================
+## 10. CODE QUALITY TOOLS CONFIGURATION
+================================================================================
+
+### 10.1 JaCoCo Configuration (pom.xml)
+```xml
+<plugin>
+    <groupId>org.jacoco</groupId>
+    <artifactId>jacoco-maven-plugin</artifactId>
+    <version>${jacoco.version}</version>
+    <executions>
+        <execution>
+            <id>prepare-agent</id>
+            <goals><goal>prepare-agent</goal></goals>
+        </execution>
+        <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals><goal>report</goal></goals>
+        </execution>
+        <execution>
+            <id>jacoco-check</id>
+            <goals><goal>check</goal></goals>
+            <configuration>
+                <rules>
+                    <rule>
+                        <element>BUNDLE</element>
+                        <limits>
+                            <limit>
+                                <counter>LINE</counter>
+                                <value>COVEREDRATIO</value>
+                                <minimum>0.80</minimum>
+                            </limit>
+                            <limit>
+                                <counter>BRANCH</counter>
+                                <value>COVEREDRATIO</value>
+                                <minimum>0.75</minimum>
+                            </limit>
+                        </limits>
+                    </rule>
+                </rules>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
+
+### 10.2 SpotBugs Configuration
+```xml
+<plugin>
+    <groupId>com.github.spotbugs</groupId>
+    <artifactId>spotbugs-maven-plugin</artifactId>
+    <version>4.8.3.0</version>
+    <configuration>
+        <effort>Max</effort>
+        <threshold>Medium</threshold>
+        <failOnError>true</failOnError>
+        <excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
+    </configuration>
+    <executions>
+        <execution>
+            <goals><goal>check</goal></goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+### 10.3 PMD Configuration
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-pmd-plugin</artifactId>
+    <version>3.21.2</version>
+    <configuration>
+        <linkXRef>false</linkXRef>
+        <printFailingErrors>true</printFailingErrors>
+        <rulesets>
+            <ruleset>/category/java/bestpractices.xml</ruleset>
+            <ruleset>/category/java/errorprone.xml</ruleset>
+            <ruleset>/category/java/security.xml</ruleset>
+        </rulesets>
+        <excludeRoots>
+            <excludeRoot>target/generated-sources</excludeRoot>
+        </excludeRoots>
+    </configuration>
+    <executions>
+        <execution>
+            <goals><goal>check</goal></goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+### 10.4 OWASP Dependency Check
+```xml
+<plugin>
+    <groupId>org.owasp</groupId>
+    <artifactId>dependency-check-maven</artifactId>
+    <version>9.0.9</version>
+    <configuration>
+        <failBuildOnCVSS>7</failBuildOnCVSS>
+        <suppressionFiles>
+            <suppressionFile>owasp-suppressions.xml</suppressionFile>
+        </suppressionFiles>
+    </configuration>
+    <executions>
+        <execution>
+            <goals><goal>check</goal></goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+### 10.5 Checkstyle Configuration
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-checkstyle-plugin</artifactId>
+    <version>3.3.1</version>
+    <dependencies>
+        <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${checkstyle.version}</version>
+        </dependency>
+    </dependencies>
+    <configuration>
+        <configLocation>checkstyle.xml</configLocation>
+        <consoleOutput>true</consoleOutput>
+        <failsOnError>true</failsOnError>
+        <violationSeverity>warning</violationSeverity>
+        <excludes>**/generated-sources/**/*</excludes>
+    </configuration>
+    <executions>
+        <execution>
+            <id>validate</id>
+            <phase>validate</phase>
+            <goals><goal>check</goal></goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+### 10.6 Spotless (Code Formatting)
+```xml
+<plugin>
+    <groupId>com.diffplug.spotless</groupId>
+    <artifactId>spotless-maven-plugin</artifactId>
+    <version>${spotless.version}</version>
+    <configuration>
+        <java>
+            <googleJavaFormat>
+                <version>1.18.1</version>
+                <style>GOOGLE</style>
+            </googleJavaFormat>
+            <removeUnusedImports/>
+            <trimTrailingWhitespace/>
+            <endWithNewline/>
+        </java>
+    </configuration>
+    <executions>
+        <execution>
+            <goals><goal>check</goal></goals>
+            <phase>compile</phase>
+        </execution>
+    </executions>
+</plugin>
+```
+
+================================================================================
+## 11. DATABASE STANDARDS
+================================================================================
+
+### 11.1 MongoDB
+- Use Spring Data MongoDB
+- Define indexes using `@Indexed` annotation
+- Use `@CompoundIndex` for composite indexes
+- Implement soft delete (add `deleted` boolean + `deletedAt` timestamp)
+- Use `@CreatedDate`, `@LastModifiedDate` for auditing
+- Document schema version in code
+
+### 11.2 PostgreSQL
+- Use Spring Data JPA with Hibernate
+- Use Flyway for schema migrations (MANDATORY)
+- Follow naming: `snake_case` for tables and columns
+- Add `created_at`, `updated_at`, `deleted_at` to all tables
+- Use UUIDs for primary keys
+- Define indexes in Flyway migrations
+
+### 11.3 Redis
+- Use Spring Data Redis
+- Set TTL for ALL cached data (no infinite caching)
+- Use meaningful key prefixes: `{service}:{entity}:{id}`
+- Implement cache invalidation strategy
+- Use connection pooling
+
+### 11.4 Elasticsearch
+- Use Spring Data Elasticsearch
+- Define mapping explicitly
+- Implement reindexing strategy
+- Use bulk operations for indexing
+- Consider index lifecycle management (ILM)
+
+================================================================================
+## 12. KAFKA MESSAGING STANDARDS
+================================================================================
+
+### 12.1 Topic Naming Convention
+```
+{domain}.{entity}.{event-type}
+
+Examples:
+- order.created
+- order.status.updated
+- order.cancelled
+- user.registered
+- payment.completed
+- payment.failed
+```
+
+### 12.2 Message Format (CloudEvents-inspired)
+```json
+{
+  "id": "uuid",
+  "type": "order.created",
+  "source": "order-service",
+  "specversion": "1.0",
+  "time": "2025-01-15T10:30:00Z",
+  "datacontenttype": "application/json",
+  "data": {
+    /* domain-specific payload */
+  },
+  "metadata": {
+    "correlationId": "correlation-123",
+    "userId": "user-123",
+    "causationId": "previous-event-id"
+  }
+}
+```
+
+### 12.3 Event Handling Requirements
+- Implement idempotent consumers (handle duplicates)
+- Use dead letter queue (DLQ) for failed messages
+- Log all events with correlation ID
+- Implement retry with exponential backoff
+- Monitor consumer lag
+
+================================================================================
+## 13. PERFORMANCE REQUIREMENTS
+================================================================================
+
+### 13.1 Response Time Targets (p95)
+| Operation Type          | Target    | Max Acceptable |
+|-------------------------|-----------|----------------|
+| Simple CRUD             | < 50ms    | < 100ms        |
+| Complex query           | < 200ms   | < 500ms        |
+| Search operations       | < 300ms   | < 1000ms       |
+| Batch operations        | < 2s      | < 5s           |
+| File upload/download    | < 5s      | < 30s          |
+
+### 13.2 Resource Limits
+| Resource                | Limit                          |
+|-------------------------|--------------------------------|
+| Heap memory             | Max 75% of container limit     |
+| Connection pool         | Min: 10, Max: 50 per database  |
+| Thread pool             | Core: 20, Max: 200             |
+| Request timeout         | 30 seconds                     |
+| Kafka consumer threads  | Equal to partition count       |
+
+### 13.3 Optimization Techniques
+- Use caching (Redis) for frequently accessed data
+- Use database connection pooling (HikariCP)
+- Use async processing for non-critical operations
+- Implement pagination for large datasets
+- Use database indexes effectively
+- Enable query plan caching
+- Use batch operations for bulk data
+
+================================================================================
+## 14. DOCUMENTATION REQUIREMENTS (MANDATORY)
+================================================================================
+
+### 14.1 Code Documentation
+- JavaDoc for ALL public classes and methods
+- Explain "why" not "what" in comments
+- Document complex algorithms
+- Document API contracts
+- Keep documentation up-to-date with code changes
+
+### 14.2 API Documentation (OpenAPI 3.0)
+```java
+@Operation(summary = "Create a new order",
+           description = "Creates a new order for the authenticated user")
+@ApiResponses({
+    @ApiResponse(responseCode = "201", description = "Order created successfully",
+        content = @Content(schema = @Schema(implementation = OrderResponse.class))),
+    @ApiResponse(responseCode = "400", description = "Invalid request"),
+    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+    @ApiResponse(responseCode = "404", description = "Restaurant or menu item not found")
+})
+@PostMapping
+public ResponseEntity<OrderResponse> createOrder(
+    @Valid @RequestBody CreateOrderRequest request) { }
+```
+
+### 14.3 README per Microservice (Template)
+```markdown
+# {Service Name}
+
+## Overview
+Brief description of the service's purpose and responsibilities.
+
+## API Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST   | /api/v1/orders | Create order |
+| GET    | /api/v1/orders/{id} | Get order by ID |
+
+## Database Schema
+- MongoDB Collections: orders, carts
+- PostgreSQL Tables: payments, refunds
+
+## Events Published
+- order.created
+- order.status.updated
+
+## Events Consumed
+- payment.completed
+- rider.assigned
+
+## Configuration
+| Variable | Description | Default |
+|----------|-------------|---------|
+| MONGODB_URI | MongoDB connection string | mongodb://localhost:27017 |
+
+## Running Locally
+\`\`\`bash
+./mvnw.sh clean verify
+./mvnw.sh spring-boot:run
+\`\`\`
+
+## Testing
+\`\`\`bash
+./mvnw.sh clean test           # Unit tests
+./mvnw.sh clean verify         # All tests including integration
+\`\`\`
+```
+
+================================================================================
+## 15. CI/CD REQUIREMENTS
+================================================================================
+
+### 15.1 Pre-commit Checks (Local)
+1. Code formatting (Spotless)
+2. Static analysis (Checkstyle, SpotBugs, PMD)
+3. Unit tests
+4. Code coverage check
+
+### 15.2 CI Pipeline Stages
+```yaml
+stages:
+  - validate:        # Checkstyle, Spotless
+  - compile:         # Maven compile
+  - unit-test:       # Unit tests + coverage
+  - static-analysis: # SpotBugs, PMD
+  - security-scan:   # OWASP, Snyk, Trivy
+  - integration-test:# Integration tests
+  - sonar:           # SonarQube analysis
+  - package:         # Build JAR
+  - docker:          # Build & push image
+  - deploy:          # Deploy to environment
+```
+
+### 15.3 Quality Gates (ALL MUST PASS)
+| Gate                        | Threshold           | Blocking |
+|-----------------------------|---------------------|----------|
+| Code Coverage               | ≥ 80% line         | YES      |
+| Branch Coverage             | ≥ 75%              | YES      |
+| All Unit Tests Pass         | 100%               | YES      |
+| All Integration Tests Pass  | 100%               | YES      |
+| Code Smells                 | < 10               | YES      |
+| Bugs                        | 0                  | YES      |
+| Security Vulnerabilities    | 0 (Critical/High)  | YES      |
+| Technical Debt Ratio        | < 5%               | YES      |
+| Duplicated Lines            | < 3%               | YES      |
+| Checkstyle Violations       | 0                  | YES      |
+| SpotBugs Issues             | 0 (High/Medium)    | YES      |
+| PMD Violations              | 0 (Critical)       | YES      |
+| OWASP CVE Score             | < 7                | YES      |
+
+### 15.4 Branch Protection Rules
+- Require pull request reviews (minimum 2)
+- Require status checks to pass
+- Require conversation resolution
+- Require signed commits
+- No force pushes to main/develop
+
+================================================================================
+## 16. CRITICAL REMINDERS (MUST FOLLOW)
+================================================================================
+
+1. **NO CODE WITHOUT TESTS**: Every class must have corresponding test class
+2. **80% COVERAGE MINIMUM**: Code coverage must be ≥ 80% line, ≥ 75% branch
+3. **ALL TESTS MUST PASS**: No code is complete until all tests pass
+4. **UNIFORM STRUCTURE**: All microservices follow the same structure
+5. **DDD PRINCIPLES**: Domain logic in domain layer, not in controllers
+6. **ERROR HANDLING**: Use exception hierarchy, never swallow exceptions
+7. **LOGGING**: Structured logging with correlation ID, no sensitive data
+8. **DOCUMENTATION**: JavaDoc + OpenAPI documentation mandatory
+9. **SECURITY**: Validate all inputs, never trust client data
+10. **PERFORMANCE**: Use caching, pagination, and async where appropriate
+11. **CODE REVIEW**: All PRs require 2 approvals
+12. **NO SECRETS IN CODE**: Use environment variables or secret managers
+13. **IDEMPOTENCY**: All event handlers must be idempotent
+14. **MONITORING**: Expose health, metrics, and tracing endpoints
+
+================================================================================
+## 17. CODE GENERATION CHECKLIST
+================================================================================
+
+When generating code for a microservice, verify ALL items:
+
+### Phase 1: Domain Layer
+- [ ] Domain entities with proper annotations
+- [ ] Value objects (immutable)
+- [ ] Enums for status/type fields
+- [ ] Repository interfaces
+- [ ] Domain services (if complex business logic)
+- [ ] Unit tests for domain entities (≥90% coverage)
+
+### Phase 2: Application Layer
+- [ ] Application services with transaction management
+- [ ] Input validation
+- [ ] Error handling with proper exceptions
+- [ ] Unit tests for services (≥85% coverage)
+
+### Phase 3: API Layer
+- [ ] REST controllers with proper annotations
+- [ ] DTOs for request/response
+- [ ] MapStruct mappers
+- [ ] OpenAPI documentation on all endpoints
+- [ ] Controller tests with MockMvc (≥80% coverage)
+- [ ] Mapper tests (≥80% coverage)
+
+### Phase 4: Infrastructure Layer
+- [ ] Database configuration (Mongo/PostgreSQL)
+- [ ] Redis configuration
+- [ ] Kafka configuration
+- [ ] External client configuration
+- [ ] Repository tests with Testcontainers
+
+### Phase 5: Cross-cutting
+- [ ] Global exception handler
+- [ ] Logging configuration (logback-spring.xml)
+- [ ] Application configuration files (all profiles)
+- [ ] Flyway migrations (if PostgreSQL)
+- [ ] Health check endpoints
+
+### Phase 6: Quality Gates
+- [ ] Run `mvn clean verify` - ALL TESTS PASS
+- [ ] Verify JaCoCo coverage ≥80% line, ≥75% branch
+- [ ] Verify no Checkstyle violations
+- [ ] Verify no SpotBugs issues
+- [ ] Verify OpenAPI documentation complete
+- [ ] Update service README
+- [ ] Update DOMAIN_MODEL.md
+- [ ] Update backend README.md
+
+================================================================================
+## 18. ARCHITECTURE TESTS (ArchUnit)
+================================================================================
+
+Every service MUST include architecture tests:
+
+```java
+@AnalyzeClasses(packages = "com.foodai.{domain}")
+public class ArchitectureTest {
+    
+    @ArchTest
+    static final ArchRule controllers_should_not_access_repositories =
+        noClasses()
+            .that().resideInAPackage("..controller..")
+            .should().accessClassesThat()
+            .resideInAPackage("..repository..");
+    
+    @ArchTest
+    static final ArchRule services_should_not_depend_on_controllers =
+        noClasses()
+            .that().resideInAPackage("..service..")
+            .should().dependOnClassesThat()
+            .resideInAPackage("..controller..");
+    
+    @ArchTest
+    static final ArchRule domain_should_not_depend_on_infrastructure =
+        noClasses()
+            .that().resideInAPackage("..domain..")
+            .should().dependOnClassesThat()
+            .resideInAPackage("..infrastructure..");
+    
+    @ArchTest
+    static final ArchRule repositories_should_be_interfaces =
+        classes()
+            .that().resideInAPackage("..repository..")
+            .and().haveSimpleNameEndingWith("Repository")
+            .should().beInterfaces();
+    
+    @ArchTest
+    static final ArchRule controllers_should_be_annotated =
+        classes()
+            .that().resideInAPackage("..controller..")
+            .and().haveSimpleNameEndingWith("Controller")
+            .should().beAnnotatedWith(RestController.class);
+}
+```
+
+================================================================================
+## 19. SERVICE PORTS (STANDARDIZED)
+================================================================================
+
+| Service                | Port  |
+|------------------------|-------|
+| api-gateway            | 8080  |
+| orchestration-service  | 8081  |
+| user-service           | 8083  |
+| restaurant-service     | 8084  |
+| menu-service           | 8082  |
+| order-service          | 8085  |
+| payment-service        | 8086  |
+| rider-service          | 8087  |
+| notification-service   | 8088  |
+| search-service         | 8089  |
+| review-service         | 8090  |
+| promotion-service      | 8091  |
+| support-service        | 8092  |
+| chat-service           | 8093  |
+| planner-service        | 8094  |
+| analytics-service      | 8095  |
+| admin-service          | 8096  |
+
+================================================================================
+## 20. FINAL VERIFICATION COMMANDS
+================================================================================
+
+Before considering any service complete, run these commands:
+
+```bash
+# 1. Format code
+mvn spotless:apply
+
+# 2. Run all quality checks and tests
+mvn clean verify
+
+# 3. Generate coverage report
+mvn jacoco:report
+
+# 4. Run static analysis (optional, if configured)
+mvn pmd:check spotbugs:check
+
+# 5. Run security scan (optional, if configured)
+mvn dependency-check:check
+
+# Expected output:
+# - BUILD SUCCESS
+# - All tests passed
+# - Code coverage ≥ 80% line, ≥ 75% branch
+# - No Checkstyle violations
+# - No SpotBugs issues
+# - No critical vulnerabilities
+```
+
+Only when ALL checks pass, the code is production-ready.
+
+================================================================================
+## 21. CURSOR AI VALIDATION RULES (MANDATORY)
+================================================================================
+
+### 21.1 Pre-Completion Validation (BLOCKING)
+
+**CRITICAL: Before completing ANY backend code change, Cursor MUST run validation.**
+
+```bash
+# Run from backend/ directory
+cd /Users/arpan1.mukherjee/code/agentic-plate/backend
+./mvnw.sh cursor
+```
+
+This command will:
+1. Detect changed services from git diff
+2. Run all tests with coverage
+3. Verify coverage thresholds (≥80% line, ≥75% branch)
+4. Generate validation report
+5. Return pass/fail status
+
+### 21.2 Validation Modes
+
+| Mode | Command | Use Case |
+|------|---------|----------|
+| Changeset | `./mvnw.sh cursor` | **DEFAULT** - Validates changed services only |
+| All Services | `./mvnw.sh all` | Validate entire backend |
+| Single Service | `./mvnw.sh service <name>` | Validate specific service |
+| Quick | `./mvnw.sh quick` | Fast validation (tests only) |
+| Full | `./mvnw.sh full` | Full scan including security |
+
+### 21.3 Cursor Task Completion Checklist
+
+Before marking any backend task as complete, verify:
+
+```
+□ All changed files are saved
+□ Run: ./mvnw.sh cursor
+□ Validation report shows: PASSED
+□ All tests pass (0 failures, 0 errors)
+□ Coverage thresholds met (≥80% line, ≥75% branch)
+□ No compilation errors
+□ Code follows DDD principles
+□ OpenAPI documentation updated (if API changed)
+□ README updated (if significant changes)
+□ DOMAIN_MODEL.md updated (if domain changed)
+```
+
+### 21.4 If Validation Fails
+
+When validation fails, Cursor MUST:
+
+1. **Read the validation report:**
+   ```bash
+   cat backend/target/quality-reports/LATEST_QUALITY_REPORT.md
+   ```
+
+2. **Fix failing tests:**
+   - Check test logs in `target/quality-reports/<service>-test.log`
+   - Fix test failures before proceeding
+
+3. **Improve coverage if below threshold:**
+   - Add unit tests for uncovered code
+   - Focus on domain and service layers first
+   - Check coverage report: `target/site/jacoco/index.html`
+
+4. **Re-run validation:**
+   ```bash
+   ./mvnw.sh cursor
+   ```
+
+5. **Only after PASSED** - complete the task
+
+### 21.5 Service-Specific Commands
+
+```bash
+# Validate order-service only
+./mvnw.sh service order-service
+
+# Validate user-service only
+./mvnw.sh service user-service
+
+# Validate restaurant-service only
+./mvnw.sh service restaurant-service
+
+# Validate menu-service only
+./mvnw.sh service menu-service
+```
+
+### 21.6 Report Location
+
+All validation reports are generated at:
+- **Summary:** `backend/target/quality-reports/LATEST_QUALITY_REPORT.md`
+- **Detailed:** `backend/target/quality-reports/quality-report-<timestamp>.txt`
+- **Cursor Report:** `backend/target/quality-reports/cursor-validation.md`
+- **Test Logs:** `backend/target/quality-reports/<service>-test.log`
+
+### 21.7 Non-Negotiable Rules for Cursor
+
+1. **NEVER skip validation** - Every backend change requires validation
+2. **NEVER lower thresholds** - 80% line / 75% branch coverage is mandatory
+3. **NEVER commit failing tests** - All tests must pass
+4. **NEVER ignore coverage** - Add tests for uncovered code
+5. **ALWAYS run ./mvnw.sh cursor** before completing backend tasks
+
+### 21.8 Example Cursor Workflow
+
+```
+User: Add a new endpoint to order-service
+
+Cursor Actions:
+1. Implement the endpoint
+2. Add unit tests for the new code
+3. Run: ./mvnw.sh service order-service
+4. Check validation result
+5. If FAILED:
+   - Fix issues
+   - Add more tests
+   - Re-run validation
+6. If PASSED:
+   - Update API documentation
+   - Complete the task
+```
+
+================================================================================
+## 22. QUALITY ENFORCEMENT SCRIPTS
+================================================================================
+
+### 22.1 Backend Master Validation Script
+
+Location: `backend/mvnw.sh`
+
+This is the master validation script that enforces all quality standards.
+
+**Features:**
+- Multi-mode validation (all, service, changeset, quick, full, cursor)
+- Automatic Java 21 environment setup
+- Comprehensive quality checks (compile, test, coverage, static analysis)
+- Report generation (Markdown + detailed logs)
+- Git-aware changeset detection
+- Color-coded console output
+- Non-zero exit code on failure (for CI/CD integration)
+
+### 22.2 Usage Examples
+
+```bash
+# From backend/ directory
+
+# Default: Validate changed services
+./mvnw.sh
+
+# Validate all services
+./mvnw.sh all
+
+# Validate specific service
+./mvnw.sh service order-service
+
+# Quick validation (tests only)
+./mvnw.sh quick all
+
+# Full validation with security scan
+./mvnw.sh full all
+
+# Cursor pre-completion validation
+./mvnw.sh cursor
+
+# Show help
+./mvnw.sh help
+```
+
+### 22.3 Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| 0 | Validation PASSED |
+| 1 | Validation FAILED |
+
+### 22.4 Integration with CI/CD
+
+```yaml
+# GitHub Actions / Jenkins example
+- name: Backend Validation
+  run: |
+    cd backend
+    ./mvnw.sh all
+  
+- name: Upload Quality Report
+  uses: actions/upload-artifact@v3
+  with:
+    name: quality-reports
+    path: backend/target/quality-reports/
+```
+
+================================================================================
+## 23. TEMPORARY THRESHOLD EXCEPTIONS
+================================================================================
+
+### 23.1 When Exceptions Are Allowed
+
+Temporary threshold reductions are ONLY allowed during:
+- Initial service creation (first sprint)
+- Major refactoring (with JIRA ticket)
+- Legacy code migration
+
+### 23.2 Exception Process
+
+1. **Document in pom.xml:**
+   ```xml
+   <!-- TODO: Increase to 0.80/0.75 by JIRA-XXX -->
+   <minimum>0.50</minimum>
+   ```
+
+2. **Create tracking ticket** with:
+   - Current coverage
+   - Target coverage
+   - Timeline to reach target
+
+3. **Maximum duration:** 2 sprints
+
+4. **Review requirement:** Tech lead approval
+
+### 23.3 Current Exceptions
+
+| Service | Line Coverage | Branch Coverage | JIRA | Target Date |
+|---------|---------------|-----------------|------|-------------|
+| order-service | 0.50 | 0.00 | TBD | TBD |
+| user-service | 0.50 | 0.04 | TBD | TBD |
+
+**Goal:** All services at 80%/75% coverage by Q1 2025.
+
+================================================================================
+## 24. CONTACT & ESCALATION
+================================================================================
+
+For questions about quality standards:
+- **Technical Lead:** [TBD]
+- **Quality Engineering:** [TBD]
+- **Platform Team:** [TBD]
+
+For exceptions or threshold changes:
+- Requires Tech Lead approval
+- Must have JIRA ticket
+- Must have timeline for compliance
+
+================================================================================
+END OF RULES
+================================================================================

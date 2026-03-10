@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DietaryPreferencesVO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.user.domain.model</a> &gt; <span class="el_source">DietaryPreferencesVO.java</span></div><h1>DietaryPreferencesVO.java</h1><pre class="source lang-java linenums">package com.foodai.user.domain.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Value Object representing a user's dietary preferences and restrictions.
+ * Used for personalized recommendations and filtering.
+ *
+ * &lt;p&gt;Covers features from:
+ * &lt;ul&gt;
+ *   &lt;li&gt;DIET_PLANNER.md - Dietary restrictions and goals&lt;/li&gt;
+ *   &lt;li&gt;AI_PERSONALIZATION_FEATURES.md - Personalized food suggestions&lt;/li&gt;
+ *   &lt;li&gt;SEARCH_RECOMMENDATION_ENGINE.md - Diet-based filtering&lt;/li&gt;
+ *   &lt;li&gt;FOOD_CUSTOMIZATION_INSTRUCTIONS.md - Default customizations&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * @author FoodAI Team
+ */
+<span class="nc bnc" id="L25" title="All 134 branches missed.">@Data</span>
+<span class="pc bpc" id="L26" title="18 of 36 branches missed.">@Builder</span>
+<span class="nc" id="L27">@NoArgsConstructor</span>
+<span class="fc" id="L28">@AllArgsConstructor</span>
+public class DietaryPreferencesVO {
+
+    /**
+     * Whether user is vegetarian
+     */
+    @Builder.Default
+<span class="fc" id="L35">    private boolean vegetarian = false;</span>
+
+    /**
+     * Whether user is vegan
+     */
+    @Builder.Default
+<span class="fc" id="L41">    private boolean vegan = false;</span>
+
+    /**
+     * Whether user requires gluten-free options
+     */
+    @Builder.Default
+<span class="nc" id="L47">    private boolean glutenFree = false;</span>
+
+    /**
+     * Whether user avoids dairy
+     */
+    @Builder.Default
+<span class="nc" id="L53">    private boolean dairyFree = false;</span>
+
+    /**
+     * Whether user follows Jain diet (no onion, garlic, root vegetables)
+     */
+    @Builder.Default
+<span class="nc" id="L59">    private boolean jain = false;</span>
+
+    /**
+     * Whether user requires halal food
+     */
+    @Builder.Default
+<span class="nc" id="L65">    private boolean halal = false;</span>
+
+    /**
+     * Whether user requires kosher food
+     */
+    @Builder.Default
+<span class="nc" id="L71">    private boolean kosher = false;</span>
+
+    /**
+     * Whether user follows keto diet
+     */
+    @Builder.Default
+<span class="nc" id="L77">    private boolean keto = false;</span>
+
+    /**
+     * Whether user follows low-carb diet
+     */
+    @Builder.Default
+<span class="nc" id="L83">    private boolean lowCarb = false;</span>
+
+    /**
+     * Whether user follows paleo diet
+     */
+    @Builder.Default
+<span class="nc" id="L89">    private boolean paleo = false;</span>
+
+    /**
+     * List of food allergies (e.g., &quot;peanuts&quot;, &quot;shellfish&quot;, &quot;eggs&quot;)
+     */
+    @Builder.Default
+<span class="fc" id="L95">    private List&lt;String&gt; allergies = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * List of ingredients to avoid (e.g., &quot;msg&quot;, &quot;artificial sweeteners&quot;)
+     */
+    @Builder.Default
+<span class="nc" id="L101">    private List&lt;String&gt; avoidIngredients = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Preferred spice level (0-5, where 0 is no spice and 5 is extremely spicy)
+     */
+    @Builder.Default
+<span class="nc" id="L107">    private Integer spicePreference = 2;</span>
+
+    /**
+     * Daily calorie target (for diet planning)
+     */
+<span class="nc" id="L112">    private Integer dailyCalorieTarget;</span>
+
+    /**
+     * Daily protein target in grams
+     */
+<span class="nc" id="L117">    private Integer dailyProteinTarget;</span>
+
+    /**
+     * Daily carb target in grams
+     */
+<span class="nc" id="L122">    private Integer dailyCarbTarget;</span>
+
+    /**
+     * Daily fat target in grams
+     */
+<span class="nc" id="L127">    private Integer dailyFatTarget;</span>
+
+    /**
+     * Health goals (e.g., &quot;weight_loss&quot;, &quot;muscle_gain&quot;, &quot;maintenance&quot;)
+     */
+    @Builder.Default
+<span class="nc" id="L133">    private List&lt;String&gt; healthGoals = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Medical conditions affecting diet (e.g., &quot;diabetes&quot;, &quot;hypertension&quot;)
+     */
+    @Builder.Default
+<span class="nc" id="L139">    private List&lt;String&gt; medicalConditions = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Default food customization instructions (e.g., &quot;less oil&quot;, &quot;extra spicy&quot;)
+     */
+    @Builder.Default
+<span class="nc" id="L145">    private List&lt;String&gt; defaultCustomizations = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Whether to show calorie information by default
+     */
+    @Builder.Default
+<span class="nc" id="L151">    private boolean showCalories = true;</span>
+
+    /**
+     * Whether to show nutritional information by default
+     */
+    @Builder.Default
+<span class="nc" id="L157">    private boolean showNutrition = true;</span>
+
+    /**
+     * Checks if user has any dietary restrictions.
+     *
+     * @return true if user has restrictions
+     */
+    public boolean hasRestrictions() {
+<span class="nc bnc" id="L165" title="All 22 branches missed.">        return vegetarian || vegan || glutenFree || dairyFree || jain ||</span>
+               halal || kosher || keto || lowCarb || paleo ||
+<span class="nc bnc" id="L167" title="All 4 branches missed.">               (allergies != null &amp;&amp; !allergies.isEmpty()) ||</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">               (avoidIngredients != null &amp;&amp; !avoidIngredients.isEmpty());</span>
+    }
+
+    /**
+     * Gets list of active dietary flags for filtering.
+     *
+     * @return list of active dietary flags
+     */
+    public List&lt;String&gt; getActiveDietaryFlags() {
+<span class="nc" id="L177">        List&lt;String&gt; flags = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L178" title="All 2 branches missed.">        if (vegetarian) flags.add(&quot;vegetarian&quot;);</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        if (vegan) flags.add(&quot;vegan&quot;);</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">        if (glutenFree) flags.add(&quot;gluten_free&quot;);</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">        if (dairyFree) flags.add(&quot;dairy_free&quot;);</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        if (jain) flags.add(&quot;jain&quot;);</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">        if (halal) flags.add(&quot;halal&quot;);</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">        if (kosher) flags.add(&quot;kosher&quot;);</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (keto) flags.add(&quot;keto&quot;);</span>
+<span class="nc bnc" id="L186" title="All 2 branches missed.">        if (lowCarb) flags.add(&quot;low_carb&quot;);</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">        if (paleo) flags.add(&quot;paleo&quot;);</span>
+<span class="nc" id="L188">        return flags;</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

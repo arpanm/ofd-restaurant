@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Restaurant Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.restaurant.exception</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package com.foodai.restaurant.exception;
+
+import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Global exception handler for the restaurant service.
+ * Provides centralized exception handling and consistent error responses.
+ */
+@RestControllerAdvice
+<span class="fc" id="L22">@Slf4j</span>
+<span class="fc" id="L23">public class GlobalExceptionHandler {</span>
+    
+    /**
+     * Handle RestaurantNotFoundException.
+     */
+    @ExceptionHandler(RestaurantNotFoundException.class)
+    public ResponseEntity&lt;ApiErrorResponse&gt; handleRestaurantNotFound(
+        RestaurantNotFoundException ex, 
+        WebRequest request
+    ) {
+<span class="fc" id="L33">        log.error(&quot;Restaurant not found: {}&quot;, ex.getMessage());</span>
+<span class="fc" id="L34">        ApiErrorResponse error = ApiErrorResponse.builder()</span>
+<span class="fc" id="L35">            .timestamp(Instant.now())</span>
+<span class="fc" id="L36">            .status(HttpStatus.NOT_FOUND.value())</span>
+<span class="fc" id="L37">            .error(&quot;Not Found&quot;)</span>
+<span class="fc" id="L38">            .message(ex.getMessage())</span>
+<span class="fc" id="L39">            .path(request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;))</span>
+<span class="fc" id="L40">            .build();</span>
+<span class="fc" id="L41">        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);</span>
+    }
+    
+    /**
+     * Handle OutletNotFoundException.
+     */
+    @ExceptionHandler(OutletNotFoundException.class)
+    public ResponseEntity&lt;ApiErrorResponse&gt; handleOutletNotFound(
+        OutletNotFoundException ex, 
+        WebRequest request
+    ) {
+<span class="fc" id="L52">        log.error(&quot;Outlet not found: {}&quot;, ex.getMessage());</span>
+<span class="fc" id="L53">        ApiErrorResponse error = ApiErrorResponse.builder()</span>
+<span class="fc" id="L54">            .timestamp(Instant.now())</span>
+<span class="fc" id="L55">            .status(HttpStatus.NOT_FOUND.value())</span>
+<span class="fc" id="L56">            .error(&quot;Not Found&quot;)</span>
+<span class="fc" id="L57">            .message(ex.getMessage())</span>
+<span class="fc" id="L58">            .path(request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;))</span>
+<span class="fc" id="L59">            .build();</span>
+<span class="fc" id="L60">        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);</span>
+    }
+    
+    /**
+     * Handle RestaurantAlreadyExistsException.
+     */
+    @ExceptionHandler(RestaurantAlreadyExistsException.class)
+    public ResponseEntity&lt;ApiErrorResponse&gt; handleRestaurantAlreadyExists(
+        RestaurantAlreadyExistsException ex, 
+        WebRequest request
+    ) {
+<span class="fc" id="L71">        log.error(&quot;Restaurant already exists: {}&quot;, ex.getMessage());</span>
+<span class="fc" id="L72">        ApiErrorResponse error = ApiErrorResponse.builder()</span>
+<span class="fc" id="L73">            .timestamp(Instant.now())</span>
+<span class="fc" id="L74">            .status(HttpStatus.CONFLICT.value())</span>
+<span class="fc" id="L75">            .error(&quot;Conflict&quot;)</span>
+<span class="fc" id="L76">            .message(ex.getMessage())</span>
+<span class="fc" id="L77">            .path(request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;))</span>
+<span class="fc" id="L78">            .build();</span>
+<span class="fc" id="L79">        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);</span>
+    }
+    
+    /**
+     * Handle InvalidRestaurantStatusException.
+     */
+    @ExceptionHandler(InvalidRestaurantStatusException.class)
+    public ResponseEntity&lt;ApiErrorResponse&gt; handleInvalidRestaurantStatus(
+        InvalidRestaurantStatusException ex, 
+        WebRequest request
+    ) {
+<span class="fc" id="L90">        log.error(&quot;Invalid restaurant status: {}&quot;, ex.getMessage());</span>
+<span class="fc" id="L91">        ApiErrorResponse error = ApiErrorResponse.builder()</span>
+<span class="fc" id="L92">            .timestamp(Instant.now())</span>
+<span class="fc" id="L93">            .status(HttpStatus.BAD_REQUEST.value())</span>
+<span class="fc" id="L94">            .error(&quot;Bad Request&quot;)</span>
+<span class="fc" id="L95">            .message(ex.getMessage())</span>
+<span class="fc" id="L96">            .path(request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;))</span>
+<span class="fc" id="L97">            .build();</span>
+<span class="fc" id="L98">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);</span>
+    }
+    
+    /**
+     * Handle InvalidOutletStatusException.
+     */
+    @ExceptionHandler(InvalidOutletStatusException.class)
+    public ResponseEntity&lt;ApiErrorResponse&gt; handleInvalidOutletStatus(
+        InvalidOutletStatusException ex, 
+        WebRequest request
+    ) {
+<span class="nc" id="L109">        log.error(&quot;Invalid outlet status: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L110">        ApiErrorResponse error = ApiErrorResponse.builder()</span>
+<span class="nc" id="L111">            .timestamp(Instant.now())</span>
+<span class="nc" id="L112">            .status(HttpStatus.BAD_REQUEST.value())</span>
+<span class="nc" id="L113">            .error(&quot;Bad Request&quot;)</span>
+<span class="nc" id="L114">            .message(ex.getMessage())</span>
+<span class="nc" id="L115">            .path(request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;))</span>
+<span class="nc" id="L116">            .build();</span>
+<span class="nc" id="L117">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);</span>
+    }
+    
+    /**
+     * Handle DocumentVerificationException.
+     */
+    @ExceptionHandler(DocumentVerificationException.class)
+    public ResponseEntity&lt;ApiErrorResponse&gt; handleDocumentVerification(
+        DocumentVerificationException ex, 
+        WebRequest request
+    ) {
+<span class="nc" id="L128">        log.error(&quot;Document verification failed: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L129">        ApiErrorResponse error = ApiErrorResponse.builder()</span>
+<span class="nc" id="L130">            .timestamp(Instant.now())</span>
+<span class="nc" id="L131">            .status(HttpStatus.BAD_REQUEST.value())</span>
+<span class="nc" id="L132">            .error(&quot;Bad Request&quot;)</span>
+<span class="nc" id="L133">            .message(ex.getMessage())</span>
+<span class="nc" id="L134">            .path(request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;))</span>
+<span class="nc" id="L135">            .build();</span>
+<span class="nc" id="L136">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);</span>
+    }
+    
+    /**
+     * Handle ServiceabilityException.
+     */
+    @ExceptionHandler(ServiceabilityException.class)
+    public ResponseEntity&lt;ApiErrorResponse&gt; handleServiceability(
+        ServiceabilityException ex, 
+        WebRequest request
+    ) {
+<span class="nc" id="L147">        log.error(&quot;Serviceability check failed: {}&quot;, ex.getMessage());</span>
+<span class="nc" id="L148">        ApiErrorResponse error = ApiErrorResponse.builder()</span>
+<span class="nc" id="L149">            .timestamp(Instant.now())</span>
+<span class="nc" id="L150">            .status(HttpStatus.BAD_REQUEST.value())</span>
+<span class="nc" id="L151">            .error(&quot;Bad Request&quot;)</span>
+<span class="nc" id="L152">            .message(ex.getMessage())</span>
+<span class="nc" id="L153">            .path(request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;))</span>
+<span class="nc" id="L154">            .build();</span>
+<span class="nc" id="L155">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);</span>
+    }
+    
+    /**
+     * Handle validation errors from @Valid annotation.
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity&lt;ApiErrorResponse&gt; handleValidationErrors(
+        MethodArgumentNotValidException ex,
+        WebRequest request
+    ) {
+<span class="fc" id="L166">        Map&lt;String, String&gt; errors = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L167">        ex.getBindingResult().getAllErrors().forEach((error) -&gt; {</span>
+<span class="fc" id="L168">            String fieldName = ((FieldError) error).getField();</span>
+<span class="fc" id="L169">            String errorMessage = error.getDefaultMessage();</span>
+<span class="fc" id="L170">            errors.put(fieldName, errorMessage);</span>
+<span class="fc" id="L171">        });</span>
+        
+<span class="fc" id="L173">        log.error(&quot;Validation failed: {}&quot;, errors);</span>
+<span class="fc" id="L174">        ApiErrorResponse error = ApiErrorResponse.builder()</span>
+<span class="fc" id="L175">            .timestamp(Instant.now())</span>
+<span class="fc" id="L176">            .status(HttpStatus.BAD_REQUEST.value())</span>
+<span class="fc" id="L177">            .error(&quot;Validation Failed&quot;)</span>
+<span class="fc" id="L178">            .message(&quot;Invalid input data&quot;)</span>
+<span class="fc" id="L179">            .path(request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;))</span>
+<span class="fc" id="L180">            .validationErrors(errors)</span>
+<span class="fc" id="L181">            .build();</span>
+<span class="fc" id="L182">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);</span>
+    }
+    
+    /**
+     * Handle constraint violation exceptions.
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity&lt;ApiErrorResponse&gt; handleConstraintViolation(
+        ConstraintViolationException ex,
+        WebRequest request
+    ) {
+<span class="nc" id="L193">        Map&lt;String, String&gt; errors = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L194">        ex.getConstraintViolations().forEach(violation -&gt; {</span>
+<span class="nc" id="L195">            String propertyPath = violation.getPropertyPath().toString();</span>
+<span class="nc" id="L196">            String message = violation.getMessage();</span>
+<span class="nc" id="L197">            errors.put(propertyPath, message);</span>
+<span class="nc" id="L198">        });</span>
+        
+<span class="nc" id="L200">        log.error(&quot;Constraint violation: {}&quot;, errors);</span>
+<span class="nc" id="L201">        ApiErrorResponse error = ApiErrorResponse.builder()</span>
+<span class="nc" id="L202">            .timestamp(Instant.now())</span>
+<span class="nc" id="L203">            .status(HttpStatus.BAD_REQUEST.value())</span>
+<span class="nc" id="L204">            .error(&quot;Constraint Violation&quot;)</span>
+<span class="nc" id="L205">            .message(&quot;Constraint validation failed&quot;)</span>
+<span class="nc" id="L206">            .path(request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;))</span>
+<span class="nc" id="L207">            .validationErrors(errors)</span>
+<span class="nc" id="L208">            .build();</span>
+<span class="nc" id="L209">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);</span>
+    }
+    
+    /**
+     * Handle all other uncaught exceptions.
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity&lt;ApiErrorResponse&gt; handleGlobalException(
+        Exception ex, 
+        WebRequest request
+    ) {
+<span class="fc" id="L220">        log.error(&quot;Unexpected error occurred&quot;, ex);</span>
+<span class="fc" id="L221">        ApiErrorResponse error = ApiErrorResponse.builder()</span>
+<span class="fc" id="L222">            .timestamp(Instant.now())</span>
+<span class="fc" id="L223">            .status(HttpStatus.INTERNAL_SERVER_ERROR.value())</span>
+<span class="fc" id="L224">            .error(&quot;Internal Server Error&quot;)</span>
+<span class="fc" id="L225">            .message(&quot;An unexpected error occurred. Please try again later.&quot;)</span>
+<span class="fc" id="L226">            .path(request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;))</span>
+<span class="fc" id="L227">            .build();</span>
+<span class="fc" id="L228">        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);</span>
+    }
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

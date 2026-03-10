@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.user.mapper</a> &gt; <span class="el_source">UserMapperImpl.java</span></div><h1>UserMapperImpl.java</h1><pre class="source lang-java linenums">package com.foodai.user.mapper;
+
+import com.foodai.user.domain.model.AddressVO;
+import com.foodai.user.domain.model.DietaryPreferencesVO;
+import com.foodai.user.domain.model.NotificationPreferencesVO;
+import com.foodai.user.domain.model.PersonalizationSettingsVO;
+import com.foodai.user.domain.model.User;
+import com.foodai.user.domain.model.UserStatus;
+import com.foodai.user.dto.request.AddressDTO;
+import com.foodai.user.dto.request.CreateUserRequest;
+import com.foodai.user.dto.request.DietaryPreferencesDTO;
+import com.foodai.user.dto.request.NotificationPreferencesDTO;
+import com.foodai.user.dto.request.PersonalizationSettingsDTO;
+import com.foodai.user.dto.request.UpdateUserRequest;
+import com.foodai.user.dto.response.AddressResponse;
+import com.foodai.user.dto.response.DietaryPreferencesResponse;
+import com.foodai.user.dto.response.NotificationPreferencesResponse;
+import com.foodai.user.dto.response.PersonalizationSettingsResponse;
+import com.foodai.user.dto.response.UserResponse;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2025-12-15T18:18:15+0530&quot;,
+    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 21.0.6 (Eclipse Adoptium)&quot;
+)
+@Component
+<span class="fc" id="L31">public class UserMapperImpl implements UserMapper {</span>
+
+    @Override
+    public User toEntity(CreateUserRequest request) {
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        if ( request == null ) {</span>
+<span class="fc" id="L36">            return null;</span>
+        }
+
+<span class="fc" id="L39">        User.UserBuilder user = User.builder();</span>
+
+<span class="fc" id="L41">        user.dietaryPreferences( toDietaryPreferencesVO( request.getDietaryPreferences() ) );</span>
+<span class="fc" id="L42">        user.email( request.getEmail() );</span>
+<span class="fc" id="L43">        user.phone( request.getPhone() );</span>
+<span class="fc" id="L44">        user.firstName( request.getFirstName() );</span>
+<span class="fc" id="L45">        user.lastName( request.getLastName() );</span>
+<span class="fc" id="L46">        user.displayName( request.getDisplayName() );</span>
+<span class="fc" id="L47">        user.avatarUrl( request.getAvatarUrl() );</span>
+<span class="fc" id="L48">        user.dateOfBirth( request.getDateOfBirth() );</span>
+<span class="fc" id="L49">        user.gender( request.getGender() );</span>
+<span class="fc" id="L50">        List&lt;String&gt; list = request.getCuisinePreferences();</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">        if ( list != null ) {</span>
+<span class="nc" id="L52">            user.cuisinePreferences( new ArrayList&lt;String&gt;( list ) );</span>
+        }
+<span class="fc" id="L54">        user.languagePreference( request.getLanguagePreference() );</span>
+<span class="fc" id="L55">        user.timezone( request.getTimezone() );</span>
+<span class="fc" id="L56">        user.referredBy( request.getReferredBy() );</span>
+<span class="fc" id="L57">        user.createdBy( request.getCreatedBy() );</span>
+
+<span class="fc" id="L59">        user.referralCode( generateReferralCode() );</span>
+<span class="fc" id="L60">        user.status( UserStatus.PENDING_VERIFICATION );</span>
+<span class="fc" id="L61">        user.emailVerified( false );</span>
+<span class="fc" id="L62">        user.phoneVerified( false );</span>
+<span class="fc" id="L63">        user.totalOrders( 0 );</span>
+<span class="fc" id="L64">        user.totalSpent( (double) 0.0 );</span>
+<span class="fc" id="L65">        user.averageOrderValue( (double) 0.0 );</span>
+<span class="fc" id="L66">        user.deleted( false );</span>
+
+<span class="fc" id="L68">        return user.build();</span>
+    }
+
+    @Override
+    public void updateEntityFromRequest(User user, UpdateUserRequest request) {
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if ( request == null ) {</span>
+<span class="nc" id="L74">            return;</span>
+        }
+
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">        if ( request.getEmail() != null ) {</span>
+<span class="nc" id="L78">            user.setEmail( request.getEmail() );</span>
+        }
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">        if ( request.getFirstName() != null ) {</span>
+<span class="fc" id="L81">            user.setFirstName( request.getFirstName() );</span>
+        }
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        if ( request.getLastName() != null ) {</span>
+<span class="fc" id="L84">            user.setLastName( request.getLastName() );</span>
+        }
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        if ( request.getDisplayName() != null ) {</span>
+<span class="nc" id="L87">            user.setDisplayName( request.getDisplayName() );</span>
+        }
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">        if ( request.getAvatarUrl() != null ) {</span>
+<span class="nc" id="L90">            user.setAvatarUrl( request.getAvatarUrl() );</span>
+        }
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if ( request.getDateOfBirth() != null ) {</span>
+<span class="nc" id="L93">            user.setDateOfBirth( request.getDateOfBirth() );</span>
+        }
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">        if ( request.getGender() != null ) {</span>
+<span class="nc" id="L96">            user.setGender( request.getGender() );</span>
+        }
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">        if ( request.getDietaryPreferences() != null ) {</span>
+<span class="nc" id="L99">            user.setDietaryPreferences( toDietaryPreferencesVO( request.getDietaryPreferences() ) );</span>
+        }
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">        if ( user.getCuisinePreferences() != null ) {</span>
+<span class="fc" id="L102">            List&lt;String&gt; list = request.getCuisinePreferences();</span>
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">            if ( list != null ) {</span>
+<span class="nc" id="L104">                user.getCuisinePreferences().clear();</span>
+<span class="nc" id="L105">                user.getCuisinePreferences().addAll( list );</span>
+            }
+<span class="fc" id="L107">        }</span>
+        else {
+<span class="nc" id="L109">            List&lt;String&gt; list = request.getCuisinePreferences();</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">            if ( list != null ) {</span>
+<span class="nc" id="L111">                user.setCuisinePreferences( new ArrayList&lt;String&gt;( list ) );</span>
+            }
+        }
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">        if ( request.getNotificationPreferences() != null ) {</span>
+<span class="nc" id="L115">            user.setNotificationPreferences( toNotificationPreferencesVO( request.getNotificationPreferences() ) );</span>
+        }
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">        if ( request.getPersonalizationSettings() != null ) {</span>
+<span class="nc" id="L118">            user.setPersonalizationSettings( toPersonalizationSettingsVO( request.getPersonalizationSettings() ) );</span>
+        }
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">        if ( request.getLanguagePreference() != null ) {</span>
+<span class="nc" id="L121">            user.setLanguagePreference( request.getLanguagePreference() );</span>
+        }
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">        if ( request.getTimezone() != null ) {</span>
+<span class="nc" id="L124">            user.setTimezone( request.getTimezone() );</span>
+        }
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">        if ( request.getUpdatedBy() != null ) {</span>
+<span class="nc" id="L127">            user.setUpdatedBy( request.getUpdatedBy() );</span>
+        }
+<span class="fc" id="L129">    }</span>
+
+    @Override
+    public UserResponse toResponse(User user) {
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        if ( user == null ) {</span>
+<span class="fc" id="L134">            return null;</span>
+        }
+
+<span class="fc" id="L137">        UserResponse.UserResponseBuilder userResponse = UserResponse.builder();</span>
+
+<span class="fc" id="L139">        userResponse.id( user.getId() );</span>
+<span class="fc" id="L140">        userResponse.email( user.getEmail() );</span>
+<span class="fc" id="L141">        userResponse.phone( user.getPhone() );</span>
+<span class="fc" id="L142">        userResponse.firstName( user.getFirstName() );</span>
+<span class="fc" id="L143">        userResponse.lastName( user.getLastName() );</span>
+<span class="fc" id="L144">        userResponse.displayName( user.getDisplayName() );</span>
+<span class="fc" id="L145">        userResponse.avatarUrl( user.getAvatarUrl() );</span>
+<span class="fc" id="L146">        userResponse.dateOfBirth( user.getDateOfBirth() );</span>
+<span class="fc" id="L147">        userResponse.gender( user.getGender() );</span>
+<span class="fc" id="L148">        userResponse.addresses( toAddressResponseList( user.getAddresses() ) );</span>
+<span class="fc" id="L149">        userResponse.dietaryPreferences( toDietaryPreferencesResponse( user.getDietaryPreferences() ) );</span>
+<span class="fc" id="L150">        List&lt;String&gt; list1 = user.getCuisinePreferences();</span>
+<span class="pc bpc" id="L151" title="1 of 2 branches missed.">        if ( list1 != null ) {</span>
+<span class="fc" id="L152">            userResponse.cuisinePreferences( new ArrayList&lt;String&gt;( list1 ) );</span>
+        }
+<span class="fc" id="L154">        userResponse.notificationPreferences( toNotificationPreferencesResponse( user.getNotificationPreferences() ) );</span>
+<span class="fc" id="L155">        userResponse.personalizationSettings( toPersonalizationSettingsResponse( user.getPersonalizationSettings() ) );</span>
+<span class="fc" id="L156">        userResponse.defaultAddressId( user.getDefaultAddressId() );</span>
+<span class="fc" id="L157">        userResponse.defaultPaymentMethodId( user.getDefaultPaymentMethodId() );</span>
+<span class="fc" id="L158">        List&lt;String&gt; list2 = user.getFavoriteRestaurantIds();</span>
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">        if ( list2 != null ) {</span>
+<span class="fc" id="L160">            userResponse.favoriteRestaurantIds( new ArrayList&lt;String&gt;( list2 ) );</span>
+        }
+<span class="fc" id="L162">        List&lt;String&gt; list3 = user.getFavoriteMenuItemIds();</span>
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">        if ( list3 != null ) {</span>
+<span class="fc" id="L164">            userResponse.favoriteMenuItemIds( new ArrayList&lt;String&gt;( list3 ) );</span>
+        }
+<span class="fc" id="L166">        userResponse.languagePreference( user.getLanguagePreference() );</span>
+<span class="fc" id="L167">        userResponse.timezone( user.getTimezone() );</span>
+<span class="fc" id="L168">        userResponse.referralCode( user.getReferralCode() );</span>
+<span class="fc" id="L169">        userResponse.status( user.getStatus() );</span>
+<span class="fc" id="L170">        userResponse.emailVerified( user.isEmailVerified() );</span>
+<span class="fc" id="L171">        userResponse.phoneVerified( user.isPhoneVerified() );</span>
+<span class="fc" id="L172">        userResponse.lastLoginAt( user.getLastLoginAt() );</span>
+<span class="fc" id="L173">        userResponse.totalOrders( user.getTotalOrders() );</span>
+<span class="fc" id="L174">        userResponse.totalSpent( user.getTotalSpent() );</span>
+<span class="fc" id="L175">        userResponse.averageOrderValue( user.getAverageOrderValue() );</span>
+<span class="fc" id="L176">        userResponse.createdAt( user.getCreatedAt() );</span>
+<span class="fc" id="L177">        userResponse.updatedAt( user.getUpdatedAt() );</span>
+
+<span class="fc" id="L179">        userResponse.fullName( user.getFullName() );</span>
+
+<span class="fc" id="L181">        return userResponse.build();</span>
+    }
+
+    @Override
+    public List&lt;UserResponse&gt; toResponseList(List&lt;User&gt; users) {
+<span class="nc bnc" id="L186" title="All 2 branches missed.">        if ( users == null ) {</span>
+<span class="nc" id="L187">            return null;</span>
+        }
+
+<span class="nc" id="L190">        List&lt;UserResponse&gt; list = new ArrayList&lt;UserResponse&gt;( users.size() );</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">        for ( User user : users ) {</span>
+<span class="nc" id="L192">            list.add( toResponse( user ) );</span>
+<span class="nc" id="L193">        }</span>
+
+<span class="nc" id="L195">        return list;</span>
+    }
+
+    @Override
+    public AddressVO toAddressVO(AddressDTO dto) {
+<span class="pc bpc" id="L200" title="1 of 2 branches missed.">        if ( dto == null ) {</span>
+<span class="nc" id="L201">            return null;</span>
+        }
+
+<span class="fc" id="L204">        AddressVO.AddressVOBuilder addressVO = AddressVO.builder();</span>
+
+<span class="pc bpc" id="L206" title="1 of 2 branches missed.">        if ( dto.getIsDefault() != null ) {</span>
+<span class="nc" id="L207">            addressVO.isDefault( dto.getIsDefault() );</span>
+        }
+        else {
+<span class="fc" id="L210">            addressVO.isDefault( false );</span>
+        }
+<span class="fc" id="L212">        addressVO.label( dto.getLabel() );</span>
+<span class="fc" id="L213">        addressVO.type( dto.getType() );</span>
+<span class="fc" id="L214">        addressVO.recipientName( dto.getRecipientName() );</span>
+<span class="fc" id="L215">        addressVO.contactPhone( dto.getContactPhone() );</span>
+<span class="fc" id="L216">        addressVO.flatNumber( dto.getFlatNumber() );</span>
+<span class="fc" id="L217">        addressVO.building( dto.getBuilding() );</span>
+<span class="fc" id="L218">        addressVO.street( dto.getStreet() );</span>
+<span class="fc" id="L219">        addressVO.street2( dto.getStreet2() );</span>
+<span class="fc" id="L220">        addressVO.landmark( dto.getLandmark() );</span>
+<span class="fc" id="L221">        addressVO.area( dto.getArea() );</span>
+<span class="fc" id="L222">        addressVO.city( dto.getCity() );</span>
+<span class="fc" id="L223">        addressVO.state( dto.getState() );</span>
+<span class="fc" id="L224">        addressVO.country( dto.getCountry() );</span>
+<span class="fc" id="L225">        addressVO.pincode( dto.getPincode() );</span>
+<span class="fc" id="L226">        addressVO.latitude( dto.getLatitude() );</span>
+<span class="fc" id="L227">        addressVO.longitude( dto.getLongitude() );</span>
+<span class="fc" id="L228">        addressVO.plusCode( dto.getPlusCode() );</span>
+<span class="fc" id="L229">        addressVO.deliveryInstructions( dto.getDeliveryInstructions() );</span>
+
+<span class="pc bpc" id="L231" title="1 of 2 branches missed.">        addressVO.id( dto.getId() != null ? dto.getId() : generateAddressId() );</span>
+<span class="fc" id="L232">        addressVO.verified( false );</span>
+<span class="fc" id="L233">        addressVO.createdAt( java.time.Instant.now() );</span>
+<span class="fc" id="L234">        addressVO.updatedAt( java.time.Instant.now() );</span>
+
+<span class="fc" id="L236">        return addressVO.build();</span>
+    }
+
+    @Override
+    public AddressResponse toAddressResponse(AddressVO vo) {
+<span class="pc bpc" id="L241" title="1 of 2 branches missed.">        if ( vo == null ) {</span>
+<span class="nc" id="L242">            return null;</span>
+        }
+
+<span class="fc" id="L245">        AddressResponse.AddressResponseBuilder addressResponse = AddressResponse.builder();</span>
+
+<span class="fc" id="L247">        addressResponse.id( vo.getId() );</span>
+<span class="fc" id="L248">        addressResponse.label( vo.getLabel() );</span>
+<span class="fc" id="L249">        addressResponse.type( vo.getType() );</span>
+<span class="fc" id="L250">        addressResponse.recipientName( vo.getRecipientName() );</span>
+<span class="fc" id="L251">        addressResponse.contactPhone( vo.getContactPhone() );</span>
+<span class="fc" id="L252">        addressResponse.flatNumber( vo.getFlatNumber() );</span>
+<span class="fc" id="L253">        addressResponse.building( vo.getBuilding() );</span>
+<span class="fc" id="L254">        addressResponse.street( vo.getStreet() );</span>
+<span class="fc" id="L255">        addressResponse.landmark( vo.getLandmark() );</span>
+<span class="fc" id="L256">        addressResponse.area( vo.getArea() );</span>
+<span class="fc" id="L257">        addressResponse.city( vo.getCity() );</span>
+<span class="fc" id="L258">        addressResponse.state( vo.getState() );</span>
+<span class="fc" id="L259">        addressResponse.country( vo.getCountry() );</span>
+<span class="fc" id="L260">        addressResponse.pincode( vo.getPincode() );</span>
+<span class="fc" id="L261">        addressResponse.latitude( vo.getLatitude() );</span>
+<span class="fc" id="L262">        addressResponse.longitude( vo.getLongitude() );</span>
+<span class="fc" id="L263">        addressResponse.deliveryInstructions( vo.getDeliveryInstructions() );</span>
+<span class="fc" id="L264">        addressResponse.verified( vo.isVerified() );</span>
+<span class="fc" id="L265">        addressResponse.createdAt( vo.getCreatedAt() );</span>
+
+<span class="fc" id="L267">        addressResponse.formattedAddress( vo.getFormattedAddress() );</span>
+
+<span class="fc" id="L269">        return addressResponse.build();</span>
+    }
+
+    @Override
+    public List&lt;AddressResponse&gt; toAddressResponseList(List&lt;AddressVO&gt; addresses) {
+<span class="pc bpc" id="L274" title="1 of 2 branches missed.">        if ( addresses == null ) {</span>
+<span class="nc" id="L275">            return null;</span>
+        }
+
+<span class="fc" id="L278">        List&lt;AddressResponse&gt; list = new ArrayList&lt;AddressResponse&gt;( addresses.size() );</span>
+<span class="fc bfc" id="L279" title="All 2 branches covered.">        for ( AddressVO addressVO : addresses ) {</span>
+<span class="fc" id="L280">            list.add( toAddressResponse( addressVO ) );</span>
+<span class="fc" id="L281">        }</span>
+
+<span class="fc" id="L283">        return list;</span>
+    }
+
+    @Override
+    public DietaryPreferencesVO toDietaryPreferencesVO(DietaryPreferencesDTO dto) {
+<span class="fc bfc" id="L288" title="All 2 branches covered.">        if ( dto == null ) {</span>
+<span class="fc" id="L289">            return null;</span>
+        }
+
+<span class="fc" id="L292">        DietaryPreferencesVO.DietaryPreferencesVOBuilder dietaryPreferencesVO = DietaryPreferencesVO.builder();</span>
+
+<span class="pc bpc" id="L294" title="1 of 2 branches missed.">        if ( dto.getVegetarian() != null ) {</span>
+<span class="fc" id="L295">            dietaryPreferencesVO.vegetarian( dto.getVegetarian() );</span>
+        }
+<span class="pc bpc" id="L297" title="1 of 2 branches missed.">        if ( dto.getVegan() != null ) {</span>
+<span class="fc" id="L298">            dietaryPreferencesVO.vegan( dto.getVegan() );</span>
+        }
+<span class="pc bpc" id="L300" title="1 of 2 branches missed.">        if ( dto.getGlutenFree() != null ) {</span>
+<span class="nc" id="L301">            dietaryPreferencesVO.glutenFree( dto.getGlutenFree() );</span>
+        }
+<span class="pc bpc" id="L303" title="1 of 2 branches missed.">        if ( dto.getDairyFree() != null ) {</span>
+<span class="nc" id="L304">            dietaryPreferencesVO.dairyFree( dto.getDairyFree() );</span>
+        }
+<span class="pc bpc" id="L306" title="1 of 2 branches missed.">        if ( dto.getJain() != null ) {</span>
+<span class="nc" id="L307">            dietaryPreferencesVO.jain( dto.getJain() );</span>
+        }
+<span class="pc bpc" id="L309" title="1 of 2 branches missed.">        if ( dto.getHalal() != null ) {</span>
+<span class="nc" id="L310">            dietaryPreferencesVO.halal( dto.getHalal() );</span>
+        }
+<span class="pc bpc" id="L312" title="1 of 2 branches missed.">        if ( dto.getKosher() != null ) {</span>
+<span class="nc" id="L313">            dietaryPreferencesVO.kosher( dto.getKosher() );</span>
+        }
+<span class="pc bpc" id="L315" title="1 of 2 branches missed.">        if ( dto.getKeto() != null ) {</span>
+<span class="nc" id="L316">            dietaryPreferencesVO.keto( dto.getKeto() );</span>
+        }
+<span class="pc bpc" id="L318" title="1 of 2 branches missed.">        if ( dto.getLowCarb() != null ) {</span>
+<span class="nc" id="L319">            dietaryPreferencesVO.lowCarb( dto.getLowCarb() );</span>
+        }
+<span class="pc bpc" id="L321" title="1 of 2 branches missed.">        if ( dto.getPaleo() != null ) {</span>
+<span class="nc" id="L322">            dietaryPreferencesVO.paleo( dto.getPaleo() );</span>
+        }
+<span class="fc" id="L324">        List&lt;String&gt; list = dto.getAllergies();</span>
+<span class="pc bpc" id="L325" title="1 of 2 branches missed.">        if ( list != null ) {</span>
+<span class="fc" id="L326">            dietaryPreferencesVO.allergies( new ArrayList&lt;String&gt;( list ) );</span>
+        }
+<span class="fc" id="L328">        List&lt;String&gt; list1 = dto.getAvoidIngredients();</span>
+<span class="pc bpc" id="L329" title="1 of 2 branches missed.">        if ( list1 != null ) {</span>
+<span class="nc" id="L330">            dietaryPreferencesVO.avoidIngredients( new ArrayList&lt;String&gt;( list1 ) );</span>
+        }
+<span class="fc" id="L332">        dietaryPreferencesVO.spicePreference( dto.getSpicePreference() );</span>
+<span class="fc" id="L333">        dietaryPreferencesVO.dailyCalorieTarget( dto.getDailyCalorieTarget() );</span>
+<span class="fc" id="L334">        dietaryPreferencesVO.dailyProteinTarget( dto.getDailyProteinTarget() );</span>
+<span class="fc" id="L335">        List&lt;String&gt; list2 = dto.getHealthGoals();</span>
+<span class="pc bpc" id="L336" title="1 of 2 branches missed.">        if ( list2 != null ) {</span>
+<span class="nc" id="L337">            dietaryPreferencesVO.healthGoals( new ArrayList&lt;String&gt;( list2 ) );</span>
+        }
+<span class="fc" id="L339">        List&lt;String&gt; list3 = dto.getDefaultCustomizations();</span>
+<span class="pc bpc" id="L340" title="1 of 2 branches missed.">        if ( list3 != null ) {</span>
+<span class="nc" id="L341">            dietaryPreferencesVO.defaultCustomizations( new ArrayList&lt;String&gt;( list3 ) );</span>
+        }
+<span class="pc bpc" id="L343" title="1 of 2 branches missed.">        if ( dto.getShowCalories() != null ) {</span>
+<span class="nc" id="L344">            dietaryPreferencesVO.showCalories( dto.getShowCalories() );</span>
+        }
+<span class="pc bpc" id="L346" title="1 of 2 branches missed.">        if ( dto.getShowNutrition() != null ) {</span>
+<span class="nc" id="L347">            dietaryPreferencesVO.showNutrition( dto.getShowNutrition() );</span>
+        }
+
+<span class="fc" id="L350">        return dietaryPreferencesVO.build();</span>
+    }
+
+    @Override
+    public DietaryPreferencesResponse toDietaryPreferencesResponse(DietaryPreferencesVO vo) {
+<span class="pc bpc" id="L355" title="1 of 2 branches missed.">        if ( vo == null ) {</span>
+<span class="fc" id="L356">            return null;</span>
+        }
+
+<span class="nc" id="L359">        DietaryPreferencesResponse.DietaryPreferencesResponseBuilder dietaryPreferencesResponse = DietaryPreferencesResponse.builder();</span>
+
+<span class="nc" id="L361">        dietaryPreferencesResponse.vegetarian( vo.isVegetarian() );</span>
+<span class="nc" id="L362">        dietaryPreferencesResponse.vegan( vo.isVegan() );</span>
+<span class="nc" id="L363">        dietaryPreferencesResponse.glutenFree( vo.isGlutenFree() );</span>
+<span class="nc" id="L364">        dietaryPreferencesResponse.dairyFree( vo.isDairyFree() );</span>
+<span class="nc" id="L365">        dietaryPreferencesResponse.jain( vo.isJain() );</span>
+<span class="nc" id="L366">        dietaryPreferencesResponse.halal( vo.isHalal() );</span>
+<span class="nc" id="L367">        dietaryPreferencesResponse.kosher( vo.isKosher() );</span>
+<span class="nc" id="L368">        dietaryPreferencesResponse.keto( vo.isKeto() );</span>
+<span class="nc" id="L369">        dietaryPreferencesResponse.lowCarb( vo.isLowCarb() );</span>
+<span class="nc" id="L370">        dietaryPreferencesResponse.paleo( vo.isPaleo() );</span>
+<span class="nc" id="L371">        List&lt;String&gt; list = vo.getAllergies();</span>
+<span class="nc bnc" id="L372" title="All 2 branches missed.">        if ( list != null ) {</span>
+<span class="nc" id="L373">            dietaryPreferencesResponse.allergies( new ArrayList&lt;String&gt;( list ) );</span>
+        }
+<span class="nc" id="L375">        List&lt;String&gt; list1 = vo.getAvoidIngredients();</span>
+<span class="nc bnc" id="L376" title="All 2 branches missed.">        if ( list1 != null ) {</span>
+<span class="nc" id="L377">            dietaryPreferencesResponse.avoidIngredients( new ArrayList&lt;String&gt;( list1 ) );</span>
+        }
+<span class="nc" id="L379">        dietaryPreferencesResponse.spicePreference( vo.getSpicePreference() );</span>
+<span class="nc" id="L380">        dietaryPreferencesResponse.dailyCalorieTarget( vo.getDailyCalorieTarget() );</span>
+<span class="nc" id="L381">        List&lt;String&gt; list2 = vo.getHealthGoals();</span>
+<span class="nc bnc" id="L382" title="All 2 branches missed.">        if ( list2 != null ) {</span>
+<span class="nc" id="L383">            dietaryPreferencesResponse.healthGoals( new ArrayList&lt;String&gt;( list2 ) );</span>
+        }
+<span class="nc" id="L385">        List&lt;String&gt; list3 = vo.getDefaultCustomizations();</span>
+<span class="nc bnc" id="L386" title="All 2 branches missed.">        if ( list3 != null ) {</span>
+<span class="nc" id="L387">            dietaryPreferencesResponse.defaultCustomizations( new ArrayList&lt;String&gt;( list3 ) );</span>
+        }
+
+<span class="nc bnc" id="L390" title="All 4 branches missed.">        dietaryPreferencesResponse.hasRestrictions( vo != null &amp;&amp; vo.hasRestrictions() );</span>
+<span class="nc bnc" id="L391" title="All 2 branches missed.">        dietaryPreferencesResponse.activeDietaryFlags( vo != null ? vo.getActiveDietaryFlags() : java.util.Collections.emptyList() );</span>
+
+<span class="nc" id="L393">        return dietaryPreferencesResponse.build();</span>
+    }
+
+    @Override
+    public NotificationPreferencesVO toNotificationPreferencesVO(NotificationPreferencesDTO dto) {
+<span class="pc bpc" id="L398" title="1 of 2 branches missed.">        if ( dto == null ) {</span>
+<span class="nc" id="L399">            return null;</span>
+        }
+
+<span class="fc" id="L402">        NotificationPreferencesVO.NotificationPreferencesVOBuilder notificationPreferencesVO = NotificationPreferencesVO.builder();</span>
+
+<span class="pc bpc" id="L404" title="1 of 2 branches missed.">        if ( dto.getPushEnabled() != null ) {</span>
+<span class="fc" id="L405">            notificationPreferencesVO.pushEnabled( dto.getPushEnabled() );</span>
+        }
+<span class="pc bpc" id="L407" title="1 of 2 branches missed.">        if ( dto.getSmsEnabled() != null ) {</span>
+<span class="fc" id="L408">            notificationPreferencesVO.smsEnabled( dto.getSmsEnabled() );</span>
+        }
+<span class="pc bpc" id="L410" title="1 of 2 branches missed.">        if ( dto.getEmailEnabled() != null ) {</span>
+<span class="fc" id="L411">            notificationPreferencesVO.emailEnabled( dto.getEmailEnabled() );</span>
+        }
+<span class="pc bpc" id="L413" title="1 of 2 branches missed.">        if ( dto.getWhatsappEnabled() != null ) {</span>
+<span class="nc" id="L414">            notificationPreferencesVO.whatsappEnabled( dto.getWhatsappEnabled() );</span>
+        }
+<span class="pc bpc" id="L416" title="1 of 2 branches missed.">        if ( dto.getOrderUpdates() != null ) {</span>
+<span class="nc" id="L417">            notificationPreferencesVO.orderUpdates( dto.getOrderUpdates() );</span>
+        }
+<span class="pc bpc" id="L419" title="1 of 2 branches missed.">        if ( dto.getPromotions() != null ) {</span>
+<span class="nc" id="L420">            notificationPreferencesVO.promotions( dto.getPromotions() );</span>
+        }
+<span class="pc bpc" id="L422" title="1 of 2 branches missed.">        if ( dto.getRecommendations() != null ) {</span>
+<span class="nc" id="L423">            notificationPreferencesVO.recommendations( dto.getRecommendations() );</span>
+        }
+<span class="pc bpc" id="L425" title="1 of 2 branches missed.">        if ( dto.getLoyaltyUpdates() != null ) {</span>
+<span class="nc" id="L426">            notificationPreferencesVO.loyaltyUpdates( dto.getLoyaltyUpdates() );</span>
+        }
+<span class="pc bpc" id="L428" title="1 of 2 branches missed.">        if ( dto.getDietReminders() != null ) {</span>
+<span class="nc" id="L429">            notificationPreferencesVO.dietReminders( dto.getDietReminders() );</span>
+        }
+<span class="pc bpc" id="L431" title="1 of 2 branches missed.">        if ( dto.getNewRestaurants() != null ) {</span>
+<span class="nc" id="L432">            notificationPreferencesVO.newRestaurants( dto.getNewRestaurants() );</span>
+        }
+<span class="pc bpc" id="L434" title="1 of 2 branches missed.">        if ( dto.getPriceAlerts() != null ) {</span>
+<span class="nc" id="L435">            notificationPreferencesVO.priceAlerts( dto.getPriceAlerts() );</span>
+        }
+<span class="pc bpc" id="L437" title="1 of 2 branches missed.">        if ( dto.getAccountAlerts() != null ) {</span>
+<span class="nc" id="L438">            notificationPreferencesVO.accountAlerts( dto.getAccountAlerts() );</span>
+        }
+<span class="pc bpc" id="L440" title="1 of 2 branches missed.">        if ( dto.getQuietHoursEnabled() != null ) {</span>
+<span class="nc" id="L441">            notificationPreferencesVO.quietHoursEnabled( dto.getQuietHoursEnabled() );</span>
+        }
+<span class="fc" id="L443">        notificationPreferencesVO.quietHoursStart( dto.getQuietHoursStart() );</span>
+<span class="fc" id="L444">        notificationPreferencesVO.quietHoursEnd( dto.getQuietHoursEnd() );</span>
+<span class="pc bpc" id="L445" title="1 of 2 branches missed.">        if ( dto.getLiveTrackingUpdates() != null ) {</span>
+<span class="nc" id="L446">            notificationPreferencesVO.liveTrackingUpdates( dto.getLiveTrackingUpdates() );</span>
+        }
+<span class="fc" id="L448">        notificationPreferencesVO.nearbyAlertDistance( dto.getNearbyAlertDistance() );</span>
+
+<span class="fc" id="L450">        return notificationPreferencesVO.build();</span>
+    }
+
+    @Override
+    public NotificationPreferencesResponse toNotificationPreferencesResponse(NotificationPreferencesVO vo) {
+<span class="pc bpc" id="L455" title="1 of 2 branches missed.">        if ( vo == null ) {</span>
+<span class="fc" id="L456">            return null;</span>
+        }
+
+<span class="nc" id="L459">        NotificationPreferencesResponse.NotificationPreferencesResponseBuilder notificationPreferencesResponse = NotificationPreferencesResponse.builder();</span>
+
+<span class="nc" id="L461">        notificationPreferencesResponse.pushEnabled( vo.isPushEnabled() );</span>
+<span class="nc" id="L462">        notificationPreferencesResponse.smsEnabled( vo.isSmsEnabled() );</span>
+<span class="nc" id="L463">        notificationPreferencesResponse.emailEnabled( vo.isEmailEnabled() );</span>
+<span class="nc" id="L464">        notificationPreferencesResponse.whatsappEnabled( vo.isWhatsappEnabled() );</span>
+<span class="nc" id="L465">        notificationPreferencesResponse.orderUpdates( vo.isOrderUpdates() );</span>
+<span class="nc" id="L466">        notificationPreferencesResponse.promotions( vo.isPromotions() );</span>
+<span class="nc" id="L467">        notificationPreferencesResponse.recommendations( vo.isRecommendations() );</span>
+<span class="nc" id="L468">        notificationPreferencesResponse.loyaltyUpdates( vo.isLoyaltyUpdates() );</span>
+<span class="nc" id="L469">        notificationPreferencesResponse.dietReminders( vo.isDietReminders() );</span>
+<span class="nc" id="L470">        notificationPreferencesResponse.quietHoursEnabled( vo.isQuietHoursEnabled() );</span>
+<span class="nc" id="L471">        notificationPreferencesResponse.quietHoursStart( vo.getQuietHoursStart() );</span>
+<span class="nc" id="L472">        notificationPreferencesResponse.quietHoursEnd( vo.getQuietHoursEnd() );</span>
+<span class="nc" id="L473">        notificationPreferencesResponse.liveTrackingUpdates( vo.isLiveTrackingUpdates() );</span>
+<span class="nc" id="L474">        notificationPreferencesResponse.nearbyAlertDistance( vo.getNearbyAlertDistance() );</span>
+
+<span class="nc" id="L476">        return notificationPreferencesResponse.build();</span>
+    }
+
+    @Override
+    public PersonalizationSettingsVO toPersonalizationSettingsVO(PersonalizationSettingsDTO dto) {
+<span class="nc bnc" id="L481" title="All 2 branches missed.">        if ( dto == null ) {</span>
+<span class="nc" id="L482">            return null;</span>
+        }
+
+<span class="nc" id="L485">        PersonalizationSettingsVO.PersonalizationSettingsVOBuilder personalizationSettingsVO = PersonalizationSettingsVO.builder();</span>
+
+<span class="nc bnc" id="L487" title="All 2 branches missed.">        if ( dto.getAiRecommendationsEnabled() != null ) {</span>
+<span class="nc" id="L488">            personalizationSettingsVO.aiRecommendationsEnabled( dto.getAiRecommendationsEnabled() );</span>
+        }
+<span class="nc bnc" id="L490" title="All 2 branches missed.">        if ( dto.getAiChatEnabled() != null ) {</span>
+<span class="nc" id="L491">            personalizationSettingsVO.aiChatEnabled( dto.getAiChatEnabled() );</span>
+        }
+<span class="nc bnc" id="L493" title="All 2 branches missed.">        if ( dto.getVoiceOrderingEnabled() != null ) {</span>
+<span class="nc" id="L494">            personalizationSettingsVO.voiceOrderingEnabled( dto.getVoiceOrderingEnabled() );</span>
+        }
+<span class="nc bnc" id="L496" title="All 2 branches missed.">        if ( dto.getLearningFromHistoryEnabled() != null ) {</span>
+<span class="nc" id="L497">            personalizationSettingsVO.learningFromHistoryEnabled( dto.getLearningFromHistoryEnabled() );</span>
+        }
+<span class="nc bnc" id="L499" title="All 2 branches missed.">        if ( dto.getSmartReorderEnabled() != null ) {</span>
+<span class="nc" id="L500">            personalizationSettingsVO.smartReorderEnabled( dto.getSmartReorderEnabled() );</span>
+        }
+<span class="nc" id="L502">        personalizationSettingsVO.orderHistoryWeight( dto.getOrderHistoryWeight() );</span>
+<span class="nc" id="L503">        personalizationSettingsVO.dietaryWeight( dto.getDietaryWeight() );</span>
+<span class="nc bnc" id="L504" title="All 2 branches missed.">        if ( dto.getShowPersonalizedBanners() != null ) {</span>
+<span class="nc" id="L505">            personalizationSettingsVO.showPersonalizedBanners( dto.getShowPersonalizedBanners() );</span>
+        }
+<span class="nc bnc" id="L507" title="All 2 branches missed.">        if ( dto.getShowSuggestions() != null ) {</span>
+<span class="nc" id="L508">            personalizationSettingsVO.showSuggestions( dto.getShowSuggestions() );</span>
+        }
+<span class="nc bnc" id="L510" title="All 2 branches missed.">        if ( dto.getShowQuickReorder() != null ) {</span>
+<span class="nc" id="L511">            personalizationSettingsVO.showQuickReorder( dto.getShowQuickReorder() );</span>
+        }
+<span class="nc bnc" id="L513" title="All 2 branches missed.">        if ( dto.getShareDataForImprovement() != null ) {</span>
+<span class="nc" id="L514">            personalizationSettingsVO.shareDataForImprovement( dto.getShareDataForImprovement() );</span>
+        }
+<span class="nc bnc" id="L516" title="All 2 branches missed.">        if ( dto.getLocationBasedPersonalization() != null ) {</span>
+<span class="nc" id="L517">            personalizationSettingsVO.locationBasedPersonalization( dto.getLocationBasedPersonalization() );</span>
+        }
+<span class="nc" id="L519">        personalizationSettingsVO.chatLanguage( dto.getChatLanguage() );</span>
+<span class="nc" id="L520">        personalizationSettingsVO.chatStyle( dto.getChatStyle() );</span>
+<span class="nc bnc" id="L521" title="All 2 branches missed.">        if ( dto.getChatAutoOrderEnabled() != null ) {</span>
+<span class="nc" id="L522">            personalizationSettingsVO.chatAutoOrderEnabled( dto.getChatAutoOrderEnabled() );</span>
+        }
+<span class="nc" id="L524">        personalizationSettingsVO.chatOrderBudgetLimit( dto.getChatOrderBudgetLimit() );</span>
+
+<span class="nc" id="L526">        return personalizationSettingsVO.build();</span>
+    }
+
+    @Override
+    public PersonalizationSettingsResponse toPersonalizationSettingsResponse(PersonalizationSettingsVO vo) {
+<span class="pc bpc" id="L531" title="1 of 2 branches missed.">        if ( vo == null ) {</span>
+<span class="fc" id="L532">            return null;</span>
+        }
+
+<span class="nc" id="L535">        PersonalizationSettingsResponse.PersonalizationSettingsResponseBuilder personalizationSettingsResponse = PersonalizationSettingsResponse.builder();</span>
+
+<span class="nc" id="L537">        personalizationSettingsResponse.aiRecommendationsEnabled( vo.isAiRecommendationsEnabled() );</span>
+<span class="nc" id="L538">        personalizationSettingsResponse.aiChatEnabled( vo.isAiChatEnabled() );</span>
+<span class="nc" id="L539">        personalizationSettingsResponse.voiceOrderingEnabled( vo.isVoiceOrderingEnabled() );</span>
+<span class="nc" id="L540">        personalizationSettingsResponse.learningFromHistoryEnabled( vo.isLearningFromHistoryEnabled() );</span>
+<span class="nc" id="L541">        personalizationSettingsResponse.smartReorderEnabled( vo.isSmartReorderEnabled() );</span>
+<span class="nc" id="L542">        personalizationSettingsResponse.orderHistoryWeight( vo.getOrderHistoryWeight() );</span>
+<span class="nc" id="L543">        personalizationSettingsResponse.dietaryWeight( vo.getDietaryWeight() );</span>
+<span class="nc" id="L544">        personalizationSettingsResponse.showPersonalizedBanners( vo.isShowPersonalizedBanners() );</span>
+<span class="nc" id="L545">        personalizationSettingsResponse.showSuggestions( vo.isShowSuggestions() );</span>
+<span class="nc" id="L546">        personalizationSettingsResponse.showQuickReorder( vo.isShowQuickReorder() );</span>
+<span class="nc" id="L547">        personalizationSettingsResponse.locationBasedPersonalization( vo.isLocationBasedPersonalization() );</span>
+<span class="nc" id="L548">        personalizationSettingsResponse.chatLanguage( vo.getChatLanguage() );</span>
+<span class="nc" id="L549">        personalizationSettingsResponse.chatStyle( vo.getChatStyle() );</span>
+<span class="nc" id="L550">        personalizationSettingsResponse.chatAutoOrderEnabled( vo.isChatAutoOrderEnabled() );</span>
+
+<span class="nc" id="L552">        return personalizationSettingsResponse.build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

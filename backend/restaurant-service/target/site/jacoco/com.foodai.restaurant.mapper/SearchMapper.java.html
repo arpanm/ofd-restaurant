@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SearchMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Restaurant Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.restaurant.mapper</a> &gt; <span class="el_source">SearchMapper.java</span></div><h1>SearchMapper.java</h1><pre class="source lang-java linenums">package com.foodai.restaurant.mapper;
+
+import com.foodai.restaurant.domain.model.RestaurantOutlet;
+import com.foodai.restaurant.domain.model.Restaurant;
+import com.foodai.restaurant.dto.response.OutletSearchResponse;
+import com.foodai.restaurant.dto.response.RestaurantSearchResponse;
+import org.springframework.stereotype.Component;
+
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Mapper for converting domain models to search response DTOs.
+ * Handles transformation of Restaurant/Outlet entities to search-specific response formats.
+ */
+@Component
+<span class="fc" id="L19">public class SearchMapper {</span>
+    
+    /**
+     * Convert Restaurant to RestaurantSearchResponse.
+     * Includes nearest outlet information and aggregated data.
+     */
+    public RestaurantSearchResponse toRestaurantSearchResponse(Restaurant restaurant, String deliveryPincode) {
+        // Find nearest outlet (simplified - in production would calculate actual distance)
+<span class="fc" id="L27">        RestaurantOutlet nearestOutlet = findNearestOutlet(restaurant, deliveryPincode);</span>
+        
+<span class="fc" id="L29">        return RestaurantSearchResponse.builder()</span>
+<span class="fc" id="L30">                .restaurantId(restaurant.getId())</span>
+<span class="fc" id="L31">                .name(restaurant.getName())</span>
+<span class="fc" id="L32">                .description(restaurant.getDescription())</span>
+<span class="fc" id="L33">                .cuisineTypes(restaurant.getCuisineTypes())</span>
+<span class="fc" id="L34">                .averageCostForTwo(restaurant.getAverageCostForTwo())</span>
+<span class="fc" id="L35">                .averageRating(restaurant.getAverageRating())</span>
+<span class="fc" id="L36">                .totalReviews(restaurant.getTotalReviews())</span>
+<span class="fc" id="L37">                .status(restaurant.getStatus())</span>
+<span class="fc" id="L38">                .acceptsOrders(restaurant.getAcceptsOrders())</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">                .outletCount(restaurant.getOutlets() != null ? restaurant.getOutlets().size() : 0)</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">                .nearestOutletDistanceKm(nearestOutlet != null ? calculateDistance(nearestOutlet, deliveryPincode) : null)</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">                .estimatedDeliveryMinutes(nearestOutlet != null ? estimateDeliveryTime(nearestOutlet, deliveryPincode) : null)</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">                .deliveryFee(nearestOutlet != null ? calculateDeliveryFee(nearestOutlet, deliveryPincode) : null)</span>
+<span class="fc" id="L43">                .anyOutletOpen(isAnyOutletOpen(restaurant))</span>
+<span class="fc" id="L44">                .vegetarianOnly(restaurant.getVegetarianOnly())</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">                .minimumOrderValue(nearestOutlet != null ? getMinimumOrderValue(nearestOutlet) : null)</span>
+<span class="fc" id="L46">                .imageUrl(restaurant.getCoverImage())</span>
+<span class="fc" id="L47">                .tags(generateTags(restaurant))</span>
+<span class="fc" id="L48">                .nearbyOutlets(mapNearbyOutlets(restaurant, deliveryPincode))</span>
+<span class="fc" id="L49">                .build();</span>
+    }
+    
+    /**
+     * Convert Outlet to OutletSearchResponse.
+     * Includes detailed outlet-specific information.
+     * Note: Some fields like averageCostForTwo and vegetarianOnly come from parent restaurant.
+     */
+    public OutletSearchResponse toOutletSearchResponse(RestaurantOutlet outlet, String deliveryPincode) {
+<span class="fc" id="L58">        return OutletSearchResponse.builder()</span>
+<span class="fc" id="L59">                .outletId(outlet.getOutletId())</span>
+<span class="fc" id="L60">                .outletName(outlet.getOutletName())</span>
+                // Note: restaurantId and restaurantName would come from parent restaurant
+<span class="fc" id="L62">                .description(null) // OutletOutlet doesn't have description, would come from parent</span>
+<span class="fc" id="L63">                .averageCostForTwo(null) // Would come from parent restaurant</span>
+<span class="fc" id="L64">                .averageRating(outlet.getAverageRating())</span>
+<span class="fc" id="L65">                .totalReviews(outlet.getTotalReviews())</span>
+<span class="fc" id="L66">                .acceptsOrders(outlet.getAcceptsOrders())</span>
+<span class="fc" id="L67">                .address(mapAddress(outlet))</span>
+<span class="fc" id="L68">                .distanceKm(calculateDistance(outlet, deliveryPincode))</span>
+<span class="fc" id="L69">                .estimatedDeliveryMinutes(estimateDeliveryTime(outlet, deliveryPincode))</span>
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">                .deliveryFee(outlet.getDeliveryFee() != null ? outlet.getDeliveryFee() : calculateDeliveryFee(outlet, deliveryPincode))</span>
+<span class="fc" id="L71">                .currentlyOpen(isOutletOpen(outlet))</span>
+<span class="fc" id="L72">                .todayTimings(getTodayTimings(outlet))</span>
+<span class="fc" id="L73">                .vegetarianOnly(null) // Would come from parent restaurant</span>
+<span class="fc" id="L74">                .minimumOrderValue(outlet.getMinimumOrderValue())</span>
+<span class="fc" id="L75">                .imageUrl(null) // RestaurantOutlet doesn't store images directly</span>
+<span class="fc" id="L76">                .tags(generateOutletTags(outlet))</span>
+<span class="fc" id="L77">                .build();</span>
+    }
+    
+    /**
+     * Find the nearest outlet that services the delivery pincode.
+     */
+    private RestaurantOutlet findNearestOutlet(Restaurant restaurant, String deliveryPincode) {
+<span class="pc bpc" id="L84" title="1 of 4 branches missed.">        if (restaurant.getOutlets() == null || restaurant.getOutlets().isEmpty()) {</span>
+<span class="fc" id="L85">            return null;</span>
+        }
+        
+<span class="fc" id="L88">        return restaurant.getOutlets().stream()</span>
+<span class="fc" id="L89">                .filter(outlet -&gt; servicesPincode(outlet, deliveryPincode))</span>
+<span class="fc" id="L90">                .findFirst() // In production, would sort by actual distance</span>
+<span class="fc" id="L91">                .orElse(null);</span>
+    }
+    
+    /**
+     * Check if outlet services the given pincode.
+     */
+    private boolean servicesPincode(RestaurantOutlet outlet, String pincode) {
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">        if (outlet.getServiceabilityConfig() == null || </span>
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">                outlet.getServiceabilityConfig().getServiceablePincodes() == null) {</span>
+<span class="nc" id="L100">            return false;</span>
+        }
+<span class="fc" id="L102">        return outlet.getServiceabilityConfig().getServiceablePincodes().contains(pincode);</span>
+    }
+    
+    /**
+     * Calculate distance from outlet to delivery location.
+     * Simplified implementation - in production would use actual coordinates.
+     */
+    private Double calculateDistance(RestaurantOutlet outlet, String deliveryPincode) {
+        // TODO: Implement actual distance calculation using lat/long
+<span class="fc" id="L111">        return 5.0; // Placeholder</span>
+    }
+    
+    /**
+     * Estimate delivery time based on distance and other factors.
+     */
+    private Integer estimateDeliveryTime(RestaurantOutlet outlet, String deliveryPincode) {
+<span class="fc" id="L118">        Double distance = calculateDistance(outlet, deliveryPincode);</span>
+        // Assume 30 minutes base + 5 minutes per km
+<span class="fc" id="L120">        return 30 + (int) (distance * 5);</span>
+    }
+    
+    /**
+     * Calculate delivery fee based on distance and service area configuration.
+     */
+    private Double calculateDeliveryFee(RestaurantOutlet outlet, String deliveryPincode) {
+        // TODO: Implement delivery fee calculation based on outlet configuration
+        // For now, return a fixed fee
+<span class="fc" id="L129">        return 20.0;</span>
+    }
+    
+    /**
+     * Check if any outlet of the restaurant is currently open.
+     */
+    private Boolean isAnyOutletOpen(Restaurant restaurant) {
+<span class="fc bfc" id="L136" title="All 2 branches covered.">        if (restaurant.getOutlets() == null) {</span>
+<span class="fc" id="L137">            return false;</span>
+        }
+<span class="fc" id="L139">        return restaurant.getOutlets().stream().anyMatch(this::isOutletOpen);</span>
+    }
+    
+    /**
+     * Check if outlet is currently open.
+     */
+    private Boolean isOutletOpen(RestaurantOutlet outlet) {
+<span class="fc bfc" id="L146" title="All 2 branches covered.">        if (outlet.getOperatingHours() == null) {</span>
+<span class="fc" id="L147">            return false;</span>
+        }
+        
+<span class="fc" id="L150">        DayOfWeek today = DayOfWeek.from(java.time.LocalDate.now());</span>
+<span class="fc" id="L151">        LocalTime now = LocalTime.now();</span>
+        
+<span class="fc" id="L153">        return outlet.getOperatingHours().stream()</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">                .anyMatch(hours -&gt; hours.getDayOfWeek() == today &amp;&amp;</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">                        !hours.getOpenTime().isAfter(now) &amp;&amp;</span>
+<span class="pc bpc" id="L156" title="1 of 2 branches missed.">                        !hours.getCloseTime().isBefore(now));</span>
+    }
+    
+    /**
+     * Get today's operating hours for display.
+     */
+    private String getTodayTimings(RestaurantOutlet outlet) {
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">        if (outlet.getOperatingHours() == null) {</span>
+<span class="nc" id="L164">            return &quot;Hours not available&quot;;</span>
+        }
+        
+<span class="fc" id="L167">        DayOfWeek today = DayOfWeek.from(java.time.LocalDate.now());</span>
+        
+<span class="fc" id="L169">        return outlet.getOperatingHours().stream()</span>
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">                .filter(hours -&gt; hours.getDayOfWeek() == today)</span>
+<span class="fc" id="L171">                .map(hours -&gt; hours.getOpenTime() + &quot; - &quot; + hours.getCloseTime())</span>
+<span class="fc" id="L172">                .findFirst()</span>
+<span class="fc" id="L173">                .orElse(&quot;Closed today&quot;);</span>
+    }
+    
+    /**
+     * Get minimum order value from outlet.
+     */
+    private Double getMinimumOrderValue(RestaurantOutlet outlet) {
+        // Placeholder - would come from outlet configuration
+<span class="fc" id="L181">        return 100.0;</span>
+    }
+    
+    /**
+     * Generate promotional tags for restaurant.
+     */
+    private List&lt;String&gt; generateTags(Restaurant restaurant) {
+        // TODO: Implement actual tag generation logic based on offers, ratings, etc.
+<span class="fc" id="L189">        return List.of();</span>
+    }
+    
+    /**
+     * Generate promotional tags for outlet.
+     */
+    private List&lt;String&gt; generateOutletTags(RestaurantOutlet outlet) {
+        // TODO: Implement actual tag generation logic
+<span class="fc" id="L197">        return List.of();</span>
+    }
+    
+    /**
+     * Map nearby outlets for restaurant response.
+     */
+    private List&lt;RestaurantSearchResponse.NearbyOutletDTO&gt; mapNearbyOutlets(Restaurant restaurant, String deliveryPincode) {
+<span class="fc bfc" id="L204" title="All 2 branches covered.">        if (restaurant.getOutlets() == null) {</span>
+<span class="fc" id="L205">            return List.of();</span>
+        }
+        
+<span class="fc" id="L208">        return restaurant.getOutlets().stream()</span>
+<span class="fc" id="L209">                .filter(outlet -&gt; servicesPincode(outlet, deliveryPincode))</span>
+<span class="fc" id="L210">                .limit(5) // Show max 5 nearby outlets</span>
+<span class="fc" id="L211">                .map(outlet -&gt; RestaurantSearchResponse.NearbyOutletDTO.builder()</span>
+<span class="fc" id="L212">                        .outletId(outlet.getOutletId())</span>
+<span class="fc" id="L213">                        .outletName(outlet.getOutletName())</span>
+<span class="pc bpc" id="L214" title="1 of 2 branches missed.">                        .area(outlet.getAddress() != null ? outlet.getAddress().getStreet() : null)</span>
+<span class="pc bpc" id="L215" title="1 of 2 branches missed.">                        .city(outlet.getAddress() != null ? outlet.getAddress().getCity() : null)</span>
+<span class="fc" id="L216">                        .distanceKm(calculateDistance(outlet, deliveryPincode))</span>
+<span class="fc" id="L217">                        .currentlyOpen(isOutletOpen(outlet))</span>
+<span class="fc" id="L218">                        .build())</span>
+<span class="fc" id="L219">                .collect(Collectors.toList());</span>
+    }
+    
+    /**
+     * Map outlet address to response DTO.
+     */
+    private OutletSearchResponse.AddressDTO mapAddress(RestaurantOutlet outlet) {
+<span class="pc bpc" id="L226" title="1 of 2 branches missed.">        if (outlet.getAddress() == null) {</span>
+<span class="nc" id="L227">            return null;</span>
+        }
+        
+<span class="fc" id="L230">        return OutletSearchResponse.AddressDTO.builder()</span>
+<span class="fc" id="L231">                .street(outlet.getAddress().getStreet())</span>
+<span class="fc" id="L232">                .area(outlet.getAddress().getStreet()) // AddressVO doesn't have separate area field</span>
+<span class="fc" id="L233">                .city(outlet.getAddress().getCity())</span>
+<span class="fc" id="L234">                .state(outlet.getAddress().getState())</span>
+<span class="fc" id="L235">                .pincode(outlet.getAddress().getPincode())</span>
+<span class="fc" id="L236">                .landmark(outlet.getAddress().getLandmark())</span>
+<span class="fc" id="L237">                .latitude(outlet.getAddress().getLatitude())</span>
+<span class="fc" id="L238">                .longitude(outlet.getAddress().getLongitude())</span>
+<span class="fc" id="L239">                .build();</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Campaign.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Promotion Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.promotion.domain.model</a> &gt; <span class="el_source">Campaign.java</span></div><h1>Campaign.java</h1><pre class="source lang-java linenums">package com.foodai.promotion.domain.model;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+/**
+ * Domain entity representing a Marketing Campaign.
+ *
+ * &lt;p&gt;Campaigns are multi-channel marketing initiatives that can include promotions, target specific
+ * customer segments, and track performance metrics.
+ *
+ * @author FoodAI Team
+ */
+@Document(collection = &quot;campaigns&quot;)
+@CompoundIndex(name = &quot;idx_restaurant_status&quot;, def = &quot;{'restaurantId': 1, 'status': 1}&quot;)
+<span class="nc bnc" id="L30" title="All 198 branches missed.">@Data</span>
+<span class="nc bnc" id="L31" title="All 16 branches missed.">@Builder</span>
+<span class="nc" id="L32">@NoArgsConstructor</span>
+<span class="nc" id="L33">@AllArgsConstructor</span>
+public class Campaign {
+
+  /** Unique identifier. */
+<span class="nc" id="L37">  @Id private String id;</span>
+
+  /** Campaign name. */
+<span class="nc" id="L40">  @Indexed private String name;</span>
+
+  /** Campaign description. */
+<span class="nc" id="L43">  private String description;</span>
+
+  /** Current status. */
+<span class="nc" id="L46">  @Indexed private CampaignStatus status;</span>
+
+  /** Restaurant ID (null for platform campaigns). */
+<span class="nc" id="L49">  @Indexed private String restaurantId;</span>
+
+  /** Target customer segment IDs. */
+<span class="nc" id="L52">  @Builder.Default private Set&lt;String&gt; segmentIds = new HashSet&lt;&gt;();</span>
+
+  /** Target customer segment IDs (alias). */
+<span class="nc" id="L55">  @Builder.Default private Set&lt;String&gt; targetSegmentIds = new HashSet&lt;&gt;();</span>
+
+  /** Marketing channels to use. */
+<span class="nc" id="L58">  @Builder.Default private Set&lt;ChannelType&gt; channels = new HashSet&lt;&gt;();</span>
+
+  /** Campaign type. */
+<span class="nc" id="L61">  private CampaignType type;</span>
+
+  /** Content map for channel-specific content. */
+<span class="nc" id="L64">  private java.util.Map&lt;String, String&gt; content;</span>
+
+  /** Schedule details. */
+<span class="nc" id="L67">  private ScheduleVO schedule;</span>
+
+  /** Campaign creatives/content. */
+<span class="nc" id="L70">  @Builder.Default private List&lt;CampaignCreative&gt; creatives = new ArrayList&lt;&gt;();</span>
+
+  /** Linked promotion IDs. */
+<span class="nc" id="L73">  @Builder.Default private Set&lt;String&gt; promotionIds = new HashSet&lt;&gt;();</span>
+
+  /** Linked promotion IDs (alias). */
+<span class="nc" id="L76">  @Builder.Default private Set&lt;String&gt; linkedPromotionIds = new HashSet&lt;&gt;();</span>
+
+  /** Linked coupon IDs. */
+<span class="nc" id="L79">  @Builder.Default private Set&lt;String&gt; linkedCouponIds = new HashSet&lt;&gt;();</span>
+
+  /** Budget allocated for the campaign. */
+<span class="nc" id="L82">  private BigDecimal budget;</span>
+
+  /** Whether tracking is enabled. */
+<span class="nc" id="L85">  private boolean trackingEnabled;</span>
+
+  /** Whether A/B testing is enabled. */
+<span class="nc" id="L88">  private boolean abTestEnabled;</span>
+
+  /** A/B test variant percentage. */
+<span class="nc" id="L91">  private Integer variantPercentage;</span>
+
+  /** Amount spent so far. */
+<span class="nc" id="L94">  @Builder.Default private BigDecimal spent = BigDecimal.ZERO;</span>
+
+  /** Performance metrics. */
+<span class="nc" id="L97">  private CampaignPerformance performance;</span>
+
+  /** Whether this is an AI-suggested campaign. */
+<span class="nc" id="L100">  private boolean aiSuggested;</span>
+
+  /** Whether the campaign is deleted. */
+<span class="nc" id="L103">  private boolean deleted;</span>
+
+  /** Creation timestamp. */
+<span class="nc" id="L106">  @CreatedDate private Instant createdAt;</span>
+
+  /** Last update timestamp. */
+<span class="nc" id="L109">  @LastModifiedDate private Instant updatedAt;</span>
+
+  /** Created by user ID. */
+<span class="nc" id="L112">  private String createdBy;</span>
+
+  /**
+   * Campaign creative content.
+   *
+   * @author FoodAI Team
+   */
+<span class="nc bnc" id="L119" title="All 50 branches missed.">  @Data</span>
+<span class="nc" id="L120">  @Builder</span>
+<span class="nc" id="L121">  @NoArgsConstructor</span>
+<span class="nc" id="L122">  @AllArgsConstructor</span>
+  public static class CampaignCreative {
+    /** Creative ID. */
+<span class="nc" id="L125">    private String id;</span>
+
+    /** Creative type (text, image, video). */
+<span class="nc" id="L128">    private String type;</span>
+
+    /** Content (text) or URL (media). */
+<span class="nc" id="L131">    private String content;</span>
+
+    /** Media URL (for images/videos). */
+<span class="nc" id="L134">    private String mediaUrl;</span>
+
+    /** Whether AI-generated. */
+<span class="nc" id="L137">    private boolean aiGenerated;</span>
+
+    /** Channel-specific content. */
+<span class="nc" id="L140">    private String channelContent;</span>
+  }
+
+  /**
+   * Campaign performance metrics.
+   *
+   * @author FoodAI Team
+   */
+<span class="nc bnc" id="L148" title="All 32 branches missed.">  @Data</span>
+<span class="nc bnc" id="L149" title="All 14 branches missed.">  @Builder</span>
+<span class="nc" id="L150">  @NoArgsConstructor</span>
+<span class="nc" id="L151">  @AllArgsConstructor</span>
+  public static class CampaignPerformance {
+    /** Total messages sent. */
+<span class="nc" id="L154">    @Builder.Default private int sent = 0;</span>
+
+    /** Messages delivered. */
+<span class="nc" id="L157">    @Builder.Default private int delivered = 0;</span>
+
+    /** Messages opened. */
+<span class="nc" id="L160">    @Builder.Default private int opened = 0;</span>
+
+    /** Links clicked. */
+<span class="nc" id="L163">    @Builder.Default private int clicked = 0;</span>
+
+    /** Conversions (orders placed). */
+<span class="nc" id="L166">    @Builder.Default private int converted = 0;</span>
+
+    /** Total revenue generated. */
+<span class="nc" id="L169">    @Builder.Default private BigDecimal revenue = BigDecimal.ZERO;</span>
+
+    /** Total cost. */
+<span class="nc" id="L172">    @Builder.Default private BigDecimal cost = BigDecimal.ZERO;</span>
+
+    /**
+     * Gets the delivery rate.
+     *
+     * @return delivery rate percentage
+     */
+    public double getDeliveryRate() {
+<span class="nc bnc" id="L180" title="All 2 branches missed.">      return sent &gt; 0 ? (double) delivered / sent * 100 : 0;</span>
+    }
+
+    /**
+     * Gets the open rate.
+     *
+     * @return open rate percentage
+     */
+    public double getOpenRate() {
+<span class="nc bnc" id="L189" title="All 2 branches missed.">      return delivered &gt; 0 ? (double) opened / delivered * 100 : 0;</span>
+    }
+
+    /**
+     * Gets the click rate.
+     *
+     * @return click rate percentage
+     */
+    public double getClickRate() {
+<span class="nc bnc" id="L198" title="All 2 branches missed.">      return opened &gt; 0 ? (double) clicked / opened * 100 : 0;</span>
+    }
+
+    /**
+     * Gets the conversion rate.
+     *
+     * @return conversion rate percentage
+     */
+    public double getConversionRate() {
+<span class="nc bnc" id="L207" title="All 2 branches missed.">      return clicked &gt; 0 ? (double) converted / clicked * 100 : 0;</span>
+    }
+
+    /**
+     * Gets the ROI.
+     *
+     * @return ROI percentage
+     */
+    public double getRoi() {
+<span class="nc bnc" id="L216" title="All 4 branches missed.">      if (cost == null || cost.compareTo(BigDecimal.ZERO) == 0) {</span>
+<span class="nc" id="L217">        return 0;</span>
+      }
+<span class="nc" id="L219">      return revenue</span>
+<span class="nc" id="L220">          .subtract(cost)</span>
+<span class="nc" id="L221">          .divide(cost, 4, java.math.RoundingMode.HALF_UP)</span>
+<span class="nc" id="L222">          .multiply(BigDecimal.valueOf(100))</span>
+<span class="nc" id="L223">          .doubleValue();</span>
+    }
+  }
+
+  /** Activates the campaign. */
+  public void activate() {
+<span class="nc bnc" id="L229" title="All 4 branches missed.">    if (status == CampaignStatus.COMPLETED || status == CampaignStatus.CANCELLED) {</span>
+<span class="nc" id="L230">      throw new IllegalStateException(&quot;Cannot activate completed or cancelled campaign&quot;);</span>
+    }
+<span class="nc" id="L232">    this.status = CampaignStatus.ACTIVE;</span>
+<span class="nc" id="L233">  }</span>
+
+  /** Pauses the campaign. */
+  public void pause() {
+<span class="nc bnc" id="L237" title="All 2 branches missed.">    if (status != CampaignStatus.ACTIVE) {</span>
+<span class="nc" id="L238">      throw new IllegalStateException(&quot;Can only pause active campaigns&quot;);</span>
+    }
+<span class="nc" id="L240">    this.status = CampaignStatus.PAUSED;</span>
+<span class="nc" id="L241">  }</span>
+
+  /** Resumes a paused campaign. */
+  public void resume() {
+<span class="nc bnc" id="L245" title="All 2 branches missed.">    if (status != CampaignStatus.PAUSED) {</span>
+<span class="nc" id="L246">      throw new IllegalStateException(&quot;Can only resume paused campaigns&quot;);</span>
+    }
+<span class="nc" id="L248">    this.status = CampaignStatus.ACTIVE;</span>
+<span class="nc" id="L249">  }</span>
+
+  /** Completes the campaign. */
+  public void complete() {
+<span class="nc" id="L253">    this.status = CampaignStatus.COMPLETED;</span>
+<span class="nc" id="L254">  }</span>
+
+  /** Cancels the campaign. */
+  public void cancel() {
+<span class="nc" id="L258">    this.status = CampaignStatus.CANCELLED;</span>
+<span class="nc" id="L259">  }</span>
+
+  /** Soft deletes the campaign. */
+  public void delete() {
+<span class="nc" id="L263">    this.deleted = true;</span>
+<span class="nc" id="L264">    this.status = CampaignStatus.CANCELLED;</span>
+<span class="nc" id="L265">  }</span>
+
+  /** Archives the campaign. */
+  public void archive() {
+<span class="nc" id="L269">    this.status = CampaignStatus.ARCHIVED;</span>
+<span class="nc" id="L270">  }</span>
+
+  /** Validates the campaign. */
+  public void validate() {
+<span class="nc bnc" id="L274" title="All 4 branches missed.">    if (name == null || name.isBlank()) {</span>
+<span class="nc" id="L275">      throw new IllegalStateException(&quot;Campaign name is required&quot;);</span>
+    }
+<span class="nc bnc" id="L277" title="All 4 branches missed.">    if (channels == null || channels.isEmpty()) {</span>
+<span class="nc" id="L278">      throw new IllegalStateException(&quot;At least one channel is required&quot;);</span>
+    }
+<span class="nc" id="L280">  }</span>
+
+  /**
+   * Records metrics for the campaign.
+   *
+   * @param impressions number of impressions
+   * @param clicks number of clicks
+   * @param conversions number of conversions
+   */
+  public void recordMetrics(int impressions, int clicks, int conversions) {
+<span class="nc bnc" id="L290" title="All 2 branches missed.">    if (performance == null) {</span>
+<span class="nc" id="L291">      performance = CampaignPerformance.builder().build();</span>
+    }
+<span class="nc" id="L293">    performance.setSent(performance.getSent() + impressions);</span>
+<span class="nc" id="L294">    performance.setClicked(performance.getClicked() + clicks);</span>
+<span class="nc" id="L295">    performance.setConverted(performance.getConverted() + conversions);</span>
+<span class="nc" id="L296">  }</span>
+
+  /**
+   * Records spend for the campaign.
+   *
+   * @param amount the amount spent
+   */
+  public void recordSpend(BigDecimal amount) {
+<span class="nc bnc" id="L304" title="All 2 branches missed.">    if (this.spent == null) {</span>
+<span class="nc" id="L305">      this.spent = BigDecimal.ZERO;</span>
+    }
+<span class="nc" id="L307">    this.spent = this.spent.add(amount);</span>
+<span class="nc" id="L308">  }</span>
+
+  /**
+   * Records campaign send event.
+   *
+   * @param count number of messages sent
+   */
+  public void recordSend(int count) {
+<span class="nc bnc" id="L316" title="All 2 branches missed.">    if (performance == null) {</span>
+<span class="nc" id="L317">      performance = CampaignPerformance.builder().build();</span>
+    }
+<span class="nc" id="L319">    performance.setSent(performance.getSent() + count);</span>
+<span class="nc" id="L320">  }</span>
+
+  /**
+   * Records campaign delivery event.
+   *
+   * @param count number of messages delivered
+   */
+  public void recordDelivery(int count) {
+<span class="nc bnc" id="L328" title="All 2 branches missed.">    if (performance == null) {</span>
+<span class="nc" id="L329">      performance = CampaignPerformance.builder().build();</span>
+    }
+<span class="nc" id="L331">    performance.setDelivered(performance.getDelivered() + count);</span>
+<span class="nc" id="L332">  }</span>
+
+  /**
+   * Records campaign conversion.
+   *
+   * @param revenue revenue generated
+   */
+  public void recordConversion(BigDecimal revenue) {
+<span class="nc bnc" id="L340" title="All 2 branches missed.">    if (performance == null) {</span>
+<span class="nc" id="L341">      performance = CampaignPerformance.builder().build();</span>
+    }
+<span class="nc" id="L343">    performance.setConverted(performance.getConverted() + 1);</span>
+<span class="nc" id="L344">    performance.setRevenue(performance.getRevenue().add(revenue));</span>
+<span class="nc" id="L345">  }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

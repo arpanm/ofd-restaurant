@@ -1,0 +1,29 @@
+================================================================================
+FoodAI Platform - Quality Validation Report
+================================================================================
+Generated: Mon Dec 15 18:41:27 IST 2025
+Mode: all
+Target: 
+================================================================================
+
+Java Version: openjdk version "21.0.6" 2025-01-21 LTS
+
+================================================================
+Service: user-service
+================================================================
+[user-service] Compilation: PASSED
+[user-service] Code Formatting: SKIPPED (not configured)
+[user-service] Checkstyle: SKIPPED (not configured)
+[user-service] Tests: PASSED - [INFO] Tests run: 112, Failures: 0, Errors: 0, Skipped: 0
+[user-service] Coverage: Line=20%, Branch=20%
+[user-service] Coverage Thresholds: MET
+[user-service] SpotBugs: SKIPPED (not configured)
+[user-service] PMD: SKIPPED (not configured)
+[user-service] RESULT: PASSED
+
+================================================================
+Service: restaurant-service
+================================================================
+[restaurant-service] Compilation: PASSED
+[restaurant-service] Code Formatting: SKIPPED (not configured)
+[restaurant-service] Checkstyle: SKIPPED (not configured)

@@ -1,0 +1,339 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.foodai:user-service >-----------------------
+[INFO] Building User Service 1.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- jacoco:0.8.13:prepare-agent (prepare-agent) @ user-service ---
+[INFO] argLine set to -javaagent:/Users/arpan1.mukherjee/.m2/repository/org/jacoco/org.jacoco.agent/0.8.13/org.jacoco.agent-0.8.13-runtime.jar=destfile=/Users/arpan1.mukherjee/code/agentic-plate/backend/user-service/target/jacoco.exec
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ user-service ---
+[INFO] Copying 3 resources from src/main/resources to target/classes
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.12.1:compile (default-compile) @ user-service ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ user-service ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.12.1:testCompile (default-testCompile) @ user-service ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.2.3:test (default-test) @ user-service ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.foodai.user.mapper.LoyaltyMapperTest
+[INFO] Running com.foodai.user.mapper.LoyaltyMapperTest$ChallengeMappingTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.164 s -- in com.foodai.user.mapper.LoyaltyMapperTest$ChallengeMappingTests
+[INFO] Running com.foodai.user.mapper.LoyaltyMapperTest$BadgeMappingTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.021 s -- in com.foodai.user.mapper.LoyaltyMapperTest$BadgeMappingTests
+[INFO] Running com.foodai.user.mapper.LoyaltyMapperTest$AchievementMappingTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in com.foodai.user.mapper.LoyaltyMapperTest$AchievementMappingTests
+[INFO] Running com.foodai.user.mapper.LoyaltyMapperTest$ToResponseTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s -- in com.foodai.user.mapper.LoyaltyMapperTest$ToResponseTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.254 s -- in com.foodai.user.mapper.LoyaltyMapperTest
+[INFO] Running com.foodai.user.mapper.UserMapperTest
+[INFO] Running com.foodai.user.mapper.UserMapperTest$PreferencesMappingTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.033 s -- in com.foodai.user.mapper.UserMapperTest$PreferencesMappingTests
+[INFO] Running com.foodai.user.mapper.UserMapperTest$AddressMappingTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.044 s -- in com.foodai.user.mapper.UserMapperTest$AddressMappingTests
+[INFO] Running com.foodai.user.mapper.UserMapperTest$UpdateEntityFromRequestTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s -- in com.foodai.user.mapper.UserMapperTest$UpdateEntityFromRequestTests
+[INFO] Running com.foodai.user.mapper.UserMapperTest$ToResponseTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s -- in com.foodai.user.mapper.UserMapperTest$ToResponseTests
+[INFO] Running com.foodai.user.mapper.UserMapperTest$ToEntityTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.foodai.user.mapper.UserMapperTest$ToEntityTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.137 s -- in com.foodai.user.mapper.UserMapperTest
+[INFO] Running com.foodai.user.controller.UserControllerTest
+[INFO] Running com.foodai.user.controller.UserControllerTest$VerificationEndpointTests
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build what is described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/Users/arpan1.mukherjee/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.10/byte-buddy-agent-1.14.10.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build what is described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3
+18:53:19.747 [main] INFO org.hibernate.validator.internal.util.Version -- HV000001: Hibernate Validator 8.0.1.Final
+18:53:21.574 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:21.575 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:21.580 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 4 ms
+18:53:22.278 [main] INFO com.foodai.user.controller.UserController -- POST /api/v1/users/user-123/verify-email
+18:53:22.440 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:22.440 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:22.440 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:22.446 [main] INFO com.foodai.user.controller.UserController -- POST /api/v1/users/user-123/verify-phone
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.942 s -- in com.foodai.user.controller.UserControllerTest$VerificationEndpointTests
+[INFO] Running com.foodai.user.controller.UserControllerTest$FavoritesEndpointTests
+18:53:22.478 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:22.478 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:22.478 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:22.484 [main] INFO com.foodai.user.controller.UserController -- DELETE /api/v1/users/user-123/favorites/restaurants/restaurant-456
+18:53:22.511 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:22.511 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:22.511 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:22.518 [main] INFO com.foodai.user.controller.UserController -- POST /api/v1/users/user-123/favorites/restaurants/restaurant-456
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.068 s -- in com.foodai.user.controller.UserControllerTest$FavoritesEndpointTests
+[INFO] Running com.foodai.user.controller.UserControllerTest$AddressEndpointTests
+18:53:22.548 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:22.549 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:22.549 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:22.555 [main] INFO com.foodai.user.controller.UserController -- GET /api/v1/users/user-123/addresses
+18:53:22.663 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:22.663 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:22.663 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:22.668 [main] INFO com.foodai.user.controller.UserController -- DELETE /api/v1/users/user-123/addresses/addr-123 - Removing address
+18:53:22.691 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:22.691 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:22.691 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:22.920 [main] INFO com.foodai.user.controller.UserController -- POST /api/v1/users/user-123/addresses - Adding address
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.402 s -- in com.foodai.user.controller.UserControllerTest$AddressEndpointTests
+[INFO] Running com.foodai.user.controller.UserControllerTest$DeleteUserEndpointTests
+18:53:22.947 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:22.947 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:22.947 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:22.953 [main] INFO com.foodai.user.controller.UserController -- DELETE /api/v1/users/user-123 - Deleting user
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.028 s -- in com.foodai.user.controller.UserControllerTest$DeleteUserEndpointTests
+[INFO] Running com.foodai.user.controller.UserControllerTest$UpdateUserEndpointTests
+18:53:23.001 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.001 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.001 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.050 [main] INFO com.foodai.user.controller.UserController -- PUT /api/v1/users/user-123 - Updating user
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.109 s -- in com.foodai.user.controller.UserControllerTest$UpdateUserEndpointTests
+[INFO] Running com.foodai.user.controller.UserControllerTest$GetAllUsersEndpointTests
+18:53:23.088 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.089 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.089 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.100 [main] INFO com.foodai.user.controller.UserController -- GET /api/v1/users - Fetching all users, page: 0
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.053 s -- in com.foodai.user.controller.UserControllerTest$GetAllUsersEndpointTests
+[INFO] Running com.foodai.user.controller.UserControllerTest$GetUserEndpointTests
+18:53:23.144 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.144 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.144 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.148 [main] INFO com.foodai.user.controller.UserController -- GET /api/v1/users/by-email?email=test@example.com
+18:53:23.171 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.171 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.171 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.175 [main] INFO com.foodai.user.controller.UserController -- GET /api/v1/users/by-phone/+919876543210
+18:53:23.197 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.197 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.197 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.203 [main] INFO com.foodai.user.controller.UserController -- GET /api/v1/users/unknown - Fetching user
+18:53:23.208 [main] WARN com.foodai.user.exception.GlobalExceptionHandler -- User not found: User not found with id: unknown
+18:53:23.228 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.228 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.228 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.231 [main] INFO com.foodai.user.controller.UserController -- GET /api/v1/users/user-123 - Fetching user
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.112 s -- in com.foodai.user.controller.UserControllerTest$GetUserEndpointTests
+[INFO] Running com.foodai.user.controller.UserControllerTest$CreateUserEndpointTests
+18:53:23.254 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.254 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.254 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.278 [main] INFO com.foodai.user.controller.UserController -- POST /api/v1/users - Creating user
+18:53:23.279 [main] WARN com.foodai.user.exception.GlobalExceptionHandler -- User already exists: User already exists with phone: +919876543210
+18:53:23.296 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.296 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.297 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+18:53:23.333 [main] INFO com.foodai.user.controller.UserController -- POST /api/v1/users - Creating user
+18:53:23.357 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.357 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.358 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.421 [main] WARN com.foodai.user.exception.GlobalExceptionHandler -- Validation failed: {phone=Phone number is required}
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.192 s -- in com.foodai.user.controller.UserControllerTest$CreateUserEndpointTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.941 s -- in com.foodai.user.controller.UserControllerTest
+[INFO] Running com.foodai.user.controller.LoyaltyControllerTest
+[INFO] Running com.foodai.user.controller.LoyaltyControllerTest$TierAndLeaderboardEndpointTests
+18:53:23.523 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.523 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.523 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.534 [main] INFO com.foodai.user.controller.LoyaltyController -- GET /api/v1/loyalty/accounts/tier/SILVER
+18:53:23.555 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.556 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.556 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.559 [main] INFO com.foodai.user.controller.LoyaltyController -- GET /api/v1/loyalty/leaderboard
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.130 s -- in com.foodai.user.controller.LoyaltyControllerTest$TierAndLeaderboardEndpointTests
+[INFO] Running com.foodai.user.controller.LoyaltyControllerTest$ReferralEndpointTests
+18:53:23.583 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.583 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.583 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.587 [main] INFO com.foodai.user.controller.LoyaltyController -- POST /api/v1/loyalty/referrals/process - code: FD12345678, newUser: user-456
+18:53:23.603 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.604 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.604 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.607 [main] INFO com.foodai.user.controller.LoyaltyController -- POST /api/v1/loyalty/referrals/process - code: INVALID, newUser: user-456
+18:53:23.608 [main] WARN com.foodai.user.exception.GlobalExceptionHandler -- Invalid argument: Invalid referral code
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.041 s -- in com.foodai.user.controller.LoyaltyControllerTest$ReferralEndpointTests
+[INFO] Running com.foodai.user.controller.LoyaltyControllerTest$RedeemPointsEndpointTests
+18:53:23.622 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.623 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.623 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.630 [main] INFO com.foodai.user.controller.LoyaltyController -- POST /api/v1/loyalty/accounts/user/user-123/redeem - points: 10000
+18:53:23.631 [main] WARN com.foodai.user.exception.GlobalExceptionHandler -- Invalid state: Insufficient points
+18:53:23.643 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.643 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.643 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.647 [main] INFO com.foodai.user.controller.LoyaltyController -- POST /api/v1/loyalty/accounts/user/user-123/redeem - points: 500
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.042 s -- in com.foodai.user.controller.LoyaltyControllerTest$RedeemPointsEndpointTests
+[INFO] Running com.foodai.user.controller.LoyaltyControllerTest$EarnPointsEndpointTests
+18:53:23.665 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.665 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.665 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.672 [main] INFO com.foodai.user.controller.LoyaltyController -- POST /api/v1/loyalty/accounts/user/user-123/earn - amount: 500.0
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.025 s -- in com.foodai.user.controller.LoyaltyControllerTest$EarnPointsEndpointTests
+[INFO] Running com.foodai.user.controller.LoyaltyControllerTest$GetAccountEndpointTests
+18:53:23.691 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.691 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.691 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.694 [main] INFO com.foodai.user.controller.LoyaltyController -- GET /api/v1/loyalty/accounts/loyalty-123
+18:53:23.709 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.709 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.710 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 1 ms
+18:53:23.713 [main] INFO com.foodai.user.controller.LoyaltyController -- GET /api/v1/loyalty/accounts/user/unknown
+18:53:23.714 [main] WARN com.foodai.user.exception.GlobalExceptionHandler -- Loyalty account not found: Loyalty account not found for user: unknown
+18:53:23.731 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.731 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.731 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.735 [main] INFO com.foodai.user.controller.LoyaltyController -- GET /api/v1/loyalty/accounts/user/user-123
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.059 s -- in com.foodai.user.controller.LoyaltyControllerTest$GetAccountEndpointTests
+[INFO] Running com.foodai.user.controller.LoyaltyControllerTest$CreateAccountEndpointTests
+18:53:23.752 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.752 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.752 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.756 [main] INFO com.foodai.user.controller.LoyaltyController -- POST /api/v1/loyalty/accounts - Creating account for user: user-123
+18:53:23.757 [main] WARN com.foodai.user.exception.GlobalExceptionHandler -- Invalid state: Account already exists
+18:53:23.769 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+18:53:23.769 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+18:53:23.769 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+18:53:23.774 [main] INFO com.foodai.user.controller.LoyaltyController -- POST /api/v1/loyalty/accounts - Creating account for user: user-123
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.041 s -- in com.foodai.user.controller.LoyaltyControllerTest$CreateAccountEndpointTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.345 s -- in com.foodai.user.controller.LoyaltyControllerTest
+[INFO] Running com.foodai.user.service.UserServiceTest
+[INFO] Running com.foodai.user.service.UserServiceTest$VerificationTests
+18:53:24.280 [main] INFO com.foodai.user.service.UserService -- Verifying email for user: user-123
+18:53:24.280 [main] INFO com.foodai.user.service.UserService -- Email verified successfully for user: user-123
+18:53:24.284 [main] INFO com.foodai.user.service.UserService -- Verifying phone for user: user-123
+18:53:24.284 [main] INFO com.foodai.user.service.UserService -- Phone verified successfully for user: user-123
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.501 s -- in com.foodai.user.service.UserServiceTest$VerificationTests
+[INFO] Running com.foodai.user.service.UserServiceTest$FavoritesTests
+18:53:24.288 [main] INFO com.foodai.user.service.UserService -- Removing favorite restaurant restaurant-456 for user: user-123
+18:53:24.289 [main] INFO com.foodai.user.service.UserService -- Favorite restaurant removed successfully
+18:53:24.292 [main] INFO com.foodai.user.service.UserService -- Adding favorite restaurant restaurant-456 for user: user-123
+18:53:24.292 [main] INFO com.foodai.user.service.UserService -- Favorite restaurant added successfully
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.foodai.user.service.UserServiceTest$FavoritesTests
+[INFO] Running com.foodai.user.service.UserServiceTest$AddressManagementTests
+18:53:24.300 [main] INFO com.foodai.user.service.UserService -- Adding address for user: user-123
+18:53:24.300 [main] INFO com.foodai.user.service.UserService -- Address added successfully: addr_123
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.foodai.user.service.UserServiceTest$AddressManagementTests
+[INFO] Running com.foodai.user.service.UserServiceTest$DeleteUserTests
+18:53:24.305 [main] INFO com.foodai.user.service.UserService -- Deleting user with ID: user-123
+18:53:24.305 [main] INFO com.foodai.user.service.UserService -- User deleted successfully: user-123
+18:53:24.317 [main] INFO com.foodai.user.service.UserService -- Deleting user with ID: unknown
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s -- in com.foodai.user.service.UserServiceTest$DeleteUserTests
+[INFO] Running com.foodai.user.service.UserServiceTest$UpdateUserTests
+18:53:24.326 [main] INFO com.foodai.user.service.UserService -- Updating user with ID: user-123
+18:53:24.327 [main] INFO com.foodai.user.service.UserService -- User updated successfully: user-123
+18:53:24.331 [main] INFO com.foodai.user.service.UserService -- Updating user with ID: unknown
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.010 s -- in com.foodai.user.service.UserServiceTest$UpdateUserTests
+[INFO] Running com.foodai.user.service.UserServiceTest$GetAllUsersTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.foodai.user.service.UserServiceTest$GetAllUsersTests
+[INFO] Running com.foodai.user.service.UserServiceTest$GetUserTests
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 s -- in com.foodai.user.service.UserServiceTest$GetUserTests
+[INFO] Running com.foodai.user.service.UserServiceTest$CreateUserTests
+18:53:24.355 [main] INFO com.foodai.user.service.UserService -- Creating new user with phone: +919876543210
+18:53:24.356 [main] INFO com.foodai.user.service.UserService -- User created successfully with ID: user-123
+18:53:24.359 [main] INFO com.foodai.user.service.UserService -- Creating new user with phone: +919876543210
+18:53:24.362 [main] INFO com.foodai.user.service.UserService -- Creating new user with phone: +919876543210
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in com.foodai.user.service.UserServiceTest$CreateUserTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.581 s -- in com.foodai.user.service.UserServiceTest
+[INFO] Running com.foodai.user.service.LoyaltyServiceTest
+[INFO] Running com.foodai.user.service.LoyaltyServiceTest$BadgeTests
+18:53:24.502 [main] INFO com.foodai.user.service.LoyaltyService -- Awarding badge foodie to user: user-123
+18:53:24.503 [main] INFO com.foodai.user.service.LoyaltyService -- Badge awarded successfully
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.138 s -- in com.foodai.user.service.LoyaltyServiceTest$BadgeTests
+[INFO] Running com.foodai.user.service.LoyaltyServiceTest$AchievementTests
+18:53:24.506 [main] INFO com.foodai.user.service.LoyaltyService -- Awarding achievement first-order to user: user-123
+18:53:24.508 [main] INFO com.foodai.user.service.LoyaltyService -- Achievement awarded successfully
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.foodai.user.service.LoyaltyServiceTest$AchievementTests
+[INFO] Running com.foodai.user.service.LoyaltyServiceTest$ReferralTests
+18:53:24.513 [main] INFO com.foodai.user.service.LoyaltyService -- Processing referral with code: FD12345678 for new user: user-456
+18:53:24.513 [main] INFO com.foodai.user.service.LoyaltyService -- Referral processed successfully. Referrer: user-123, Referee: user-456
+18:53:24.516 [main] INFO com.foodai.user.service.LoyaltyService -- Processing referral with code: INVALID for new user: user-456
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.foodai.user.service.LoyaltyServiceTest$ReferralTests
+[INFO] Running com.foodai.user.service.LoyaltyServiceTest$RedeemPointsTests
+18:53:24.522 [main] INFO com.foodai.user.service.LoyaltyService -- Redeeming 500 points for user: user-123
+18:53:24.522 [main] INFO com.foodai.user.service.LoyaltyService -- Redeemed 500 points for user: user-123
+18:53:24.528 [main] INFO com.foodai.user.service.LoyaltyService -- Redeeming 500 points for user: user-123
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in com.foodai.user.service.LoyaltyServiceTest$RedeemPointsTests
+[INFO] Running com.foodai.user.service.LoyaltyServiceTest$EarnPointsTests
+18:53:24.533 [main] INFO com.foodai.user.service.LoyaltyService -- Earning points for user: user-123, order: order-123, amount: 500.0
+18:53:24.534 [main] INFO com.foodai.user.service.LoyaltyService -- Earned 625 points for user: user-123
+18:53:24.540 [main] INFO com.foodai.user.service.LoyaltyService -- Earning points for user: user-123, order: order-123, amount: 100.0
+18:53:24.540 [main] INFO com.foodai.user.service.LoyaltyService -- Earned 150 points for user: user-123
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in com.foodai.user.service.LoyaltyServiceTest$EarnPointsTests
+[INFO] Running com.foodai.user.service.LoyaltyServiceTest$GetAccountTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.foodai.user.service.LoyaltyServiceTest$GetAccountTests
+[INFO] Running com.foodai.user.service.LoyaltyServiceTest$CreateAccountTests
+18:53:24.553 [main] INFO com.foodai.user.service.LoyaltyService -- Creating loyalty account for user: user-123
+18:53:24.556 [main] INFO com.foodai.user.service.LoyaltyService -- Creating loyalty account for user: user-123
+18:53:24.557 [main] INFO com.foodai.user.service.LoyaltyService -- Loyalty account created with ID: loyalty-123
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in com.foodai.user.service.LoyaltyServiceTest$CreateAccountTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.193 s -- in com.foodai.user.service.LoyaltyServiceTest
+[INFO] Running com.foodai.user.domain.model.UserTest
+[INFO] Running com.foodai.user.domain.model.UserTest$FullNameTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.foodai.user.domain.model.UserTest$FullNameTests
+[INFO] Running com.foodai.user.domain.model.UserTest$DeleteTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in com.foodai.user.domain.model.UserTest$DeleteTests
+[INFO] Running com.foodai.user.domain.model.UserTest$OrderRecordingTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.foodai.user.domain.model.UserTest$OrderRecordingTests
+[INFO] Running com.foodai.user.domain.model.UserTest$FavoritesTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in com.foodai.user.domain.model.UserTest$FavoritesTests
+[INFO] Running com.foodai.user.domain.model.UserTest$AddressManagementTests
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in com.foodai.user.domain.model.UserTest$AddressManagementTests
+[INFO] Running com.foodai.user.domain.model.UserTest$ValidationTests
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.foodai.user.domain.model.UserTest$ValidationTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.028 s -- in com.foodai.user.domain.model.UserTest
+[INFO] Running com.foodai.user.domain.model.LoyaltyAccountTest
+[INFO] Running com.foodai.user.domain.model.LoyaltyAccountTest$TierMultiplierTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.foodai.user.domain.model.LoyaltyAccountTest$TierMultiplierTests
+[INFO] Running com.foodai.user.domain.model.LoyaltyAccountTest$ReferralTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.foodai.user.domain.model.LoyaltyAccountTest$ReferralTests
+[INFO] Running com.foodai.user.domain.model.LoyaltyAccountTest$BadgeTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.foodai.user.domain.model.LoyaltyAccountTest$BadgeTests
+[INFO] Running com.foodai.user.domain.model.LoyaltyAccountTest$AchievementTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.foodai.user.domain.model.LoyaltyAccountTest$AchievementTests
+[INFO] Running com.foodai.user.domain.model.LoyaltyAccountTest$StreakTests
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.foodai.user.domain.model.LoyaltyAccountTest$StreakTests
+[INFO] Running com.foodai.user.domain.model.LoyaltyAccountTest$ExpirePointsTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in com.foodai.user.domain.model.LoyaltyAccountTest$ExpirePointsTests
+[INFO] Running com.foodai.user.domain.model.LoyaltyAccountTest$RedeemPointsTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in com.foodai.user.domain.model.LoyaltyAccountTest$RedeemPointsTests
+[INFO] Running com.foodai.user.domain.model.LoyaltyAccountTest$EarnPointsTests
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in com.foodai.user.domain.model.LoyaltyAccountTest$EarnPointsTests
+[INFO] Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.032 s -- in com.foodai.user.domain.model.LoyaltyAccountTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 112, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jacoco:0.8.13:report (report) @ user-service ---
+[INFO] Loading execution data file /Users/arpan1.mukherjee/code/agentic-plate/backend/user-service/target/jacoco.exec
+[INFO] Analyzed bundle 'User Service' with 108 classes
+[INFO] 
+[INFO] --- jacoco:0.8.13:check (jacoco-check) @ user-service ---
+[INFO] Loading execution data file /Users/arpan1.mukherjee/code/agentic-plate/backend/user-service/target/jacoco.exec
+[INFO] Analyzed bundle 'user-service' with 108 classes
+[INFO] All coverage checks have been met.
+[INFO] 
+[INFO] --- surefire-report:3.2.3:report-only (default) @ user-service ---
+[INFO] Rendering content with org.apache.maven.skins:maven-default-skin:jar:1.3 skin.
+[WARNING] Unable to locate Test Source XRef to link to - DISABLED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  13.201 s
+[INFO] Finished at: 2025-12-15T18:53:27+05:30
+[INFO] ------------------------------------------------------------------------

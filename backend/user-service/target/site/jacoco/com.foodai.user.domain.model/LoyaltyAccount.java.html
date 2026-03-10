@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoyaltyAccount.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.user.domain.model</a> &gt; <span class="el_source">LoyaltyAccount.java</span></div><h1>LoyaltyAccount.java</h1><pre class="source lang-java linenums">package com.foodai.user.domain.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Loyalty Account Entity.
+ * Manages user's loyalty points, tier status, achievements, and rewards.
+ *
+ * &lt;p&gt;Covers features from:
+ * &lt;ul&gt;
+ *   &lt;li&gt;LOYALTY_GAMIFICATION.md - Points, tiers, achievements, rewards&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * @author FoodAI Team
+ */
+@Document(collection = &quot;loyalty_accounts&quot;)
+<span class="pc bnc" id="L29" title="All 198 branches missed.">@Data</span>
+<span class="pc bpc" id="L30" title="1 of 30 branches missed.">@Builder</span>
+<span class="nc" id="L31">@NoArgsConstructor</span>
+<span class="fc" id="L32">@AllArgsConstructor</span>
+public class LoyaltyAccount {
+
+    /**
+     * Unique loyalty account identifier
+     */
+    @Id
+<span class="fc" id="L39">    private String id;</span>
+
+    /**
+     * User ID this account belongs to
+     */
+    @Indexed(unique = true)
+<span class="fc" id="L45">    private String userId;</span>
+
+    /**
+     * Current loyalty points balance
+     */
+    @Builder.Default
+<span class="fc" id="L51">    private Long currentPoints = 0L;</span>
+
+    /**
+     * Total points earned (lifetime)
+     */
+    @Builder.Default
+<span class="fc" id="L57">    private Long lifetimePointsEarned = 0L;</span>
+
+    /**
+     * Total points redeemed (lifetime)
+     */
+    @Builder.Default
+<span class="fc" id="L63">    private Long lifetimePointsRedeemed = 0L;</span>
+
+    /**
+     * Total points expired (lifetime)
+     */
+    @Builder.Default
+<span class="fc" id="L69">    private Long lifetimePointsExpired = 0L;</span>
+
+    /**
+     * Current loyalty tier
+     */
+    @Indexed
+    @Builder.Default
+<span class="fc" id="L76">    private LoyaltyTier tier = LoyaltyTier.BRONZE;</span>
+
+    /**
+     * Points needed to reach next tier
+     */
+    @Builder.Default
+<span class="fc" id="L82">    private Long pointsToNextTier = 1000L;</span>
+
+    /**
+     * Points earned in current tier period (for tier maintenance)
+     */
+    @Builder.Default
+<span class="fc" id="L88">    private Long tierPeriodPoints = 0L;</span>
+
+    /**
+     * Tier period start date
+     */
+<span class="fc" id="L93">    private Instant tierPeriodStart;</span>
+
+    /**
+     * Tier period end date
+     */
+<span class="fc" id="L98">    private Instant tierPeriodEnd;</span>
+
+    /**
+     * Next tier downgrade review date
+     */
+<span class="nc" id="L103">    private Instant nextTierReviewDate;</span>
+
+    /**
+     * Current streak days (consecutive days with orders)
+     */
+    @Builder.Default
+<span class="fc" id="L109">    private Integer currentStreak = 0;</span>
+
+    /**
+     * Longest streak ever
+     */
+    @Builder.Default
+<span class="fc" id="L115">    private Integer longestStreak = 0;</span>
+
+    /**
+     * Last order date (for streak calculation)
+     */
+<span class="nc" id="L120">    private Instant lastOrderDate;</span>
+
+    /**
+     * Referral code for this user
+     */
+    @Indexed(unique = true, sparse = true)
+<span class="fc" id="L126">    private String referralCode;</span>
+
+    /**
+     * Total successful referrals
+     */
+    @Builder.Default
+<span class="fc" id="L132">    private Integer totalReferrals = 0;</span>
+
+    /**
+     * Points earned from referrals
+     */
+    @Builder.Default
+<span class="fc" id="L138">    private Long referralPointsEarned = 0L;</span>
+
+    /**
+     * Unlocked achievements
+     */
+    @Builder.Default
+<span class="fc" id="L144">    private List&lt;AchievementVO&gt; achievements = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Unlocked badges
+     */
+    @Builder.Default
+<span class="fc" id="L150">    private List&lt;BadgeVO&gt; badges = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Active challenges
+     */
+    @Builder.Default
+<span class="fc" id="L156">    private List&lt;ChallengeProgressVO&gt; activeChallenges = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Account status
+     */
+    @Builder.Default
+<span class="fc" id="L162">    private LoyaltyAccountStatus status = LoyaltyAccountStatus.ACTIVE;</span>
+
+    /**
+     * Creation timestamp
+     */
+    @CreatedDate
+<span class="fc" id="L168">    private Instant createdAt;</span>
+
+    /**
+     * Last update timestamp
+     */
+    @LastModifiedDate
+<span class="nc" id="L174">    private Instant updatedAt;</span>
+
+    // ==================== Domain Methods ====================
+
+    /**
+     * Earns points for the account.
+     *
+     * @param points the points to earn
+     * @param source the source of points
+     */
+    public void earnPoints(long points, String source) {
+<span class="fc" id="L185">        this.currentPoints += points;</span>
+<span class="fc" id="L186">        this.lifetimePointsEarned += points;</span>
+<span class="fc" id="L187">        this.tierPeriodPoints += points;</span>
+<span class="fc" id="L188">        checkTierUpgrade();</span>
+<span class="fc" id="L189">    }</span>
+
+    /**
+     * Redeems points from the account.
+     *
+     * @param points the points to redeem
+     * @return true if redemption was successful
+     */
+    public boolean redeemPoints(long points) {
+<span class="fc bfc" id="L198" title="All 2 branches covered.">        if (this.currentPoints &lt; points) {</span>
+<span class="fc" id="L199">            return false;</span>
+        }
+<span class="fc" id="L201">        this.currentPoints -= points;</span>
+<span class="fc" id="L202">        this.lifetimePointsRedeemed += points;</span>
+<span class="fc" id="L203">        return true;</span>
+    }
+
+    /**
+     * Expires points from the account.
+     *
+     * @param points the points to expire
+     */
+    public void expirePoints(long points) {
+<span class="fc" id="L212">        this.currentPoints = Math.max(0, this.currentPoints - points);</span>
+<span class="fc" id="L213">        this.lifetimePointsExpired += points;</span>
+<span class="fc" id="L214">    }</span>
+
+    /**
+     * Updates streak based on new order.
+     *
+     * @param orderDate the order date
+     */
+    public void updateStreak(Instant orderDate) {
+<span class="fc bfc" id="L222" title="All 2 branches covered.">        if (lastOrderDate == null) {</span>
+<span class="fc" id="L223">            this.currentStreak = 1;</span>
+        } else {
+            // Check if order is on consecutive day
+<span class="fc" id="L226">            long daysBetween = java.time.Duration.between(lastOrderDate, orderDate).toDays();</span>
+<span class="fc bfc" id="L227" title="All 2 branches covered.">            if (daysBetween == 1) {</span>
+<span class="fc" id="L228">                this.currentStreak++;</span>
+<span class="pc bpc" id="L229" title="1 of 2 branches missed.">            } else if (daysBetween &gt; 1) {</span>
+<span class="fc" id="L230">                this.currentStreak = 1;</span>
+            }
+            // Same day doesn't change streak
+        }
+<span class="fc" id="L234">        this.lastOrderDate = orderDate;</span>
+<span class="fc bfc" id="L235" title="All 2 branches covered.">        if (this.currentStreak &gt; this.longestStreak) {</span>
+<span class="fc" id="L236">            this.longestStreak = this.currentStreak;</span>
+        }
+<span class="fc" id="L238">    }</span>
+
+    /**
+     * Checks and applies tier upgrade if eligible.
+     */
+    private void checkTierUpgrade() {
+<span class="fc" id="L244">        LoyaltyTier newTier = LoyaltyTier.getTierByPoints(this.tierPeriodPoints);</span>
+<span class="fc bfc" id="L245" title="All 2 branches covered.">        if (newTier.ordinal() &gt; this.tier.ordinal()) {</span>
+<span class="fc" id="L246">            this.tier = newTier;</span>
+        }
+<span class="fc" id="L248">        this.pointsToNextTier = calculatePointsToNextTier();</span>
+<span class="fc" id="L249">    }</span>
+
+    /**
+     * Calculates points needed to reach next tier.
+     *
+     * @return points to next tier
+     */
+    private long calculatePointsToNextTier() {
+<span class="pc bpc" id="L257" title="2 of 5 branches missed.">        return switch (this.tier) {</span>
+<span class="fc" id="L258">            case BRONZE -&gt; 1000 - this.tierPeriodPoints;</span>
+<span class="fc" id="L259">            case SILVER -&gt; 5000 - this.tierPeriodPoints;</span>
+<span class="fc" id="L260">            case GOLD -&gt; 15000 - this.tierPeriodPoints;</span>
+<span class="nc" id="L261">            case PLATINUM -&gt; 50000 - this.tierPeriodPoints;</span>
+<span class="nc" id="L262">            case DIAMOND -&gt; 0; // Max tier</span>
+        };
+    }
+
+    /**
+     * Adds an achievement to the account.
+     *
+     * @param achievement the achievement to add
+     */
+    public void addAchievement(AchievementVO achievement) {
+<span class="pc bpc" id="L272" title="1 of 2 branches missed.">        if (this.achievements == null) {</span>
+<span class="nc" id="L273">            this.achievements = new ArrayList&lt;&gt;();</span>
+        }
+        // Check if already unlocked
+<span class="fc" id="L276">        boolean alreadyUnlocked = this.achievements.stream()</span>
+<span class="fc" id="L277">            .anyMatch(a -&gt; a.getAchievementId().equals(achievement.getAchievementId()));</span>
+<span class="fc bfc" id="L278" title="All 2 branches covered.">        if (!alreadyUnlocked) {</span>
+<span class="fc" id="L279">            this.achievements.add(achievement);</span>
+<span class="pc bpc" id="L280" title="1 of 2 branches missed.">            if (achievement.getPointsAwarded() != null) {</span>
+<span class="fc" id="L281">                earnPoints(achievement.getPointsAwarded(), &quot;achievement:&quot; + achievement.getAchievementId());</span>
+            }
+        }
+<span class="fc" id="L284">    }</span>
+
+    /**
+     * Adds a badge to the account.
+     *
+     * @param badge the badge to add
+     */
+    public void addBadge(BadgeVO badge) {
+<span class="pc bpc" id="L292" title="1 of 2 branches missed.">        if (this.badges == null) {</span>
+<span class="nc" id="L293">            this.badges = new ArrayList&lt;&gt;();</span>
+        }
+<span class="fc" id="L295">        boolean alreadyHas = this.badges.stream()</span>
+<span class="fc" id="L296">            .anyMatch(b -&gt; b.getBadgeId().equals(badge.getBadgeId()));</span>
+<span class="fc bfc" id="L297" title="All 2 branches covered.">        if (!alreadyHas) {</span>
+<span class="fc" id="L298">            this.badges.add(badge);</span>
+        }
+<span class="fc" id="L300">    }</span>
+
+    /**
+     * Records a successful referral.
+     *
+     * @param referralPoints points earned from referral
+     */
+    public void recordReferral(long referralPoints) {
+<span class="fc" id="L308">        this.totalReferrals++;</span>
+<span class="fc" id="L309">        this.referralPointsEarned += referralPoints;</span>
+<span class="fc" id="L310">        earnPoints(referralPoints, &quot;referral&quot;);</span>
+<span class="fc" id="L311">    }</span>
+
+    /**
+     * Gets tier benefits multiplier.
+     *
+     * @return points multiplier based on tier
+     */
+    public double getTierMultiplier() {
+<span class="fc" id="L319">        return this.tier.getPointsMultiplier();</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

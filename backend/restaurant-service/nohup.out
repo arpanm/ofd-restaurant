@@ -1,0 +1,85 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< com.foodai:restaurant-service >--------------------
+[INFO] Building Restaurant Service 1.0.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.2.1:run (default-cli) > test-compile @ restaurant-service >>>
+[INFO] 
+[INFO] --- jacoco:0.8.13:prepare-agent (prepare-agent) @ restaurant-service ---
+[INFO] argLine set to -javaagent:/Users/arpan1.mukherjee/.m2/repository/org/jacoco/org.jacoco.agent/0.8.13/org.jacoco.agent-0.8.13-runtime.jar=destfile=/Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/target/jacoco.exec
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ restaurant-service ---
+[INFO] Copying 3 resources from src/main/resources to target/classes
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ restaurant-service ---
+[INFO] Changes detected - recompiling the module! :input tree
+[INFO] Compiling 98 source files with javac [debug release 21] to target/classes
+[WARNING] Implicitly compiled files were not subject to annotation processing.
+  Use -implicit to specify a policy for implicit compilation.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ restaurant-service ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ restaurant-service ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 13 source files with javac [debug release 21] to target/test-classes
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/src/test/java/com/foodai/restaurant/mapper/SearchMapperTest.java:[79,9] cannot access com.foodai.restaurant.dto.response.RestaurantSearchResponse.NearbyOutletDTO
+  bad class file: /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/target/classes/com/foodai/restaurant/dto/response/RestaurantSearchResponse$NearbyOutletDTO.class
+    unable to access file: java.nio.file.NoSuchFileException: /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/target/classes/com/foodai/restaurant/dto/response/RestaurantSearchResponse$NearbyOutletDTO.class
+    Please remove or make sure it appears in the correct subdirectory of the classpath.
+[ERROR] /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/src/test/java/com/foodai/restaurant/mapper/SearchMapperTest.java:[132,49] cannot access com.foodai.restaurant.domain.model.OperatingHoursVO.OperatingHoursVOBuilder
+  bad class file: /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/target/classes/com/foodai/restaurant/domain/model/OperatingHoursVO$OperatingHoursVOBuilder.class
+    unable to access file: java.nio.file.NoSuchFileException: /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/target/classes/com/foodai/restaurant/domain/model/OperatingHoursVO$OperatingHoursVOBuilder.class
+    Please remove or make sure it appears in the correct subdirectory of the classpath.
+[ERROR] /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/src/test/java/com/foodai/restaurant/mapper/SearchMapperTest.java:[128,39] cannot access com.foodai.restaurant.domain.model.ServiceabilityConfig
+  bad class file: /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/target/classes/com/foodai/restaurant/domain/model/ServiceabilityConfig.class
+    unable to access file: java.nio.file.NoSuchFileException: /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/target/classes/com/foodai/restaurant/domain/model/ServiceabilityConfig.class
+    Please remove or make sure it appears in the correct subdirectory of the classpath.
+[ERROR] /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/src/test/java/com/foodai/restaurant/mapper/SearchMapperTest.java:[120,43] cannot access com.foodai.restaurant.domain.model.AddressVO.AddressVOBuilder
+  bad class file: /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/target/classes/com/foodai/restaurant/domain/model/AddressVO$AddressVOBuilder.class
+    unable to access file: java.nio.file.NoSuchFileException: /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/target/classes/com/foodai/restaurant/domain/model/AddressVO$AddressVOBuilder.class
+    Please remove or make sure it appears in the correct subdirectory of the classpath.
+[ERROR] /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/src/test/java/com/foodai/restaurant/mapper/SearchMapperTest.java:[157,39] cannot find symbol
+  symbol:   variable ServiceabilityConfig
+  location: class com.foodai.restaurant.mapper.SearchMapperTest
+[INFO] 5 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  12.336 s
+[INFO] Finished at: 2025-11-26T03:25:46+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.11.0:testCompile (default-testCompile) on project restaurant-service: Compilation failure: Compilation failure: 
+[ERROR] /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/src/test/java/com/foodai/restaurant/mapper/SearchMapperTest.java:[79,9] cannot access com.foodai.restaurant.dto.response.RestaurantSearchResponse.NearbyOutletDTO
+[ERROR]   bad class file: /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/target/classes/com/foodai/restaurant/dto/response/RestaurantSearchResponse$NearbyOutletDTO.class
+[ERROR]     unable to access file: java.nio.file.NoSuchFileException: /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/target/classes/com/foodai/restaurant/dto/response/RestaurantSearchResponse$NearbyOutletDTO.class
+[ERROR]     Please remove or make sure it appears in the correct subdirectory of the classpath.
+[ERROR] /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/src/test/java/com/foodai/restaurant/mapper/SearchMapperTest.java:[132,49] cannot access com.foodai.restaurant.domain.model.OperatingHoursVO.OperatingHoursVOBuilder
+[ERROR]   bad class file: /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/target/classes/com/foodai/restaurant/domain/model/OperatingHoursVO$OperatingHoursVOBuilder.class
+[ERROR]     unable to access file: java.nio.file.NoSuchFileException: /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/target/classes/com/foodai/restaurant/domain/model/OperatingHoursVO$OperatingHoursVOBuilder.class
+[ERROR]     Please remove or make sure it appears in the correct subdirectory of the classpath.
+[ERROR] /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/src/test/java/com/foodai/restaurant/mapper/SearchMapperTest.java:[128,39] cannot access com.foodai.restaurant.domain.model.ServiceabilityConfig
+[ERROR]   bad class file: /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/target/classes/com/foodai/restaurant/domain/model/ServiceabilityConfig.class
+[ERROR]     unable to access file: java.nio.file.NoSuchFileException: /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/target/classes/com/foodai/restaurant/domain/model/ServiceabilityConfig.class
+[ERROR]     Please remove or make sure it appears in the correct subdirectory of the classpath.
+[ERROR] /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/src/test/java/com/foodai/restaurant/mapper/SearchMapperTest.java:[120,43] cannot access com.foodai.restaurant.domain.model.AddressVO.AddressVOBuilder
+[ERROR]   bad class file: /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/target/classes/com/foodai/restaurant/domain/model/AddressVO$AddressVOBuilder.class
+[ERROR]     unable to access file: java.nio.file.NoSuchFileException: /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/target/classes/com/foodai/restaurant/domain/model/AddressVO$AddressVOBuilder.class
+[ERROR]     Please remove or make sure it appears in the correct subdirectory of the classpath.
+[ERROR] /Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/src/test/java/com/foodai/restaurant/mapper/SearchMapperTest.java:[157,39] cannot find symbol
+[ERROR]   symbol:   variable ServiceabilityConfig
+[ERROR]   location: class com.foodai.restaurant.mapper.SearchMapperTest
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

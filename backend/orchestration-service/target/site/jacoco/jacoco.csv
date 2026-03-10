@@ -1,0 +1,20 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Orchestration Service,com.foodai.orchestration.service,SagaService,136,536,8,14,23,104,12,20,6,15
+Orchestration Service,com.foodai.orchestration.domain.model,SagaType,0,93,0,0,0,16,0,1,0,1
+Orchestration Service,com.foodai.orchestration.domain.model,SagaStep.SagaStepBuilder,69,134,0,0,0,1,5,19,5,19
+Orchestration Service,com.foodai.orchestration.domain.model,SagaStatus,0,57,0,0,0,10,0,1,0,1
+Orchestration Service,com.foodai.orchestration.domain.model,SagaStep,708,267,142,16,7,52,98,40,25,34
+Orchestration Service,com.foodai.orchestration.domain.model,Saga.SagaBuilder,106,196,0,8,0,1,9,25,9,21
+Orchestration Service,com.foodai.orchestration.domain.model,Saga,959,556,199,39,14,122,136,74,29,62
+Orchestration Service,com.foodai.orchestration.domain.model,SagaStepStatus,0,63,0,0,0,11,0,1,0,1
+Orchestration Service,com.foodai.orchestration.infrastructure.messaging,SagaEventConsumer,332,0,24,0,72,0,18,0,6,0
+Orchestration Service,com.foodai.orchestration.infrastructure.messaging,SagaEventPublisher,510,0,8,0,96,0,15,0,11,0
+Orchestration Service,com.foodai.orchestration.saga.definition,SagaDefinition,316,40,50,0,13,4,45,7,20,7
+Orchestration Service,com.foodai.orchestration.saga.definition,SagaDefinitionRegistry,950,4,0,0,436,1,11,1,11,1
+Orchestration Service,com.foodai.orchestration.saga.definition,SagaDefinition.SagaDefinitionBuilder,49,65,4,4,0,1,9,5,5,5
+Orchestration Service,com.foodai.orchestration.saga.definition,SagaStepDefinition.SagaStepDefinitionBuilder,51,88,4,4,0,1,9,8,5,8
+Orchestration Service,com.foodai.orchestration.saga.definition,SagaStepDefinition,380,60,66,0,5,9,54,10,21,10
+Orchestration Service,com.foodai.orchestration.mapper,SagaMapperImpl,15,345,8,18,4,81,7,12,0,6
+Orchestration Service,com.foodai.orchestration.saga.executor,SagaExecutor,643,4,38,0,151,1,31,1,12,1
+Orchestration Service,com.foodai.orchestration.controller,SagaController,0,175,0,0,0,33,0,11,0,11
+Orchestration Service,com.foodai.orchestration.controller,CheckoutController,296,0,18,0,78,0,16,0,7,0

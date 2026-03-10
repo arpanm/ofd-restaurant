@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SagaStep.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Orchestration Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.orchestration.domain.model</a> &gt; <span class="el_source">SagaStep.java</span></div><h1>SagaStep.java</h1><pre class="source lang-java linenums">package com.foodai.orchestration.domain.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.Instant;
+import java.util.Map;
+
+/**
+ * Represents a single step in a saga execution.
+ *
+ * &lt;p&gt;Each step corresponds to an action performed on a microservice,
+ * with associated compensation logic for rollback scenarios.
+ *
+ * @author FoodAI Team
+ */
+<span class="pc bnc" id="L19" title="All 138 branches missed.">@Data</span>
+<span class="pc" id="L20">@Builder</span>
+<span class="nc" id="L21">@NoArgsConstructor</span>
+<span class="fc" id="L22">@AllArgsConstructor</span>
+public class SagaStep {
+
+    /** Unique identifier for this step within the saga */
+<span class="fc" id="L26">    private String stepId;</span>
+
+    /** Name of the step (e.g., &quot;validateCart&quot;, &quot;processPayment&quot;) */
+<span class="fc" id="L29">    private String stepName;</span>
+
+    /** Order of execution (0-indexed) */
+<span class="fc" id="L32">    private int stepOrder;</span>
+
+    /** Target service for this step */
+<span class="fc" id="L35">    private String targetService;</span>
+
+    /** Action to execute */
+<span class="fc" id="L38">    private String action;</span>
+
+    /** Compensation action for rollback */
+<span class="nc" id="L41">    private String compensationAction;</span>
+
+    /** Current status of this step */
+<span class="fc" id="L44">    private SagaStepStatus status;</span>
+
+    /** Input data for this step */
+<span class="nc" id="L47">    private Map&lt;String, Object&gt; inputData;</span>
+
+    /** Output data from this step */
+<span class="fc" id="L50">    private Map&lt;String, Object&gt; outputData;</span>
+
+    /** Error message if step failed */
+<span class="fc" id="L53">    private String errorMessage;</span>
+
+    /** Error code if step failed */
+<span class="fc" id="L56">    private String errorCode;</span>
+
+    /** Number of retry attempts */
+<span class="fc" id="L59">    private int retryCount;</span>
+
+    /** Maximum retry attempts allowed */
+<span class="nc" id="L62">    private int maxRetries;</span>
+
+    /** Timeout in milliseconds */
+<span class="nc" id="L65">    private long timeoutMs;</span>
+
+    /** When the step started executing */
+<span class="fc" id="L68">    private Instant startedAt;</span>
+
+    /** When the step completed */
+<span class="fc" id="L71">    private Instant completedAt;</span>
+
+    /** Duration in milliseconds */
+<span class="fc" id="L74">    private Long durationMs;</span>
+
+    /** Whether this step is compensatable */
+<span class="nc" id="L77">    private boolean compensatable;</span>
+
+    /** Whether this step executes asynchronously (waits for callback) */
+<span class="nc" id="L80">    private boolean async;</span>
+
+    /** Whether compensation was executed */
+<span class="fc" id="L83">    private boolean compensationExecuted;</span>
+
+    /** Compensation error if failed */
+<span class="fc" id="L86">    private String compensationError;</span>
+
+    /**
+     * Starts the step execution.
+     */
+    public void start() {
+<span class="fc" id="L92">        this.status = SagaStepStatus.EXECUTING;</span>
+<span class="fc" id="L93">        this.startedAt = Instant.now();</span>
+<span class="fc" id="L94">    }</span>
+
+    /**
+     * Marks the step as completed successfully.
+     *
+     * @param output output data from execution
+     */
+    public void complete(Map&lt;String, Object&gt; output) {
+<span class="fc" id="L102">        this.status = SagaStepStatus.COMPLETED;</span>
+<span class="fc" id="L103">        this.outputData = output;</span>
+<span class="fc" id="L104">        this.completedAt = Instant.now();</span>
+<span class="fc" id="L105">        calculateDuration();</span>
+<span class="fc" id="L106">    }</span>
+
+    /**
+     * Marks the step as failed.
+     *
+     * @param errorCode error code
+     * @param errorMessage error message
+     */
+    public void fail(String errorCode, String errorMessage) {
+<span class="fc" id="L115">        this.status = SagaStepStatus.FAILED;</span>
+<span class="fc" id="L116">        this.errorCode = errorCode;</span>
+<span class="fc" id="L117">        this.errorMessage = errorMessage;</span>
+<span class="fc" id="L118">        this.completedAt = Instant.now();</span>
+<span class="fc" id="L119">        calculateDuration();</span>
+<span class="fc" id="L120">    }</span>
+
+    /**
+     * Increments the retry count.
+     *
+     * @return true if retry is allowed, false if max retries exceeded
+     */
+    public boolean retry() {
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        if (retryCount &lt; maxRetries) {</span>
+<span class="fc" id="L129">            retryCount++;</span>
+<span class="fc" id="L130">            this.status = SagaStepStatus.PENDING;</span>
+<span class="fc" id="L131">            return true;</span>
+        }
+<span class="fc" id="L133">        return false;</span>
+    }
+
+    /**
+     * Starts compensation for this step.
+     */
+    public void startCompensation() {
+<span class="pc bpc" id="L140" title="1 of 4 branches missed.">        if (compensatable &amp;&amp; status == SagaStepStatus.COMPLETED) {</span>
+<span class="fc" id="L141">            this.status = SagaStepStatus.COMPENSATING;</span>
+        }
+<span class="fc" id="L143">    }</span>
+
+    /**
+     * Marks compensation as completed.
+     */
+    public void completeCompensation() {
+<span class="fc" id="L149">        this.status = SagaStepStatus.COMPENSATED;</span>
+<span class="fc" id="L150">        this.compensationExecuted = true;</span>
+<span class="fc" id="L151">    }</span>
+
+    /**
+     * Marks compensation as failed.
+     *
+     * @param error compensation error message
+     */
+    public void failCompensation(String error) {
+<span class="fc" id="L159">        this.status = SagaStepStatus.COMPENSATION_FAILED;</span>
+<span class="fc" id="L160">        this.compensationError = error;</span>
+<span class="fc" id="L161">        this.compensationExecuted = true;</span>
+<span class="fc" id="L162">    }</span>
+
+    /**
+     * Checks if the step can be retried.
+     *
+     * @return true if retry is possible
+     */
+    public boolean canRetry() {
+<span class="pc bpc" id="L170" title="1 of 4 branches missed.">        return retryCount &lt; maxRetries &amp;&amp; status == SagaStepStatus.FAILED;</span>
+    }
+
+    /**
+     * Checks if the step needs compensation.
+     *
+     * @return true if compensation is needed
+     */
+    public boolean needsCompensation() {
+<span class="pc bpc" id="L179" title="1 of 6 branches missed.">        return compensatable &amp;&amp; status == SagaStepStatus.COMPLETED &amp;&amp; !compensationExecuted;</span>
+    }
+
+    private void calculateDuration() {
+<span class="pc bpc" id="L183" title="1 of 4 branches missed.">        if (startedAt != null &amp;&amp; completedAt != null) {</span>
+<span class="fc" id="L184">            this.durationMs = completedAt.toEpochMilli() - startedAt.toEpochMilli();</span>
+        }
+<span class="fc" id="L186">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SagaMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Orchestration Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.orchestration.mapper</a> &gt; <span class="el_source">SagaMapperImpl.java</span></div><h1>SagaMapperImpl.java</h1><pre class="source lang-java linenums">package com.foodai.orchestration.mapper;
+
+import com.foodai.orchestration.domain.model.Saga;
+import com.foodai.orchestration.domain.model.SagaStatus;
+import com.foodai.orchestration.domain.model.SagaStep;
+import com.foodai.orchestration.dto.request.StartSagaRequest;
+import com.foodai.orchestration.dto.response.SagaResponse;
+import com.foodai.orchestration.dto.response.SagaStepResponse;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2025-12-15T20:11:29+0530&quot;,
+    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 21.0.6 (Eclipse Adoptium)&quot;
+)
+@Component
+<span class="fc" id="L22">public class SagaMapperImpl implements SagaMapper {</span>
+
+    @Override
+    public Saga toEntity(StartSagaRequest request, String correlationId) {
+<span class="pc bpc" id="L26" title="3 of 4 branches missed.">        if ( request == null &amp;&amp; correlationId == null ) {</span>
+<span class="nc" id="L27">            return null;</span>
+        }
+
+<span class="fc" id="L30">        Saga.SagaBuilder saga = Saga.builder();</span>
+
+<span class="pc bpc" id="L32" title="1 of 2 branches missed.">        if ( request != null ) {</span>
+<span class="fc" id="L33">            saga.type( request.getType() );</span>
+<span class="fc" id="L34">            saga.userId( request.getUserId() );</span>
+<span class="fc" id="L35">            saga.entityId( request.getEntityId() );</span>
+<span class="fc" id="L36">            saga.entityType( request.getEntityType() );</span>
+<span class="fc" id="L37">            Map&lt;String, Object&gt; map = request.getPayload();</span>
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">            if ( map != null ) {</span>
+<span class="fc" id="L39">                saga.payload( new LinkedHashMap&lt;String, Object&gt;( map ) );</span>
+            }
+<span class="fc" id="L41">            saga.timeoutMs( request.getTimeoutMs() );</span>
+<span class="fc" id="L42">            saga.priority( request.getPriority() );</span>
+<span class="fc" id="L43">            Map&lt;String, String&gt; map1 = request.getMetadata();</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">            if ( map1 != null ) {</span>
+<span class="nc" id="L45">                saga.metadata( new LinkedHashMap&lt;String, String&gt;( map1 ) );</span>
+            }
+        }
+<span class="fc" id="L48">        saga.correlationId( correlationId );</span>
+<span class="fc" id="L49">        saga.status( SagaStatus.PENDING );</span>
+<span class="fc" id="L50">        saga.currentStepIndex( 0 );</span>
+<span class="fc" id="L51">        saga.totalSteps( 0 );</span>
+<span class="fc" id="L52">        saga.completedSteps( 0 );</span>
+<span class="fc" id="L53">        saga.retryCount( 0 );</span>
+<span class="fc" id="L54">        saga.maxRetries( 3 );</span>
+
+<span class="fc" id="L56">        return saga.build();</span>
+    }
+
+    @Override
+    public SagaResponse toResponse(Saga saga) {
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if ( saga == null ) {</span>
+<span class="fc" id="L62">            return null;</span>
+        }
+
+<span class="fc" id="L65">        SagaResponse.SagaResponseBuilder sagaResponse = SagaResponse.builder();</span>
+
+<span class="fc" id="L67">        sagaResponse.id( saga.getId() );</span>
+<span class="fc" id="L68">        sagaResponse.type( saga.getType() );</span>
+<span class="fc" id="L69">        sagaResponse.status( saga.getStatus() );</span>
+<span class="fc" id="L70">        sagaResponse.correlationId( saga.getCorrelationId() );</span>
+<span class="fc" id="L71">        sagaResponse.userId( saga.getUserId() );</span>
+<span class="fc" id="L72">        sagaResponse.entityId( saga.getEntityId() );</span>
+<span class="fc" id="L73">        sagaResponse.entityType( saga.getEntityType() );</span>
+<span class="fc" id="L74">        sagaResponse.currentStepIndex( saga.getCurrentStepIndex() );</span>
+<span class="fc" id="L75">        sagaResponse.totalSteps( saga.getTotalSteps() );</span>
+<span class="fc" id="L76">        sagaResponse.completedSteps( saga.getCompletedSteps() );</span>
+<span class="fc" id="L77">        sagaResponse.steps( toStepResponses( saga.getSteps() ) );</span>
+<span class="fc" id="L78">        sagaResponse.errorCode( saga.getErrorCode() );</span>
+<span class="fc" id="L79">        sagaResponse.errorMessage( saga.getErrorMessage() );</span>
+<span class="fc" id="L80">        Map&lt;String, Object&gt; map = saga.getContext();</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if ( map != null ) {</span>
+<span class="fc" id="L82">            sagaResponse.context( new LinkedHashMap&lt;String, Object&gt;( map ) );</span>
+        }
+<span class="fc" id="L84">        sagaResponse.startedAt( saga.getStartedAt() );</span>
+<span class="fc" id="L85">        sagaResponse.completedAt( saga.getCompletedAt() );</span>
+<span class="fc" id="L86">        sagaResponse.totalDurationMs( saga.getTotalDurationMs() );</span>
+<span class="fc" id="L87">        sagaResponse.createdAt( saga.getCreatedAt() );</span>
+<span class="fc" id="L88">        sagaResponse.updatedAt( saga.getUpdatedAt() );</span>
+
+<span class="fc" id="L90">        sagaResponse.progressPercent( saga.getProgressPercent() );</span>
+
+<span class="fc" id="L92">        return sagaResponse.build();</span>
+    }
+
+    @Override
+    public SagaStepResponse toStepResponse(SagaStep step) {
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">        if ( step == null ) {</span>
+<span class="nc" id="L98">            return null;</span>
+        }
+
+<span class="fc" id="L101">        SagaStepResponse.SagaStepResponseBuilder sagaStepResponse = SagaStepResponse.builder();</span>
+
+<span class="fc" id="L103">        sagaStepResponse.stepId( step.getStepId() );</span>
+<span class="fc" id="L104">        sagaStepResponse.stepName( step.getStepName() );</span>
+<span class="fc" id="L105">        sagaStepResponse.stepOrder( step.getStepOrder() );</span>
+<span class="fc" id="L106">        sagaStepResponse.targetService( step.getTargetService() );</span>
+<span class="fc" id="L107">        sagaStepResponse.action( step.getAction() );</span>
+<span class="fc" id="L108">        sagaStepResponse.status( step.getStatus() );</span>
+<span class="fc" id="L109">        Map&lt;String, Object&gt; map = step.getOutputData();</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        if ( map != null ) {</span>
+<span class="fc" id="L111">            sagaStepResponse.outputData( new LinkedHashMap&lt;String, Object&gt;( map ) );</span>
+        }
+<span class="fc" id="L113">        sagaStepResponse.errorCode( step.getErrorCode() );</span>
+<span class="fc" id="L114">        sagaStepResponse.errorMessage( step.getErrorMessage() );</span>
+<span class="fc" id="L115">        sagaStepResponse.retryCount( step.getRetryCount() );</span>
+<span class="fc" id="L116">        sagaStepResponse.startedAt( step.getStartedAt() );</span>
+<span class="fc" id="L117">        sagaStepResponse.completedAt( step.getCompletedAt() );</span>
+<span class="fc" id="L118">        sagaStepResponse.durationMs( step.getDurationMs() );</span>
+<span class="fc" id="L119">        sagaStepResponse.compensationExecuted( step.isCompensationExecuted() );</span>
+
+<span class="fc" id="L121">        return sagaStepResponse.build();</span>
+    }
+
+    @Override
+    public List&lt;SagaStepResponse&gt; toStepResponses(List&lt;SagaStep&gt; steps) {
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        if ( steps == null ) {</span>
+<span class="fc" id="L127">            return null;</span>
+        }
+
+<span class="fc" id="L130">        List&lt;SagaStepResponse&gt; list = new ArrayList&lt;SagaStepResponse&gt;( steps.size() );</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        for ( SagaStep sagaStep : steps ) {</span>
+<span class="fc" id="L132">            list.add( toStepResponse( sagaStep ) );</span>
+<span class="fc" id="L133">        }</span>
+
+<span class="fc" id="L135">        return list;</span>
+    }
+
+    @Override
+    public List&lt;SagaResponse&gt; toResponses(List&lt;Saga&gt; sagas) {
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">        if ( sagas == null ) {</span>
+<span class="nc" id="L141">            return null;</span>
+        }
+
+<span class="fc" id="L144">        List&lt;SagaResponse&gt; list = new ArrayList&lt;SagaResponse&gt;( sagas.size() );</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">        for ( Saga saga : sagas ) {</span>
+<span class="fc" id="L146">            list.add( toResponse( saga ) );</span>
+<span class="fc" id="L147">        }</span>
+
+<span class="fc" id="L149">        return list;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

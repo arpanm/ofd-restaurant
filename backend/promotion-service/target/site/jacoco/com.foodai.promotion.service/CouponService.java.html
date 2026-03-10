@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CouponService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Promotion Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.promotion.service</a> &gt; <span class="el_source">CouponService.java</span></div><h1>CouponService.java</h1><pre class="source lang-java linenums">package com.foodai.promotion.service;
+
+import com.foodai.promotion.domain.model.Coupon;
+import com.foodai.promotion.domain.model.CouponUsage;
+import com.foodai.promotion.domain.repository.CouponRepository;
+import com.foodai.promotion.domain.repository.CouponUsageRepository;
+import com.foodai.promotion.dto.request.ApplyCouponRequest;
+import com.foodai.promotion.dto.request.CreateCouponRequest;
+import com.foodai.promotion.dto.request.ValidateCouponRequest;
+import com.foodai.promotion.dto.response.CouponResponse;
+import com.foodai.promotion.dto.response.CouponValidationResponse;
+import com.foodai.promotion.exception.CouponNotFoundException;
+import com.foodai.promotion.exception.CouponValidationException;
+import com.foodai.promotion.mapper.CouponMapper;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.List;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Service for managing coupons.
+ *
+ * @author FoodAI Team
+ */
+@Service
+<span class="fc" id="L32">@RequiredArgsConstructor</span>
+<span class="fc" id="L33">@Slf4j</span>
+@Transactional(readOnly = true)
+public class CouponService {
+
+  private final CouponRepository couponRepository;
+  private final CouponUsageRepository couponUsageRepository;
+  private final CouponMapper couponMapper;
+
+  /**
+   * Creates a new coupon.
+   *
+   * @param request the create request
+   * @return the created coupon
+   */
+  @Transactional
+  public CouponResponse createCoupon(CreateCouponRequest request) {
+<span class="fc" id="L49">    log.info(&quot;Creating coupon: {}&quot;, request.getCode());</span>
+
+    // Validate unique code
+<span class="fc bfc" id="L52" title="All 2 branches covered.">    if (couponRepository.existsByCodeIgnoreCaseAndDeletedFalse(request.getCode())) {</span>
+<span class="fc" id="L53">      throw new IllegalStateException(&quot;Coupon code already exists: &quot; + request.getCode());</span>
+    }
+
+<span class="fc" id="L56">    Coupon coupon = couponMapper.toEntity(request);</span>
+<span class="fc" id="L57">    Coupon saved = couponRepository.save(coupon);</span>
+
+<span class="fc" id="L59">    log.info(&quot;Coupon created: id={}, code={}&quot;, saved.getId(), saved.getCode());</span>
+<span class="fc" id="L60">    return couponMapper.toResponse(saved);</span>
+  }
+
+  /**
+   * Gets a coupon by ID.
+   *
+   * @param id the coupon ID
+   * @return the coupon
+   */
+  public CouponResponse getCoupon(String id) {
+<span class="fc" id="L70">    log.debug(&quot;Getting coupon: {}&quot;, id);</span>
+<span class="fc" id="L71">    Coupon coupon =</span>
+        couponRepository
+<span class="fc" id="L73">            .findByIdAndDeletedFalse(id)</span>
+<span class="fc" id="L74">            .orElseThrow(() -&gt; new CouponNotFoundException(id));</span>
+<span class="fc" id="L75">    return couponMapper.toResponse(coupon);</span>
+  }
+
+  /**
+   * Gets a coupon by code.
+   *
+   * @param code the coupon code
+   * @return the coupon
+   */
+  public CouponResponse getCouponByCode(String code) {
+<span class="nc" id="L85">    log.debug(&quot;Getting coupon by code: {}&quot;, code);</span>
+<span class="nc" id="L86">    Coupon coupon =</span>
+        couponRepository
+<span class="nc" id="L88">            .findByCodeIgnoreCaseAndDeletedFalse(code)</span>
+<span class="nc" id="L89">            .orElseThrow(() -&gt; new CouponNotFoundException(code));</span>
+<span class="nc" id="L90">    return couponMapper.toResponse(coupon);</span>
+  }
+
+  /**
+   * Gets all coupons with pagination.
+   *
+   * @param pageable pagination info
+   * @return page of coupons
+   */
+  public Page&lt;CouponResponse&gt; getAllCoupons(Pageable pageable) {
+<span class="fc" id="L100">    log.debug(&quot;Getting all coupons: page={}&quot;, pageable.getPageNumber());</span>
+<span class="fc" id="L101">    return couponRepository.findByDeletedFalse(pageable).map(couponMapper::toResponse);</span>
+  }
+
+  /**
+   * Gets coupons by restaurant.
+   *
+   * @param restaurantId the restaurant ID
+   * @param pageable pagination info
+   * @return page of coupons
+   */
+  public Page&lt;CouponResponse&gt; getCouponsByRestaurant(String restaurantId, Pageable pageable) {
+<span class="nc" id="L112">    log.debug(&quot;Getting coupons for restaurant: {}&quot;, restaurantId);</span>
+<span class="nc" id="L113">    return couponRepository</span>
+<span class="nc" id="L114">        .findByRestaurantIdAndDeletedFalse(restaurantId, pageable)</span>
+<span class="nc" id="L115">        .map(couponMapper::toResponse);</span>
+  }
+
+  /**
+   * Gets valid coupons for a restaurant.
+   *
+   * @param restaurantId the restaurant ID
+   * @return list of valid coupons
+   */
+  public List&lt;CouponResponse&gt; getValidCoupons(String restaurantId) {
+<span class="nc" id="L125">    log.debug(&quot;Getting valid coupons for restaurant: {}&quot;, restaurantId);</span>
+<span class="nc" id="L126">    return couponRepository.findValidCoupons(restaurantId, Instant.now()).stream()</span>
+<span class="nc" id="L127">        .map(couponMapper::toResponse)</span>
+<span class="nc" id="L128">        .collect(Collectors.toList());</span>
+  }
+
+  /**
+   * Gets platform-wide coupons.
+   *
+   * @return list of platform-wide coupons
+   */
+  public List&lt;CouponResponse&gt; getPlatformWideCoupons() {
+<span class="nc" id="L137">    log.debug(&quot;Getting platform-wide coupons&quot;);</span>
+<span class="nc" id="L138">    return couponRepository.findPlatformWideCoupons(Instant.now()).stream()</span>
+<span class="nc" id="L139">        .map(couponMapper::toResponse)</span>
+<span class="nc" id="L140">        .collect(Collectors.toList());</span>
+  }
+
+  /**
+   * Validates a coupon.
+   *
+   * @param request the validation request
+   * @return the validation response
+   */
+  public CouponValidationResponse validateCoupon(ValidateCouponRequest request) {
+<span class="nc" id="L150">    log.debug(&quot;Validating coupon: {} for user: {}&quot;, request.getCode(), request.getUserId());</span>
+
+<span class="nc" id="L152">    Coupon coupon =</span>
+        couponRepository
+<span class="nc" id="L154">            .findByCodeIgnoreCaseAndDeletedFalse(request.getCode())</span>
+<span class="nc" id="L155">            .orElse(null);</span>
+
+<span class="nc bnc" id="L157" title="All 2 branches missed.">    if (coupon == null) {</span>
+<span class="nc" id="L158">      return CouponValidationResponse.invalid(</span>
+          CouponValidationException.CODE_INVALID, &quot;Invalid coupon code&quot;);
+    }
+
+    // Validate coupon
+<span class="nc" id="L163">    String validationError = validateCouponForUse(coupon, request);</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">    if (validationError != null) {</span>
+<span class="nc" id="L165">      return CouponValidationResponse.invalid(validationError, getErrorMessage(validationError));</span>
+    }
+
+    // Calculate discount
+<span class="nc" id="L169">    BigDecimal discount = coupon.calculateDiscount(request.getOrderValue());</span>
+
+<span class="nc" id="L171">    log.debug(&quot;Coupon valid: code={}, discount={}&quot;, request.getCode(), discount);</span>
+<span class="nc" id="L172">    return CouponValidationResponse.valid(</span>
+<span class="nc" id="L173">        couponMapper.toResponse(coupon), discount, request.getOrderValue());</span>
+  }
+
+  /**
+   * Applies a coupon to an order.
+   *
+   * @param request the apply request
+   * @return the validation response
+   */
+  @Transactional
+  public CouponValidationResponse applyCoupon(ApplyCouponRequest request) {
+<span class="nc" id="L184">    log.info(</span>
+<span class="nc" id="L185">        &quot;Applying coupon: {} for order: {}&quot;, request.getCode(), request.getOrderId());</span>
+
+<span class="nc" id="L187">    Coupon coupon =</span>
+        couponRepository
+<span class="nc" id="L189">            .findByCodeIgnoreCaseAndDeletedFalse(request.getCode())</span>
+<span class="nc" id="L190">            .orElseThrow(() -&gt; new CouponNotFoundException(request.getCode()));</span>
+
+    // Validate coupon
+    ValidateCouponRequest validateRequest =
+<span class="nc" id="L194">        ValidateCouponRequest.builder()</span>
+<span class="nc" id="L195">            .code(request.getCode())</span>
+<span class="nc" id="L196">            .userId(request.getUserId())</span>
+<span class="nc" id="L197">            .orderValue(request.getOrderValue())</span>
+<span class="nc" id="L198">            .restaurantId(request.getRestaurantId())</span>
+<span class="nc" id="L199">            .firstOrder(request.isFirstOrder())</span>
+<span class="nc" id="L200">            .newUser(request.isNewUser())</span>
+<span class="nc" id="L201">            .build();</span>
+
+<span class="nc" id="L203">    String validationError = validateCouponForUse(coupon, validateRequest);</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">    if (validationError != null) {</span>
+<span class="nc" id="L205">      throw new CouponValidationException(validationError, getErrorMessage(validationError));</span>
+    }
+
+    // Calculate discount
+<span class="nc" id="L209">    BigDecimal discount = coupon.calculateDiscount(request.getOrderValue());</span>
+
+    // Record usage
+<span class="nc" id="L212">    coupon.recordUsage(request.getUserId());</span>
+<span class="nc" id="L213">    couponRepository.save(coupon);</span>
+
+    // Create usage record
+<span class="nc" id="L216">    CouponUsage usage =</span>
+<span class="nc" id="L217">        CouponUsage.create(</span>
+            coupon,
+<span class="nc" id="L219">            request.getUserId(),</span>
+<span class="nc" id="L220">            request.getOrderId(),</span>
+<span class="nc" id="L221">            request.getOrderValue(),</span>
+            discount);
+<span class="nc" id="L223">    couponUsageRepository.save(usage);</span>
+
+<span class="nc" id="L225">    log.info(</span>
+        &quot;Coupon applied: code={}, order={}, discount={}&quot;,
+<span class="nc" id="L227">        request.getCode(),</span>
+<span class="nc" id="L228">        request.getOrderId(),</span>
+        discount);
+
+<span class="nc" id="L231">    return CouponValidationResponse.valid(</span>
+<span class="nc" id="L232">        couponMapper.toResponse(coupon), discount, request.getOrderValue());</span>
+  }
+
+  /**
+   * Deactivates a coupon.
+   *
+   * @param id the coupon ID
+   * @return the updated coupon
+   */
+  @Transactional
+  public CouponResponse deactivateCoupon(String id) {
+<span class="fc" id="L243">    log.info(&quot;Deactivating coupon: {}&quot;, id);</span>
+<span class="fc" id="L244">    Coupon coupon =</span>
+        couponRepository
+<span class="fc" id="L246">            .findByIdAndDeletedFalse(id)</span>
+<span class="pc" id="L247">            .orElseThrow(() -&gt; new CouponNotFoundException(id));</span>
+
+<span class="fc" id="L249">    coupon.deactivate();</span>
+<span class="fc" id="L250">    Coupon saved = couponRepository.save(coupon);</span>
+
+<span class="fc" id="L252">    log.info(&quot;Coupon deactivated: {}&quot;, id);</span>
+<span class="fc" id="L253">    return couponMapper.toResponse(saved);</span>
+  }
+
+  /**
+   * Activates a coupon.
+   *
+   * @param id the coupon ID
+   * @return the updated coupon
+   */
+  @Transactional
+  public CouponResponse activateCoupon(String id) {
+<span class="fc" id="L264">    log.info(&quot;Activating coupon: {}&quot;, id);</span>
+<span class="fc" id="L265">    Coupon coupon =</span>
+        couponRepository
+<span class="fc" id="L267">            .findByIdAndDeletedFalse(id)</span>
+<span class="pc" id="L268">            .orElseThrow(() -&gt; new CouponNotFoundException(id));</span>
+
+<span class="fc" id="L270">    coupon.activate();</span>
+<span class="fc" id="L271">    Coupon saved = couponRepository.save(coupon);</span>
+
+<span class="fc" id="L273">    log.info(&quot;Coupon activated: {}&quot;, id);</span>
+<span class="fc" id="L274">    return couponMapper.toResponse(saved);</span>
+  }
+
+  /**
+   * Deletes a coupon (soft delete).
+   *
+   * @param id the coupon ID
+   */
+  @Transactional
+  public void deleteCoupon(String id) {
+<span class="fc" id="L284">    log.info(&quot;Deleting coupon: {}&quot;, id);</span>
+<span class="fc" id="L285">    Coupon coupon =</span>
+        couponRepository
+<span class="fc" id="L287">            .findByIdAndDeletedFalse(id)</span>
+<span class="fc" id="L288">            .orElseThrow(() -&gt; new CouponNotFoundException(id));</span>
+
+<span class="fc" id="L290">    coupon.delete();</span>
+<span class="fc" id="L291">    couponRepository.save(coupon);</span>
+
+<span class="fc" id="L293">    log.info(&quot;Coupon deleted: {}&quot;, id);</span>
+<span class="fc" id="L294">  }</span>
+
+  /**
+   * Validates a coupon for use.
+   *
+   * @param coupon the coupon
+   * @param request the validation request
+   * @return error code if invalid, null if valid
+   */
+  private String validateCouponForUse(Coupon coupon, ValidateCouponRequest request) {
+<span class="nc bnc" id="L304" title="All 2 branches missed.">    if (!coupon.isActive()) {</span>
+<span class="nc" id="L305">      return CouponValidationException.CODE_INACTIVE;</span>
+    }
+
+<span class="nc" id="L308">    Instant now = Instant.now();</span>
+<span class="nc bnc" id="L309" title="All 4 branches missed.">    if (coupon.getValidFrom() != null &amp;&amp; now.isBefore(coupon.getValidFrom())) {</span>
+<span class="nc" id="L310">      return CouponValidationException.CODE_NOT_STARTED;</span>
+    }
+<span class="nc bnc" id="L312" title="All 4 branches missed.">    if (coupon.getValidUntil() != null &amp;&amp; now.isAfter(coupon.getValidUntil())) {</span>
+<span class="nc" id="L313">      return CouponValidationException.CODE_EXPIRED;</span>
+    }
+
+<span class="nc bnc" id="L316" title="All 2 branches missed.">    if (coupon.getMinOrderValue() != null</span>
+<span class="nc bnc" id="L317" title="All 2 branches missed.">        &amp;&amp; request.getOrderValue().compareTo(coupon.getMinOrderValue()) &lt; 0) {</span>
+<span class="nc" id="L318">      return CouponValidationException.CODE_MIN_ORDER_NOT_MET;</span>
+    }
+
+<span class="nc bnc" id="L321" title="All 4 branches missed.">    if (coupon.getTotalLimit() != null &amp;&amp; coupon.getCurrentUsage() &gt;= coupon.getTotalLimit()) {</span>
+<span class="nc" id="L322">      return CouponValidationException.CODE_USAGE_LIMIT_REACHED;</span>
+    }
+
+    // Check per user limit
+<span class="nc" id="L326">    long userUsage = couponUsageRepository.countByCouponIdAndUserId(coupon.getId(), request.getUserId());</span>
+<span class="nc bnc" id="L327" title="All 4 branches missed.">    if (coupon.getPerUserLimit() != null &amp;&amp; userUsage &gt;= coupon.getPerUserLimit()) {</span>
+<span class="nc" id="L328">      return CouponValidationException.CODE_USER_LIMIT_REACHED;</span>
+    }
+
+<span class="nc bnc" id="L331" title="All 4 branches missed.">    if (coupon.isFirstOrderOnly() &amp;&amp; !request.isFirstOrder()) {</span>
+<span class="nc" id="L332">      return CouponValidationException.CODE_FIRST_ORDER_ONLY;</span>
+    }
+
+<span class="nc bnc" id="L335" title="All 4 branches missed.">    if (coupon.isNewUsersOnly() &amp;&amp; !request.isNewUser()) {</span>
+<span class="nc" id="L336">      return CouponValidationException.CODE_NEW_USER_ONLY;</span>
+    }
+
+<span class="nc" id="L339">    return null;</span>
+  }
+
+  /**
+   * Gets error message for error code.
+   *
+   * @param errorCode the error code
+   * @return the error message
+   */
+  private String getErrorMessage(String errorCode) {
+<span class="nc bnc" id="L349" title="All 10 branches missed.">    return switch (errorCode) {</span>
+<span class="nc" id="L350">      case CouponValidationException.CODE_INVALID -&gt; &quot;Invalid coupon code&quot;;</span>
+<span class="nc" id="L351">      case CouponValidationException.CODE_EXPIRED -&gt; &quot;Coupon has expired&quot;;</span>
+<span class="nc" id="L352">      case CouponValidationException.CODE_NOT_STARTED -&gt; &quot;Coupon is not yet active&quot;;</span>
+<span class="nc" id="L353">      case CouponValidationException.CODE_USAGE_LIMIT_REACHED -&gt; &quot;Coupon usage limit reached&quot;;</span>
+<span class="nc" id="L354">      case CouponValidationException.CODE_MIN_ORDER_NOT_MET -&gt; &quot;Minimum order value not met&quot;;</span>
+<span class="nc" id="L355">      case CouponValidationException.CODE_FIRST_ORDER_ONLY -&gt; &quot;Coupon valid for first order only&quot;;</span>
+<span class="nc" id="L356">      case CouponValidationException.CODE_NEW_USER_ONLY -&gt; &quot;Coupon valid for new users only&quot;;</span>
+<span class="nc" id="L357">      case CouponValidationException.CODE_USER_LIMIT_REACHED -&gt; &quot;You have reached the usage limit for this coupon&quot;;</span>
+<span class="nc" id="L358">      case CouponValidationException.CODE_INACTIVE -&gt; &quot;Coupon is not active&quot;;</span>
+<span class="nc" id="L359">      default -&gt; &quot;Coupon validation failed&quot;;</span>
+    };
+  }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

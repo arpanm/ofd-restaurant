@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ContractVO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Restaurant Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.restaurant.domain.model</a> &gt; <span class="el_source">ContractVO.java</span></div><h1>ContractVO.java</h1><pre class="source lang-java linenums">package com.foodai.restaurant.domain.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.Instant;
+
+/**
+ * Value Object representing restaurant contract with comprehensive fee structures.
+ */
+<span class="nc bnc" id="L13" title="All 134 branches missed.">@Data</span>
+<span class="pc" id="L14">@Builder</span>
+<span class="fc" id="L15">@NoArgsConstructor</span>
+<span class="fc" id="L16">@AllArgsConstructor</span>
+public class ContractVO {
+    /**
+     * Unique contract identifier
+     */
+<span class="fc" id="L21">    private String contractId;</span>
+    
+    /**
+     * URL to signed contract document
+     */
+<span class="fc" id="L26">    private String contractUrl;</span>
+    
+    /**
+     * Whether contract has been signed
+     */
+<span class="fc" id="L31">    private Boolean signed;</span>
+    
+    /**
+     * Timestamp when contract was signed
+     */
+<span class="fc" id="L36">    private Instant signedAt;</span>
+    
+    /**
+     * Owner who signed the contract
+     */
+<span class="fc" id="L41">    private String signedBy;</span>
+    
+    /**
+     * Platform fee structure
+     */
+<span class="fc" id="L46">    private PlatformFeeConfig platformFee;</span>
+    
+    /**
+     * Delivery fee structure
+     */
+<span class="fc" id="L51">    private DeliveryFeeConfig deliveryFee;</span>
+    
+    /**
+     * Payment gateway fee structure
+     */
+<span class="fc" id="L56">    private PaymentGatewayFeeConfig paymentGatewayFee;</span>
+    
+    /**
+     * Penalty configuration
+     */
+<span class="fc" id="L61">    private PenaltyConfig penalties;</span>
+    
+    /**
+     * Contract validity start date
+     */
+<span class="fc" id="L66">    private Instant validFrom;</span>
+    
+    /**
+     * Contract validity end date
+     */
+<span class="fc" id="L71">    private Instant validUntil;</span>
+    
+    /**
+     * Whether contract auto-renews
+     */
+<span class="fc" id="L76">    private Boolean autoRenewal;</span>
+    
+    /**
+     * User ID who created the contract
+     */
+<span class="fc" id="L81">    private String createdBy;</span>
+    
+    /**
+     * Contract creation timestamp
+     */
+<span class="fc" id="L86">    private Instant createdAt;</span>
+    
+    /**
+     * User ID who last updated the contract
+     */
+<span class="fc" id="L91">    private String updatedBy;</span>
+    
+    /**
+     * Contract last update timestamp
+     */
+<span class="fc" id="L96">    private Instant updatedAt;</span>
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

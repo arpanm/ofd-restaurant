@@ -1,0 +1,13 @@
+com/foodai/restaurant/repository/RestaurantRepositoryTest.class
+com/foodai/restaurant/controller/RestaurantSearchControllerTest.class
+com/foodai/restaurant/dto/request/SearchRestaurantRequestTest.class
+com/foodai/restaurant/config/MongoTestConfig.class
+com/foodai/restaurant/domain/model/RestaurantTest.class
+com/foodai/restaurant/RestaurantApplicationTest.class
+com/foodai/restaurant/service/RestaurantServiceSearchTest.class
+com/foodai/restaurant/mapper/SearchMapperTest.class
+com/foodai/restaurant/service/RestaurantServiceTest.class
+com/foodai/restaurant/exception/GlobalExceptionHandlerTest.class
+com/foodai/restaurant/integration/RestaurantIntegrationTest.class
+com/foodai/restaurant/mapper/RestaurantMapperTest.class
+com/foodai/restaurant/controller/RestaurantControllerTest.class

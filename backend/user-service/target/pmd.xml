@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd xmlns="http://pmd.sourceforge.net/report/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 https://pmd.github.io/schema/report_2_0_0.xsd" version="7.17.0" timestamp="2025-12-15T18:53:36.945">
+<file name="/Users/arpan1.mukherjee/code/agentic-plate/backend/user-service/src/main/java/com/foodai/user/domain/model/ChallengeProgressVO.java">
+<violation beginline="92" endline="92" begincolumn="30" endcolumn="50" rule="UselessParentheses" ruleset="Code Style" package="com.foodai.user.domain.model" class="ChallengeProgressVO" method="getProgressPercentage" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#uselessparentheses" priority="4">
+Useless parentheses around `currentCount * 100`.
+</violation>
+</file>
+<file name="/Users/arpan1.mukherjee/code/agentic-plate/backend/user-service/src/main/java/com/foodai/user/domain/model/DietPlan.java">
+<violation beginline="279" endline="279" begincolumn="37" endcolumn="64" rule="UselessParentheses" ruleset="Code Style" package="com.foodai.user.domain.model" class="DietPlan" method="updateCompletionPercentage" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#uselessparentheses" priority="4">
+Useless parentheses around `this.mealsCompleted * 100`.
+</violation>
+</file>
+<file name="/Users/arpan1.mukherjee/code/agentic-plate/backend/user-service/src/main/java/com/foodai/user/mapper/LoyaltyMapper.java">
+<violation beginline="81" endline="81" begincolumn="36" endcolumn="56" rule="UselessParentheses" ruleset="Code Style" package="com.foodai.user.mapper" class="LoyaltyMapper" method="calculateTierProgress" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#uselessparentheses" priority="4">
+Useless parentheses around `pointsInTier * 100`.
+</violation>
+</file>
+<file name="/Users/arpan1.mukherjee/code/agentic-plate/backend/user-service/src/main/java/com/foodai/user/mapper/UserMapper.java">
+<violation beginline="8" endline="8" begincolumn="1" endcolumn="26" rule="UnnecessaryImport" ruleset="Code Style" package="com.foodai.user.mapper" class="UserMapper" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryimport" priority="4">
+Unused import 'java.time.Instant'
+</violation>
+</file>
+</pmd>

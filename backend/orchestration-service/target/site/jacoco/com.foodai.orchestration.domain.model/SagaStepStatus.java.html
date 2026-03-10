@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SagaStepStatus.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Orchestration Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.orchestration.domain.model</a> &gt; <span class="el_source">SagaStepStatus.java</span></div><h1>SagaStepStatus.java</h1><pre class="source lang-java linenums">package com.foodai.orchestration.domain.model;
+
+/**
+ * Status of a saga step execution.
+ *
+ * @author FoodAI Team
+ */
+<span class="fc" id="L8">public enum SagaStepStatus {</span>
+    /** Step is pending execution */
+<span class="fc" id="L10">    PENDING,</span>
+    /** Step is currently executing */
+<span class="fc" id="L12">    EXECUTING,</span>
+    /** Step completed successfully */
+<span class="fc" id="L14">    COMPLETED,</span>
+    /** Step execution failed */
+<span class="fc" id="L16">    FAILED,</span>
+    /** Step is being compensated */
+<span class="fc" id="L18">    COMPENSATING,</span>
+    /** Step compensation completed */
+<span class="fc" id="L20">    COMPENSATED,</span>
+    /** Step was skipped */
+<span class="fc" id="L22">    SKIPPED,</span>
+    /** Step is waiting for external callback */
+<span class="fc" id="L24">    WAITING_CALLBACK,</span>
+    /** Step timed out */
+<span class="fc" id="L26">    TIMED_OUT,</span>
+    /** Step compensation failed */
+<span class="fc" id="L28">    COMPENSATION_FAILED</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

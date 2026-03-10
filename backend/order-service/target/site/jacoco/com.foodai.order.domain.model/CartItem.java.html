@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CartItem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Order Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.order.domain.model</a> &gt; <span class="el_source">CartItem.java</span></div><h1>CartItem.java</h1><pre class="source lang-java linenums">package com.foodai.order.domain.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * Represents an item in the shopping cart.
+ *
+ * @author FoodAI Team
+ */
+<span class="pc bpc" id="L18" title="125 of 126 branches missed.">@Data</span>
+<span class="pc bfc" id="L19" title="All 6 branches covered.">@Builder</span>
+<span class="nc" id="L20">@NoArgsConstructor</span>
+<span class="fc" id="L21">@AllArgsConstructor</span>
+public class CartItem {
+
+    /**
+     * Unique identifier for this cart item.
+     */
+    @Builder.Default
+<span class="fc" id="L28">    private String id = UUID.randomUUID().toString();</span>
+
+    /**
+     * Menu item ID.
+     */
+<span class="fc" id="L33">    private String menuItemId;</span>
+
+    /**
+     * Menu item name.
+     */
+<span class="fc" id="L38">    private String name;</span>
+
+    /**
+     * Menu item description.
+     */
+<span class="fc" id="L43">    private String description;</span>
+
+    /**
+     * Restaurant ID.
+     */
+<span class="fc" id="L48">    private String restaurantId;</span>
+
+    /**
+     * Restaurant name.
+     */
+<span class="fc" id="L53">    private String restaurantName;</span>
+
+    /**
+     * Item image URL.
+     */
+<span class="fc" id="L58">    private String imageUrl;</span>
+
+    /**
+     * Unit price.
+     */
+<span class="fc" id="L63">    private BigDecimal unitPrice;</span>
+
+    /**
+     * Quantity in cart.
+     */
+    @Builder.Default
+<span class="fc" id="L69">    private Integer quantity = 1;</span>
+
+    /**
+     * Total price (unitPrice * quantity + customizations).
+     */
+<span class="fc" id="L74">    private BigDecimal totalPrice;</span>
+
+    /**
+     * Customizations applied.
+     */
+    @Builder.Default
+<span class="fc" id="L80">    private List&lt;CartItemCustomization&gt; customizations = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Special instructions for this item.
+     */
+<span class="fc" id="L85">    private String specialInstructions;</span>
+
+    /**
+     * Whether item is vegetarian.
+     */
+<span class="fc" id="L90">    private Boolean vegetarian;</span>
+
+    /**
+     * Spice level (0-5).
+     */
+<span class="fc" id="L95">    private Integer spiceLevel;</span>
+
+    /**
+     * Preparation time in minutes.
+     */
+<span class="fc" id="L100">    private Integer preparationTime;</span>
+
+    /**
+     * Calculates and updates the total price.
+     */
+    public void calculateTotalPrice() {
+<span class="fc" id="L106">        BigDecimal baseTotal = unitPrice.multiply(BigDecimal.valueOf(quantity));</span>
+<span class="fc" id="L107">        BigDecimal customizationTotal = BigDecimal.ZERO;</span>
+        
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">        if (customizations != null) {</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">            for (CartItemCustomization customization : customizations) {</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">                if (customization.getAdditionalCost() != null) {</span>
+<span class="fc" id="L112">                    customizationTotal = customizationTotal.add(</span>
+<span class="fc" id="L113">                        customization.getAdditionalCost().multiply(BigDecimal.valueOf(quantity))</span>
+                    );
+                }
+<span class="fc" id="L116">            }</span>
+        }
+        
+<span class="fc" id="L119">        this.totalPrice = baseTotal.add(customizationTotal);</span>
+<span class="fc" id="L120">    }</span>
+
+    /**
+     * Gets the customization cost per unit.
+     *
+     * @return customization cost
+     */
+    public BigDecimal getCustomizationCost() {
+<span class="nc bnc" id="L128" title="All 4 branches missed.">        if (customizations == null || customizations.isEmpty()) {</span>
+<span class="nc" id="L129">            return BigDecimal.ZERO;</span>
+        }
+        
+<span class="nc" id="L132">        return customizations.stream()</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">            .map(c -&gt; c.getAdditionalCost() != null ? c.getAdditionalCost() : BigDecimal.ZERO)</span>
+<span class="nc" id="L134">            .reduce(BigDecimal.ZERO, BigDecimal::add);</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DeliveryAddressResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Order Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.order.dto.response</a> &gt; <span class="el_source">DeliveryAddressResponse.java</span></div><h1>DeliveryAddressResponse.java</h1><pre class="source lang-java linenums">package com.foodai.order.dto.response;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+
+/**
+ * Response DTO for delivery address.
+ *
+ * @author FoodAI Team
+ */
+<span class="nc bnc" id="L16" title="All 126 branches missed.">@Data</span>
+<span class="pc" id="L17">@Builder</span>
+<span class="nc" id="L18">@NoArgsConstructor</span>
+<span class="fc" id="L19">@AllArgsConstructor</span>
+@Schema(description = &quot;Delivery address response&quot;)
+public class DeliveryAddressResponse {
+
+    @Schema(description = &quot;Address label&quot;)
+<span class="nc" id="L24">    private String label;</span>
+
+    @Schema(description = &quot;Recipient name&quot;)
+<span class="fc" id="L27">    private String recipientName;</span>
+
+    @Schema(description = &quot;Contact phone&quot;)
+<span class="nc" id="L30">    private String contactPhone;</span>
+
+    @Schema(description = &quot;Flat/house number&quot;)
+<span class="nc" id="L33">    private String flatNumber;</span>
+
+    @Schema(description = &quot;Building name&quot;)
+<span class="nc" id="L36">    private String building;</span>
+
+    @Schema(description = &quot;Street address&quot;)
+<span class="fc" id="L39">    private String street;</span>
+
+    @Schema(description = &quot;Landmark&quot;)
+<span class="nc" id="L42">    private String landmark;</span>
+
+    @Schema(description = &quot;Area/locality&quot;)
+<span class="nc" id="L45">    private String area;</span>
+
+    @Schema(description = &quot;City&quot;)
+<span class="fc" id="L48">    private String city;</span>
+
+    @Schema(description = &quot;State&quot;)
+<span class="nc" id="L51">    private String state;</span>
+
+    @Schema(description = &quot;Pincode&quot;)
+<span class="nc" id="L54">    private String pincode;</span>
+
+    @Schema(description = &quot;Latitude&quot;)
+<span class="nc" id="L57">    private BigDecimal latitude;</span>
+
+    @Schema(description = &quot;Longitude&quot;)
+<span class="nc" id="L60">    private BigDecimal longitude;</span>
+
+    @Schema(description = &quot;Delivery instructions&quot;)
+<span class="nc" id="L63">    private String deliveryInstructions;</span>
+
+    @Schema(description = &quot;Full formatted address&quot;)
+<span class="fc" id="L66">    private String fullAddress;</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

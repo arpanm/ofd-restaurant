@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PersonalizationSettingsDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.user.dto.request</a> &gt; <span class="el_source">PersonalizationSettingsDTO.java</span></div><h1>PersonalizationSettingsDTO.java</h1><pre class="source lang-java linenums">package com.foodai.user.dto.request;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * DTO for AI personalization settings.
+ *
+ * @author FoodAI Team
+ */
+<span class="nc bnc" id="L14" title="All 134 branches missed.">@Data</span>
+<span class="nc" id="L15">@Builder</span>
+<span class="nc" id="L16">@NoArgsConstructor</span>
+<span class="nc" id="L17">@AllArgsConstructor</span>
+@Schema(description = &quot;AI personalization settings&quot;)
+public class PersonalizationSettingsDTO {
+
+    @Schema(description = &quot;Enable AI recommendations&quot;)
+<span class="nc" id="L22">    private Boolean aiRecommendationsEnabled;</span>
+
+    @Schema(description = &quot;Enable AI chat assistant&quot;)
+<span class="nc" id="L25">    private Boolean aiChatEnabled;</span>
+
+    @Schema(description = &quot;Enable voice ordering&quot;)
+<span class="nc" id="L28">    private Boolean voiceOrderingEnabled;</span>
+
+    @Schema(description = &quot;Allow learning from order history&quot;)
+<span class="nc" id="L31">    private Boolean learningFromHistoryEnabled;</span>
+
+    @Schema(description = &quot;Enable smart reorder suggestions&quot;)
+<span class="nc" id="L34">    private Boolean smartReorderEnabled;</span>
+
+    @Schema(description = &quot;Order history weight (0.0-1.0)&quot;, example = &quot;0.7&quot;)
+<span class="nc" id="L37">    private Double orderHistoryWeight;</span>
+
+    @Schema(description = &quot;Dietary weight (0.0-1.0)&quot;, example = &quot;0.8&quot;)
+<span class="nc" id="L40">    private Double dietaryWeight;</span>
+
+    @Schema(description = &quot;Show personalized banners&quot;)
+<span class="nc" id="L43">    private Boolean showPersonalizedBanners;</span>
+
+    @Schema(description = &quot;Show suggestions&quot;)
+<span class="nc" id="L46">    private Boolean showSuggestions;</span>
+
+    @Schema(description = &quot;Show quick reorder&quot;)
+<span class="nc" id="L49">    private Boolean showQuickReorder;</span>
+
+    @Schema(description = &quot;Share data for improvement&quot;)
+<span class="nc" id="L52">    private Boolean shareDataForImprovement;</span>
+
+    @Schema(description = &quot;Location-based personalization&quot;)
+<span class="nc" id="L55">    private Boolean locationBasedPersonalization;</span>
+
+    @Schema(description = &quot;Chat language&quot;, example = &quot;en&quot;)
+<span class="nc" id="L58">    private String chatLanguage;</span>
+
+    @Schema(description = &quot;Chat style (concise, detailed, friendly)&quot;, example = &quot;friendly&quot;)
+<span class="nc" id="L61">    private String chatStyle;</span>
+
+    @Schema(description = &quot;Chat auto-order enabled&quot;)
+<span class="nc" id="L64">    private Boolean chatAutoOrderEnabled;</span>
+
+    @Schema(description = &quot;Chat order budget limit&quot;, example = &quot;500.0&quot;)
+<span class="nc" id="L67">    private Double chatOrderBudgetLimit;</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

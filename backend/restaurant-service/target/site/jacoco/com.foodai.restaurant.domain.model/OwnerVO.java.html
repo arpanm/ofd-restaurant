@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OwnerVO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Restaurant Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.restaurant.domain.model</a> &gt; <span class="el_source">OwnerVO.java</span></div><h1>OwnerVO.java</h1><pre class="source lang-java linenums">package com.foodai.restaurant.domain.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.Instant;
+
+/**
+ * Value Object representing a restaurant owner.
+ * Supports multiple owners per restaurant.
+ */
+<span class="nc bnc" id="L14" title="All 78 branches missed.">@Data</span>
+<span class="pc" id="L15">@Builder</span>
+<span class="fc" id="L16">@NoArgsConstructor</span>
+<span class="fc" id="L17">@AllArgsConstructor</span>
+public class OwnerVO {
+    /**
+     * User ID of the owner
+     */
+<span class="fc" id="L22">    private String ownerId;</span>
+    
+    /**
+     * Full name of the owner
+     */
+<span class="fc" id="L27">    private String ownerName;</span>
+    
+    /**
+     * Email address of the owner
+     */
+<span class="fc" id="L32">    private String ownerEmail;</span>
+    
+    /**
+     * Phone number of the owner (10 digits)
+     */
+<span class="fc" id="L37">    private String ownerPhone;</span>
+    
+    /**
+     * Percentage ownership stake (must sum to 100% across all owners)
+     */
+<span class="fc" id="L42">    private Double ownershipPercentage;</span>
+    
+    /**
+     * Role of the owner in the business
+     */
+<span class="fc" id="L47">    private OwnerRole role;</span>
+    
+    /**
+     * Whether this owner is the primary contact
+     */
+<span class="fc" id="L52">    private Boolean isPrimaryContact;</span>
+    
+    /**
+     * Timestamp when owner was added
+     */
+<span class="fc" id="L57">    private Instant addedAt;</span>
+    
+    /**
+     * User ID who added this owner
+     */
+<span class="fc" id="L62">    private String addedBy;</span>
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PromotionService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Promotion Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.promotion.service</a> &gt; <span class="el_source">PromotionService.java</span></div><h1>PromotionService.java</h1><pre class="source lang-java linenums">package com.foodai.promotion.service;
+
+import com.foodai.promotion.domain.model.Promotion;
+import com.foodai.promotion.domain.model.PromotionStatus;
+import com.foodai.promotion.domain.model.PromotionType;
+import com.foodai.promotion.domain.repository.PromotionRepository;
+import com.foodai.promotion.dto.request.CreatePromotionRequest;
+import com.foodai.promotion.dto.response.PromotionResponse;
+import com.foodai.promotion.exception.PromotionNotFoundException;
+import com.foodai.promotion.mapper.PromotionMapper;
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Service for managing promotions.
+ *
+ * @author FoodAI Team
+ */
+@Service
+<span class="fc" id="L28">@RequiredArgsConstructor</span>
+<span class="fc" id="L29">@Slf4j</span>
+@Transactional(readOnly = true)
+public class PromotionService {
+
+  private final PromotionRepository promotionRepository;
+  private final PromotionMapper promotionMapper;
+
+  /**
+   * Creates a new promotion.
+   *
+   * @param request the create request
+   * @return the created promotion
+   */
+  @Transactional
+  public PromotionResponse createPromotion(CreatePromotionRequest request) {
+<span class="fc" id="L44">    log.info(&quot;Creating promotion: {}&quot;, request.getName());</span>
+
+<span class="fc" id="L46">    Promotion promotion = promotionMapper.toEntity(request);</span>
+
+    // Generate code if not provided
+<span class="pc bpc" id="L49" title="2 of 4 branches missed.">    if (promotion.getCode() == null || promotion.getCode().isBlank()) {</span>
+<span class="nc" id="L50">      promotion.setCode(generatePromoCode());</span>
+    } else {
+<span class="fc" id="L52">      promotion.setCode(promotion.getCode().toUpperCase());</span>
+    }
+
+    // Validate unique code
+<span class="fc bfc" id="L56" title="All 2 branches covered.">    if (promotionRepository.existsByCodeAndDeletedFalse(promotion.getCode())) {</span>
+<span class="fc" id="L57">      throw new IllegalStateException(&quot;Promotion code already exists: &quot; + promotion.getCode());</span>
+    }
+
+    // Set initial status based on schedule
+<span class="fc" id="L61">    Instant now = Instant.now();</span>
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">    if (promotion.getSchedule() != null) {</span>
+<span class="fc" id="L63">      promotion.updateStatusBySchedule(now);</span>
+    }
+
+<span class="fc" id="L66">    promotion.validate();</span>
+<span class="fc" id="L67">    Promotion saved = promotionRepository.save(promotion);</span>
+
+<span class="fc" id="L69">    log.info(&quot;Promotion created: id={}, code={}&quot;, saved.getId(), saved.getCode());</span>
+<span class="fc" id="L70">    return promotionMapper.toResponse(saved);</span>
+  }
+
+  /**
+   * Gets a promotion by ID.
+   *
+   * @param id the promotion ID
+   * @return the promotion
+   */
+  public PromotionResponse getPromotion(String id) {
+<span class="fc" id="L80">    log.debug(&quot;Getting promotion: {}&quot;, id);</span>
+<span class="fc" id="L81">    Promotion promotion =</span>
+        promotionRepository
+<span class="fc" id="L83">            .findByIdAndDeletedFalse(id)</span>
+<span class="fc" id="L84">            .orElseThrow(() -&gt; new PromotionNotFoundException(id));</span>
+<span class="fc" id="L85">    return promotionMapper.toResponse(promotion);</span>
+  }
+
+  /**
+   * Gets a promotion by code.
+   *
+   * @param code the promotion code
+   * @return the promotion
+   */
+  public PromotionResponse getPromotionByCode(String code) {
+<span class="nc" id="L95">    log.debug(&quot;Getting promotion by code: {}&quot;, code);</span>
+<span class="nc" id="L96">    Promotion promotion =</span>
+        promotionRepository
+<span class="nc" id="L98">            .findByCodeAndDeletedFalse(code.toUpperCase())</span>
+<span class="nc" id="L99">            .orElseThrow(() -&gt; new PromotionNotFoundException(&quot;code: &quot; + code));</span>
+<span class="nc" id="L100">    return promotionMapper.toResponse(promotion);</span>
+  }
+
+  /**
+   * Gets all promotions with pagination.
+   *
+   * @param pageable pagination info
+   * @return page of promotions
+   */
+  public Page&lt;PromotionResponse&gt; getAllPromotions(Pageable pageable) {
+<span class="fc" id="L110">    log.debug(&quot;Getting all promotions: page={}&quot;, pageable.getPageNumber());</span>
+<span class="fc" id="L111">    return promotionRepository.findByDeletedFalse(pageable).map(promotionMapper::toResponse);</span>
+  }
+
+  /**
+   * Gets promotions by restaurant.
+   *
+   * @param restaurantId the restaurant ID
+   * @param pageable pagination info
+   * @return page of promotions
+   */
+  public Page&lt;PromotionResponse&gt; getPromotionsByRestaurant(String restaurantId, Pageable pageable) {
+<span class="nc" id="L122">    log.debug(&quot;Getting promotions for restaurant: {}&quot;, restaurantId);</span>
+<span class="nc" id="L123">    return promotionRepository</span>
+<span class="nc" id="L124">        .findByRestaurantIdAndDeletedFalse(restaurantId, pageable)</span>
+<span class="nc" id="L125">        .map(promotionMapper::toResponse);</span>
+  }
+
+  /**
+   * Gets promotions by status.
+   *
+   * @param status the status
+   * @param pageable pagination info
+   * @return page of promotions
+   */
+  public Page&lt;PromotionResponse&gt; getPromotionsByStatus(PromotionStatus status, Pageable pageable) {
+<span class="nc" id="L136">    log.debug(&quot;Getting promotions by status: {}&quot;, status);</span>
+<span class="nc" id="L137">    return promotionRepository</span>
+<span class="nc" id="L138">        .findByStatusAndDeletedFalse(status, pageable)</span>
+<span class="nc" id="L139">        .map(promotionMapper::toResponse);</span>
+  }
+
+  /**
+   * Gets promotions by restaurant and status.
+   *
+   * @param restaurantId the restaurant ID
+   * @param status the status
+   * @param pageable pagination info
+   * @return page of promotions
+   */
+  public Page&lt;PromotionResponse&gt; getPromotionsByRestaurantAndStatus(
+      String restaurantId, PromotionStatus status, Pageable pageable) {
+<span class="nc" id="L152">    log.debug(&quot;Getting promotions for restaurant {} with status {}&quot;, restaurantId, status);</span>
+<span class="nc" id="L153">    return promotionRepository</span>
+<span class="nc" id="L154">        .findByRestaurantIdAndStatusAndDeletedFalse(restaurantId, status, pageable)</span>
+<span class="nc" id="L155">        .map(promotionMapper::toResponse);</span>
+  }
+
+  /**
+   * Gets active promotions for a restaurant.
+   *
+   * @param restaurantId the restaurant ID
+   * @return list of active promotions
+   */
+  public List&lt;PromotionResponse&gt; getActivePromotionsForRestaurant(String restaurantId) {
+<span class="nc" id="L165">    log.debug(&quot;Getting active promotions for restaurant: {}&quot;, restaurantId);</span>
+<span class="nc" id="L166">    return promotionRepository</span>
+<span class="nc" id="L167">        .findActivePromotionsForRestaurant(restaurantId, Instant.now())</span>
+<span class="nc" id="L168">        .stream()</span>
+<span class="nc" id="L169">        .map(promotionMapper::toResponse)</span>
+<span class="nc" id="L170">        .collect(Collectors.toList());</span>
+  }
+
+  /**
+   * Activates a promotion.
+   *
+   * @param id the promotion ID
+   * @return the updated promotion
+   */
+  @Transactional
+  public PromotionResponse activatePromotion(String id) {
+<span class="fc" id="L181">    log.info(&quot;Activating promotion: {}&quot;, id);</span>
+<span class="fc" id="L182">    Promotion promotion =</span>
+        promotionRepository
+<span class="fc" id="L184">            .findByIdAndDeletedFalse(id)</span>
+<span class="pc" id="L185">            .orElseThrow(() -&gt; new PromotionNotFoundException(id));</span>
+
+<span class="fc" id="L187">    promotion.activate();</span>
+<span class="fc" id="L188">    Promotion saved = promotionRepository.save(promotion);</span>
+
+<span class="fc" id="L190">    log.info(&quot;Promotion activated: {}&quot;, id);</span>
+<span class="fc" id="L191">    return promotionMapper.toResponse(saved);</span>
+  }
+
+  /**
+   * Pauses a promotion.
+   *
+   * @param id the promotion ID
+   * @return the updated promotion
+   */
+  @Transactional
+  public PromotionResponse pausePromotion(String id) {
+<span class="fc" id="L202">    log.info(&quot;Pausing promotion: {}&quot;, id);</span>
+<span class="fc" id="L203">    Promotion promotion =</span>
+        promotionRepository
+<span class="fc" id="L205">            .findByIdAndDeletedFalse(id)</span>
+<span class="pc" id="L206">            .orElseThrow(() -&gt; new PromotionNotFoundException(id));</span>
+
+<span class="fc" id="L208">    promotion.pause();</span>
+<span class="fc" id="L209">    Promotion saved = promotionRepository.save(promotion);</span>
+
+<span class="fc" id="L211">    log.info(&quot;Promotion paused: {}&quot;, id);</span>
+<span class="fc" id="L212">    return promotionMapper.toResponse(saved);</span>
+  }
+
+  /**
+   * Resumes a paused promotion.
+   *
+   * @param id the promotion ID
+   * @return the updated promotion
+   */
+  @Transactional
+  public PromotionResponse resumePromotion(String id) {
+<span class="nc" id="L223">    log.info(&quot;Resuming promotion: {}&quot;, id);</span>
+<span class="nc" id="L224">    Promotion promotion =</span>
+        promotionRepository
+<span class="nc" id="L226">            .findByIdAndDeletedFalse(id)</span>
+<span class="nc" id="L227">            .orElseThrow(() -&gt; new PromotionNotFoundException(id));</span>
+
+<span class="nc" id="L229">    promotion.resume();</span>
+<span class="nc" id="L230">    Promotion saved = promotionRepository.save(promotion);</span>
+
+<span class="nc" id="L232">    log.info(&quot;Promotion resumed: {}&quot;, id);</span>
+<span class="nc" id="L233">    return promotionMapper.toResponse(saved);</span>
+  }
+
+  /**
+   * Ends a promotion.
+   *
+   * @param id the promotion ID
+   * @return the updated promotion
+   */
+  @Transactional
+  public PromotionResponse endPromotion(String id) {
+<span class="nc" id="L244">    log.info(&quot;Ending promotion: {}&quot;, id);</span>
+<span class="nc" id="L245">    Promotion promotion =</span>
+        promotionRepository
+<span class="nc" id="L247">            .findByIdAndDeletedFalse(id)</span>
+<span class="nc" id="L248">            .orElseThrow(() -&gt; new PromotionNotFoundException(id));</span>
+
+<span class="nc" id="L250">    promotion.end();</span>
+<span class="nc" id="L251">    Promotion saved = promotionRepository.save(promotion);</span>
+
+<span class="nc" id="L253">    log.info(&quot;Promotion ended: {}&quot;, id);</span>
+<span class="nc" id="L254">    return promotionMapper.toResponse(saved);</span>
+  }
+
+  /**
+   * Deletes a promotion (soft delete).
+   *
+   * @param id the promotion ID
+   */
+  @Transactional
+  public void deletePromotion(String id) {
+<span class="fc" id="L264">    log.info(&quot;Deleting promotion: {}&quot;, id);</span>
+<span class="fc" id="L265">    Promotion promotion =</span>
+        promotionRepository
+<span class="fc" id="L267">            .findByIdAndDeletedFalse(id)</span>
+<span class="fc" id="L268">            .orElseThrow(() -&gt; new PromotionNotFoundException(id));</span>
+
+<span class="fc" id="L270">    promotion.delete();</span>
+<span class="fc" id="L271">    promotionRepository.save(promotion);</span>
+
+<span class="fc" id="L273">    log.info(&quot;Promotion deleted: {}&quot;, id);</span>
+<span class="fc" id="L274">  }</span>
+
+  /**
+   * Records a usage of the promotion.
+   *
+   * @param id the promotion ID
+   * @return the new usage count
+   */
+  @Transactional
+  public int recordUsage(String id) {
+<span class="nc" id="L284">    log.debug(&quot;Recording usage for promotion: {}&quot;, id);</span>
+<span class="nc" id="L285">    Promotion promotion =</span>
+        promotionRepository
+<span class="nc" id="L287">            .findByIdAndDeletedFalse(id)</span>
+<span class="nc" id="L288">            .orElseThrow(() -&gt; new PromotionNotFoundException(id));</span>
+
+<span class="nc" id="L290">    int usage = promotion.recordUsage();</span>
+<span class="nc" id="L291">    promotionRepository.save(promotion);</span>
+
+<span class="nc" id="L293">    log.debug(&quot;Promotion usage recorded: id={}, count={}&quot;, id, usage);</span>
+<span class="nc" id="L294">    return usage;</span>
+  }
+
+  /**
+   * Generates a unique promo code.
+   *
+   * @return the generated code
+   */
+  private String generatePromoCode() {
+<span class="nc" id="L303">    String code = &quot;PROMO&quot; + UUID.randomUUID().toString().substring(0, 6).toUpperCase();</span>
+<span class="nc bnc" id="L304" title="All 2 branches missed.">    while (promotionRepository.existsByCodeAndDeletedFalse(code)) {</span>
+<span class="nc" id="L305">      code = &quot;PROMO&quot; + UUID.randomUUID().toString().substring(0, 6).toUpperCase();</span>
+    }
+<span class="nc" id="L307">    return code;</span>
+  }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomerSegment.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Promotion Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.promotion.domain.model</a> &gt; <span class="el_source">CustomerSegment.java</span></div><h1>CustomerSegment.java</h1><pre class="source lang-java linenums">package com.foodai.promotion.domain.model;
+
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+/**
+ * Domain entity representing a Customer Segment.
+ *
+ * &lt;p&gt;Customer segments group users based on criteria for targeted marketing and promotions.
+ *
+ * @author FoodAI Team
+ */
+@Document(collection = &quot;customer_segments&quot;)
+<span class="nc bnc" id="L24" title="All 108 branches missed.">@Data</span>
+<span class="nc bnc" id="L25" title="All 4 branches missed.">@Builder</span>
+<span class="nc" id="L26">@NoArgsConstructor</span>
+<span class="nc" id="L27">@AllArgsConstructor</span>
+public class CustomerSegment {
+
+  /** Unique identifier. */
+<span class="nc" id="L31">  @Id private String id;</span>
+
+  /** Segment name. */
+<span class="nc" id="L34">  @Indexed private String name;</span>
+
+  /** Segment description. */
+<span class="nc" id="L37">  private String description;</span>
+
+  /** Restaurant ID (null for platform-wide segments). */
+<span class="nc" id="L40">  @Indexed private String restaurantId;</span>
+
+  /** Criteria for segment membership. */
+<span class="nc" id="L43">  private SegmentCriteriaVO criteria;</span>
+
+  /** Estimated customer count. */
+<span class="nc" id="L46">  private int customerCount;</span>
+
+  /** Whether this is a custom segment (vs pre-defined). */
+<span class="nc" id="L49">  private boolean custom;</span>
+
+  /** Whether this segment is dynamic (auto-calculated) or static (manual). */
+<span class="nc" id="L52">  private boolean dynamic;</span>
+
+  /** Static user IDs for manual segments. */
+<span class="nc" id="L55">  @Builder.Default private Set&lt;String&gt; staticUserIds = new HashSet&lt;&gt;();</span>
+
+  /** Whether this is an AI-suggested segment. */
+<span class="nc" id="L58">  private boolean aiSuggested;</span>
+
+  /** Whether segment is active. */
+<span class="nc" id="L61">  @Builder.Default private boolean active = true;</span>
+
+  /** Whether segment is deleted. */
+<span class="nc" id="L64">  private boolean deleted;</span>
+
+  /** Creation timestamp. */
+<span class="nc" id="L67">  @CreatedDate private Instant createdAt;</span>
+
+  /** Last update timestamp. */
+<span class="nc" id="L70">  @LastModifiedDate private Instant updatedAt;</span>
+
+  /** Created by user ID. */
+<span class="nc" id="L73">  private String createdBy;</span>
+
+  /** Last refresh timestamp. */
+<span class="nc" id="L76">  private Instant lastRefreshed;</span>
+
+  /** Activates the segment. */
+  public void activate() {
+<span class="nc" id="L80">    this.active = true;</span>
+<span class="nc" id="L81">  }</span>
+
+  /** Deactivates the segment. */
+  public void deactivate() {
+<span class="nc" id="L85">    this.active = false;</span>
+<span class="nc" id="L86">  }</span>
+
+  /** Soft deletes the segment. */
+  public void delete() {
+<span class="nc" id="L90">    this.deleted = true;</span>
+<span class="nc" id="L91">    this.active = false;</span>
+<span class="nc" id="L92">  }</span>
+
+  /**
+   * Updates the customer count.
+   *
+   * @param count new customer count
+   */
+  public void updateCustomerCount(int count) {
+<span class="nc" id="L100">    this.customerCount = count;</span>
+<span class="nc" id="L101">    this.lastRefreshed = Instant.now();</span>
+<span class="nc" id="L102">  }</span>
+
+  /**
+   * Checks if the segment needs refresh.
+   *
+   * @param maxAge maximum age in hours
+   * @return true if needs refresh, false otherwise
+   */
+  public boolean needsRefresh(int maxAge) {
+<span class="nc bnc" id="L111" title="All 2 branches missed.">    if (lastRefreshed == null) {</span>
+<span class="nc" id="L112">      return true;</span>
+    }
+<span class="nc" id="L114">    long hoursSinceRefresh =</span>
+<span class="nc" id="L115">        java.time.Duration.between(lastRefreshed, Instant.now()).toHours();</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">    return hoursSinceRefresh &gt;= maxAge;</span>
+  }
+
+  /** Validates the segment. */
+  public void validate() {
+<span class="nc bnc" id="L121" title="All 4 branches missed.">    if (name == null || name.isBlank()) {</span>
+<span class="nc" id="L122">      throw new IllegalStateException(&quot;Segment name is required&quot;);</span>
+    }
+<span class="nc bnc" id="L124" title="All 8 branches missed.">    if (!dynamic &amp;&amp; (staticUserIds == null || staticUserIds.isEmpty()) &amp;&amp; criteria == null) {</span>
+<span class="nc" id="L125">      throw new IllegalStateException(&quot;Either criteria or static user IDs must be provided&quot;);</span>
+    }
+<span class="nc" id="L127">  }</span>
+
+  /**
+   * Adds a user to the segment.
+   *
+   * @param userId the user ID to add
+   */
+  public void addUser(String userId) {
+<span class="nc bnc" id="L135" title="All 2 branches missed.">    if (staticUserIds == null) {</span>
+<span class="nc" id="L136">      staticUserIds = new HashSet&lt;&gt;();</span>
+    }
+<span class="nc" id="L138">    staticUserIds.add(userId);</span>
+<span class="nc" id="L139">    customerCount = staticUserIds.size();</span>
+<span class="nc" id="L140">  }</span>
+
+  /**
+   * Removes a user from the segment.
+   *
+   * @param userId the user ID to remove
+   */
+  public void removeUser(String userId) {
+<span class="nc bnc" id="L148" title="All 2 branches missed.">    if (staticUserIds != null) {</span>
+<span class="nc" id="L149">      staticUserIds.remove(userId);</span>
+<span class="nc" id="L150">      customerCount = staticUserIds.size();</span>
+    }
+<span class="nc" id="L152">  }</span>
+
+  /**
+   * Gets the user count.
+   *
+   * @return the user count
+   */
+  public int getUserCount() {
+<span class="nc bnc" id="L160" title="All 4 branches missed.">    if (staticUserIds != null &amp;&amp; !dynamic) {</span>
+<span class="nc" id="L161">      return staticUserIds.size();</span>
+    }
+<span class="nc" id="L163">    return customerCount;</span>
+  }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

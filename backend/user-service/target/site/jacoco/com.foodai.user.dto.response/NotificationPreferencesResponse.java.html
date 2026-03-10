@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NotificationPreferencesResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.user.dto.response</a> &gt; <span class="el_source">NotificationPreferencesResponse.java</span></div><h1>NotificationPreferencesResponse.java</h1><pre class="source lang-java linenums">package com.foodai.user.dto.response;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalTime;
+
+/**
+ * Response DTO for Notification Preferences.
+ *
+ * @author FoodAI Team
+ */
+<span class="nc bnc" id="L16" title="All 74 branches missed.">@Data</span>
+<span class="nc" id="L17">@Builder</span>
+<span class="nc" id="L18">@NoArgsConstructor</span>
+<span class="nc" id="L19">@AllArgsConstructor</span>
+@Schema(description = &quot;Notification preferences response&quot;)
+public class NotificationPreferencesResponse {
+
+    @Schema(description = &quot;Push notifications enabled&quot;)
+<span class="nc" id="L24">    private boolean pushEnabled;</span>
+
+    @Schema(description = &quot;SMS notifications enabled&quot;)
+<span class="nc" id="L27">    private boolean smsEnabled;</span>
+
+    @Schema(description = &quot;Email notifications enabled&quot;)
+<span class="nc" id="L30">    private boolean emailEnabled;</span>
+
+    @Schema(description = &quot;WhatsApp notifications enabled&quot;)
+<span class="nc" id="L33">    private boolean whatsappEnabled;</span>
+
+    @Schema(description = &quot;Order updates enabled&quot;)
+<span class="nc" id="L36">    private boolean orderUpdates;</span>
+
+    @Schema(description = &quot;Promotions enabled&quot;)
+<span class="nc" id="L39">    private boolean promotions;</span>
+
+    @Schema(description = &quot;Recommendations enabled&quot;)
+<span class="nc" id="L42">    private boolean recommendations;</span>
+
+    @Schema(description = &quot;Loyalty updates enabled&quot;)
+<span class="nc" id="L45">    private boolean loyaltyUpdates;</span>
+
+    @Schema(description = &quot;Diet reminders enabled&quot;)
+<span class="nc" id="L48">    private boolean dietReminders;</span>
+
+    @Schema(description = &quot;Quiet hours enabled&quot;)
+<span class="nc" id="L51">    private boolean quietHoursEnabled;</span>
+
+    @Schema(description = &quot;Quiet hours start&quot;)
+<span class="nc" id="L54">    private LocalTime quietHoursStart;</span>
+
+    @Schema(description = &quot;Quiet hours end&quot;)
+<span class="nc" id="L57">    private LocalTime quietHoursEnd;</span>
+
+    @Schema(description = &quot;Live tracking updates enabled&quot;)
+<span class="nc" id="L60">    private boolean liveTrackingUpdates;</span>
+
+    @Schema(description = &quot;Nearby alert distance (meters)&quot;)
+<span class="nc" id="L63">    private Integer nearbyAlertDistance;</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

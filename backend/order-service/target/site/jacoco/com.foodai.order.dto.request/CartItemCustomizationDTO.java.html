@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CartItemCustomizationDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Order Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.order.dto.request</a> &gt; <span class="el_source">CartItemCustomizationDTO.java</span></div><h1>CartItemCustomizationDTO.java</h1><pre class="source lang-java linenums">package com.foodai.order.dto.request;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+
+/**
+ * DTO for cart item customization.
+ *
+ * @author FoodAI Team
+ */
+<span class="nc bnc" id="L17" title="All 46 branches missed.">@Data</span>
+<span class="pc" id="L18">@Builder</span>
+<span class="nc" id="L19">@NoArgsConstructor</span>
+<span class="fc" id="L20">@AllArgsConstructor</span>
+@Schema(description = &quot;Customization applied to a cart item&quot;)
+public class CartItemCustomizationDTO {
+
+    @NotBlank(message = &quot;Customization ID is required&quot;)
+    @Schema(description = &quot;Customization group ID&quot;, example = &quot;size&quot;)
+<span class="fc" id="L26">    private String customizationId;</span>
+
+    @Schema(description = &quot;Customization group name&quot;, example = &quot;Size&quot;)
+<span class="fc" id="L29">    private String customizationName;</span>
+
+    @NotBlank(message = &quot;Option ID is required&quot;)
+    @Schema(description = &quot;Selected option ID&quot;, example = &quot;large&quot;)
+<span class="fc" id="L33">    private String optionId;</span>
+
+    @Schema(description = &quot;Selected option name&quot;, example = &quot;Large&quot;)
+<span class="fc" id="L36">    private String optionName;</span>
+
+    @Schema(description = &quot;Additional cost for this customization&quot;, example = &quot;50.00&quot;)
+<span class="fc" id="L39">    private BigDecimal additionalCost;</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

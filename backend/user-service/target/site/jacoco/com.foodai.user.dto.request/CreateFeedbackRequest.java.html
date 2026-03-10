@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CreateFeedbackRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.user.dto.request</a> &gt; <span class="el_source">CreateFeedbackRequest.java</span></div><h1>CreateFeedbackRequest.java</h1><pre class="source lang-java linenums">package com.foodai.user.dto.request;
+
+import com.foodai.user.domain.model.FeedbackCategory;
+import com.foodai.user.domain.model.FeedbackEntityType;
+import com.foodai.user.domain.model.FeedbackType;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+/**
+ * Request DTO for creating feedback.
+ *
+ * @author FoodAI Team
+ */
+<span class="nc bnc" id="L23" title="All 182 branches missed.">@Data</span>
+<span class="nc" id="L24">@Builder</span>
+<span class="nc" id="L25">@NoArgsConstructor</span>
+<span class="nc" id="L26">@AllArgsConstructor</span>
+@Schema(description = &quot;Request to create feedback or ticket&quot;)
+public class CreateFeedbackRequest {
+
+    @NotNull(message = &quot;User ID is required&quot;)
+    @Schema(description = &quot;User ID&quot;, required = true)
+<span class="nc" id="L32">    private String userId;</span>
+
+    @NotNull(message = &quot;Feedback type is required&quot;)
+    @Schema(description = &quot;Type of feedback&quot;)
+<span class="nc" id="L36">    private FeedbackType feedbackType;</span>
+
+    @Schema(description = &quot;Category of feedback&quot;)
+<span class="nc" id="L39">    private FeedbackCategory category;</span>
+
+    @Schema(description = &quot;Sub-category&quot;)
+<span class="nc" id="L42">    private String subCategory;</span>
+
+    @Schema(description = &quot;Order ID (if related to order)&quot;)
+<span class="nc" id="L45">    private String orderId;</span>
+
+    @Schema(description = &quot;Entity type being reviewed&quot;)
+<span class="nc" id="L48">    private FeedbackEntityType entityType;</span>
+
+    @Schema(description = &quot;Entity ID being reviewed&quot;)
+<span class="nc" id="L51">    private String entityId;</span>
+
+    @Size(max = 200, message = &quot;Title must be at most 200 characters&quot;)
+    @Schema(description = &quot;Feedback title/subject&quot;)
+<span class="nc" id="L55">    private String title;</span>
+
+    @Size(max = 2000, message = &quot;Description must be at most 2000 characters&quot;)
+    @Schema(description = &quot;Detailed description&quot;)
+<span class="nc" id="L59">    private String description;</span>
+
+    @Min(value = 1, message = &quot;Rating must be at least 1&quot;)
+    @Max(value = 5, message = &quot;Rating must be at most 5&quot;)
+    @Schema(description = &quot;Overall rating (1-5)&quot;, example = &quot;4&quot;)
+<span class="nc" id="L64">    private Integer overallRating;</span>
+
+    @Min(value = 1, message = &quot;Rating must be at least 1&quot;)
+    @Max(value = 5, message = &quot;Rating must be at most 5&quot;)
+    @Schema(description = &quot;Food quality rating (1-5)&quot;)
+<span class="nc" id="L69">    private Integer foodRating;</span>
+
+    @Min(value = 1, message = &quot;Rating must be at least 1&quot;)
+    @Max(value = 5, message = &quot;Rating must be at most 5&quot;)
+    @Schema(description = &quot;Delivery rating (1-5)&quot;)
+<span class="nc" id="L74">    private Integer deliveryRating;</span>
+
+    @Min(value = 1, message = &quot;Rating must be at least 1&quot;)
+    @Max(value = 5, message = &quot;Rating must be at most 5&quot;)
+    @Schema(description = &quot;Packaging rating (1-5)&quot;)
+<span class="nc" id="L79">    private Integer packagingRating;</span>
+
+    @Min(value = 1, message = &quot;Rating must be at least 1&quot;)
+    @Max(value = 5, message = &quot;Rating must be at most 5&quot;)
+    @Schema(description = &quot;Value for money rating (1-5)&quot;)
+<span class="nc" id="L84">    private Integer valueRating;</span>
+
+    @Schema(description = &quot;Attached image URLs&quot;)
+<span class="nc" id="L87">    private List&lt;String&gt; imageUrls;</span>
+
+    @Schema(description = &quot;Tags for categorization&quot;)
+<span class="nc" id="L90">    private List&lt;String&gt; tags;</span>
+
+    @Schema(description = &quot;Make feedback public&quot;)
+<span class="nc" id="L93">    private Boolean isPublic;</span>
+
+    @Schema(description = &quot;Request contact from support&quot;)
+<span class="nc" id="L96">    private Boolean contactRequested;</span>
+
+    @Schema(description = &quot;Preferred contact method&quot;)
+<span class="nc" id="L99">    private String preferredContactMethod;</span>
+
+    @Schema(description = &quot;Source of feedback&quot;, example = &quot;APP&quot;)
+<span class="nc" id="L102">    private String source;</span>
+
+    @Schema(description = &quot;Device info&quot;)
+<span class="nc" id="L105">    private String deviceInfo;</span>
+
+    @Schema(description = &quot;App version&quot;)
+<span class="nc" id="L108">    private String appVersion;</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

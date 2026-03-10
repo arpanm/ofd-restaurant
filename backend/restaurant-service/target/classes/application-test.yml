@@ -1,0 +1,22 @@
+spring:
+  data:
+    mongodb:
+      # Will be overridden by @DynamicPropertySource in tests
+      uri: mongodb://localhost:27017/foodai_restaurant_test
+  
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  
+  data.redis:
+    host: localhost
+    port: 6379
+
+logging:
+  level:
+    root: WARN
+    com.foodai.restaurant: INFO
+
+

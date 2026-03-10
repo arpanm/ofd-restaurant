@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd xmlns="http://pmd.sourceforge.net/report/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 https://pmd.github.io/schema/report_2_0_0.xsd" version="7.17.0" timestamp="2025-12-15T18:54:41.502">
+<file name="/Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/src/main/java/com/foodai/restaurant/domain/model/Restaurant.java">
+<violation beginline="3" endline="3" begincolumn="1" endcolumn="34" rule="UnnecessaryImport" ruleset="Code Style" package="com.foodai.restaurant.domain.model" class="Restaurant" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryimport" priority="4">
+Unused import 'lombok.AllArgsConstructor'
+</violation>
+<violation beginline="4" endline="4" begincolumn="1" endcolumn="23" rule="UnnecessaryImport" ruleset="Code Style" package="com.foodai.restaurant.domain.model" class="Restaurant" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryimport" priority="4">
+Unused import 'lombok.Builder'
+</violation>
+<violation beginline="5" endline="5" begincolumn="1" endcolumn="20" rule="UnnecessaryImport" ruleset="Code Style" package="com.foodai.restaurant.domain.model" class="Restaurant" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryimport" priority="4">
+Unused import 'lombok.Data'
+</violation>
+<violation beginline="6" endline="6" begincolumn="1" endcolumn="33" rule="UnnecessaryImport" ruleset="Code Style" package="com.foodai.restaurant.domain.model" class="Restaurant" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryimport" priority="4">
+Unused import 'lombok.NoArgsConstructor'
+</violation>
+<violation beginline="29" endline="29" begincolumn="2" endcolumn="13" rule="UnnecessaryFullyQualifiedName" ruleset="Code Style" package="com.foodai.restaurant.domain.model" class="Restaurant" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname" priority="4">
+Unnecessary qualifier 'lombok': 'Data' is already in scope because it is imported in this file
+</violation>
+<violation beginline="30" endline="30" begincolumn="2" endcolumn="16" rule="UnnecessaryFullyQualifiedName" ruleset="Code Style" package="com.foodai.restaurant.domain.model" class="Restaurant" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname" priority="4">
+Unnecessary qualifier 'lombok': 'Builder' is already in scope because it is imported in this file
+</violation>
+<violation beginline="31" endline="31" begincolumn="2" endcolumn="26" rule="UnnecessaryFullyQualifiedName" ruleset="Code Style" package="com.foodai.restaurant.domain.model" class="Restaurant" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname" priority="4">
+Unnecessary qualifier 'lombok': 'NoArgsConstructor' is already in scope because it is imported in this file
+</violation>
+<violation beginline="32" endline="32" begincolumn="2" endcolumn="27" rule="UnnecessaryFullyQualifiedName" ruleset="Code Style" package="com.foodai.restaurant.domain.model" class="Restaurant" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname" priority="4">
+Unnecessary qualifier 'lombok': 'AllArgsConstructor' is already in scope because it is imported in this file
+</violation>
+</file>
+<file name="/Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/src/main/java/com/foodai/restaurant/domain/model/RestaurantOutlet.java">
+<violation beginline="3" endline="3" begincolumn="1" endcolumn="34" rule="UnnecessaryImport" ruleset="Code Style" package="com.foodai.restaurant.domain.model" class="RestaurantOutlet" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryimport" priority="4">
+Unused import 'lombok.AllArgsConstructor'
+</violation>
+<violation beginline="4" endline="4" begincolumn="1" endcolumn="23" rule="UnnecessaryImport" ruleset="Code Style" package="com.foodai.restaurant.domain.model" class="RestaurantOutlet" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryimport" priority="4">
+Unused import 'lombok.Builder'
+</violation>
+<violation beginline="5" endline="5" begincolumn="1" endcolumn="20" rule="UnnecessaryImport" ruleset="Code Style" package="com.foodai.restaurant.domain.model" class="RestaurantOutlet" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryimport" priority="4">
+Unused import 'lombok.Data'
+</violation>
+<violation beginline="6" endline="6" begincolumn="1" endcolumn="33" rule="UnnecessaryImport" ruleset="Code Style" package="com.foodai.restaurant.domain.model" class="RestaurantOutlet" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryimport" priority="4">
+Unused import 'lombok.NoArgsConstructor'
+</violation>
+<violation beginline="16" endline="16" begincolumn="2" endcolumn="13" rule="UnnecessaryFullyQualifiedName" ruleset="Code Style" package="com.foodai.restaurant.domain.model" class="RestaurantOutlet" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname" priority="4">
+Unnecessary qualifier 'lombok': 'Data' is already in scope because it is imported in this file
+</violation>
+<violation beginline="17" endline="17" begincolumn="2" endcolumn="16" rule="UnnecessaryFullyQualifiedName" ruleset="Code Style" package="com.foodai.restaurant.domain.model" class="RestaurantOutlet" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname" priority="4">
+Unnecessary qualifier 'lombok': 'Builder' is already in scope because it is imported in this file
+</violation>
+<violation beginline="18" endline="18" begincolumn="2" endcolumn="26" rule="UnnecessaryFullyQualifiedName" ruleset="Code Style" package="com.foodai.restaurant.domain.model" class="RestaurantOutlet" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname" priority="4">
+Unnecessary qualifier 'lombok': 'NoArgsConstructor' is already in scope because it is imported in this file
+</violation>
+<violation beginline="19" endline="19" begincolumn="2" endcolumn="27" rule="UnnecessaryFullyQualifiedName" ruleset="Code Style" package="com.foodai.restaurant.domain.model" class="RestaurantOutlet" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryfullyqualifiedname" priority="4">
+Unnecessary qualifier 'lombok': 'AllArgsConstructor' is already in scope because it is imported in this file
+</violation>
+</file>
+<file name="/Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/src/main/java/com/foodai/restaurant/domain/repository/PenaltyHistoryRepository.java">
+<violation beginline="5" endline="5" begincolumn="1" endcolumn="64" rule="UnnecessaryImport" ruleset="Code Style" package="com.foodai.restaurant.domain.repository" class="PenaltyHistoryRepository" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryimport" priority="4">
+Unused import 'org.springframework.data.mongodb.repository.Aggregation'
+</violation>
+</file>
+<file name="/Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/src/main/java/com/foodai/restaurant/domain/repository/RestaurantSearchRepositoryImpl.java">
+<violation beginline="88" endline="88" begincolumn="28" endcolumn="60" rule="UselessParentheses" ruleset="Code Style" package="com.foodai.restaurant.domain.repository" class="RestaurantSearchRepositoryImpl" method="searchOutlets" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#uselessparentheses" priority="4">
+Useless parentheses around `start + pageable.getPageSize()`.
+</violation>
+</file>
+<file name="/Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/src/main/java/com/foodai/restaurant/mapper/SearchMapper.java">
+<violation beginline="109" endline="109" begincolumn="55" endcolumn="61" rule="UnusedFormalParameter" ruleset="Best Practices" package="com.foodai.restaurant.mapper" class="SearchMapper" method="calculateDistance" variable="outlet" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_bestpractices.html#unusedformalparameter" priority="3">
+Avoid unused method parameters such as 'outlet'.
+</violation>
+<violation beginline="109" endline="109" begincolumn="70" endcolumn="85" rule="UnusedFormalParameter" ruleset="Best Practices" package="com.foodai.restaurant.mapper" class="SearchMapper" method="calculateDistance" variable="deliveryPincode" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_bestpractices.html#unusedformalparameter" priority="3">
+Avoid unused method parameters such as 'deliveryPincode'.
+</violation>
+<violation beginline="126" endline="126" begincolumn="58" endcolumn="64" rule="UnusedFormalParameter" ruleset="Best Practices" package="com.foodai.restaurant.mapper" class="SearchMapper" method="calculateDeliveryFee" variable="outlet" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_bestpractices.html#unusedformalparameter" priority="3">
+Avoid unused method parameters such as 'outlet'.
+</violation>
+<violation beginline="126" endline="126" begincolumn="73" endcolumn="88" rule="UnusedFormalParameter" ruleset="Best Practices" package="com.foodai.restaurant.mapper" class="SearchMapper" method="calculateDeliveryFee" variable="deliveryPincode" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_bestpractices.html#unusedformalparameter" priority="3">
+Avoid unused method parameters such as 'deliveryPincode'.
+</violation>
+<violation beginline="179" endline="179" begincolumn="58" endcolumn="64" rule="UnusedFormalParameter" ruleset="Best Practices" package="com.foodai.restaurant.mapper" class="SearchMapper" method="getMinimumOrderValue" variable="outlet" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_bestpractices.html#unusedformalparameter" priority="3">
+Avoid unused method parameters such as 'outlet'.
+</violation>
+<violation beginline="187" endline="187" begincolumn="50" endcolumn="60" rule="UnusedFormalParameter" ruleset="Best Practices" package="com.foodai.restaurant.mapper" class="SearchMapper" method="generateTags" variable="restaurant" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_bestpractices.html#unusedformalparameter" priority="3">
+Avoid unused method parameters such as 'restaurant'.
+</violation>
+<violation beginline="195" endline="195" begincolumn="62" endcolumn="68" rule="UnusedFormalParameter" ruleset="Best Practices" package="com.foodai.restaurant.mapper" class="SearchMapper" method="generateOutletTags" variable="outlet" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_bestpractices.html#unusedformalparameter" priority="3">
+Avoid unused method parameters such as 'outlet'.
+</violation>
+</file>
+<file name="/Users/arpan1.mukherjee/code/agentic-plate/backend/restaurant-service/src/main/java/com/foodai/restaurant/service/RestaurantService.java">
+<violation beginline="12" endline="12" begincolumn="1" endcolumn="64" rule="UnnecessaryImport" ruleset="Code Style" package="com.foodai.restaurant.service" class="RestaurantService" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryimport" priority="4">
+Unused import 'com.foodai.restaurant.dto.response.OutletSearchResponse'
+</violation>
+<violation beginline="14" endline="14" begincolumn="1" endcolumn="68" rule="UnnecessaryImport" ruleset="Code Style" package="com.foodai.restaurant.service" class="RestaurantService" externalInfoUrl="https://docs.pmd-code.org/pmd-doc-7.17.0/pmd_rules_java_codestyle.html#unnecessaryimport" priority="4">
+Unused import 'com.foodai.restaurant.dto.response.RestaurantSearchResponse'
+</violation>
+</file>
+</pmd>

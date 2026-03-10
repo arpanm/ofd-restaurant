@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PersonalizationSettingsVO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.user.domain.model</a> &gt; <span class="el_source">PersonalizationSettingsVO.java</span></div><h1>PersonalizationSettingsVO.java</h1><pre class="source lang-java linenums">package com.foodai.user.domain.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * Value Object representing a user's AI personalization settings.
+ * Controls how AI features interact with the user.
+ *
+ * &lt;p&gt;Covers features from:
+ * &lt;ul&gt;
+ *   &lt;li&gt;AI_PERSONALIZATION_FEATURES.md - Personalization preferences&lt;/li&gt;
+ *   &lt;li&gt;AI_CHAT_BUYING_JOURNEY.md - Chat assistant settings&lt;/li&gt;
+ *   &lt;li&gt;SEARCH_RECOMMENDATION_ENGINE.md - Recommendation preferences&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * @author FoodAI Team
+ */
+<span class="nc bnc" id="L21" title="All 130 branches missed.">@Data</span>
+<span class="nc bnc" id="L22" title="All 44 branches missed.">@Builder</span>
+<span class="nc" id="L23">@NoArgsConstructor</span>
+<span class="nc" id="L24">@AllArgsConstructor</span>
+public class PersonalizationSettingsVO {
+
+    // ==================== AI Features ====================
+
+    /**
+     * Whether to enable AI-powered recommendations
+     */
+    @Builder.Default
+<span class="nc" id="L33">    private boolean aiRecommendationsEnabled = true;</span>
+
+    /**
+     * Whether to enable AI chat assistant
+     */
+    @Builder.Default
+<span class="nc" id="L39">    private boolean aiChatEnabled = true;</span>
+
+    /**
+     * Whether to enable voice ordering
+     */
+    @Builder.Default
+<span class="nc" id="L45">    private boolean voiceOrderingEnabled = false;</span>
+
+    /**
+     * Whether to allow AI to learn from order history
+     */
+    @Builder.Default
+<span class="nc" id="L51">    private boolean learningFromHistoryEnabled = true;</span>
+
+    /**
+     * Whether to allow AI to suggest reorders
+     */
+    @Builder.Default
+<span class="nc" id="L57">    private boolean smartReorderEnabled = true;</span>
+
+    // ==================== Recommendation Settings ====================
+
+    /**
+     * How much to weight past orders in recommendations (0.0 to 1.0)
+     */
+    @Builder.Default
+<span class="nc" id="L65">    private Double orderHistoryWeight = 0.7;</span>
+
+    /**
+     * How much to weight dietary preferences (0.0 to 1.0)
+     */
+    @Builder.Default
+<span class="nc" id="L71">    private Double dietaryWeight = 0.8;</span>
+
+    /**
+     * How much to weight time-of-day context (0.0 to 1.0)
+     */
+    @Builder.Default
+<span class="nc" id="L77">    private Double timeContextWeight = 0.5;</span>
+
+    /**
+     * How much to weight weather context (0.0 to 1.0)
+     */
+    @Builder.Default
+<span class="nc" id="L83">    private Double weatherContextWeight = 0.3;</span>
+
+    /**
+     * How much to weight trending items (0.0 to 1.0)
+     */
+    @Builder.Default
+<span class="nc" id="L89">    private Double trendingWeight = 0.4;</span>
+
+    // ==================== Display Settings ====================
+
+    /**
+     * Whether to show personalized banners
+     */
+    @Builder.Default
+<span class="nc" id="L97">    private boolean showPersonalizedBanners = true;</span>
+
+    /**
+     * Whether to show &quot;You might also like&quot; suggestions
+     */
+    @Builder.Default
+<span class="nc" id="L103">    private boolean showSuggestions = true;</span>
+
+    /**
+     * Whether to show &quot;Order again&quot; quick actions
+     */
+    @Builder.Default
+<span class="nc" id="L109">    private boolean showQuickReorder = true;</span>
+
+    /**
+     * Whether to show personalized offers
+     */
+    @Builder.Default
+<span class="nc" id="L115">    private boolean showPersonalizedOffers = true;</span>
+
+    /**
+     * Number of recommendations to show per section
+     */
+    @Builder.Default
+<span class="nc" id="L121">    private Integer recommendationsPerSection = 5;</span>
+
+    // ==================== Privacy Settings ====================
+
+    /**
+     * Whether to share data for platform improvement
+     */
+    @Builder.Default
+<span class="nc" id="L129">    private boolean shareDataForImprovement = true;</span>
+
+    /**
+     * Whether to allow cross-platform personalization
+     */
+    @Builder.Default
+<span class="nc" id="L135">    private boolean crossPlatformPersonalization = false;</span>
+
+    /**
+     * Whether to allow location-based personalization
+     */
+    @Builder.Default
+<span class="nc" id="L141">    private boolean locationBasedPersonalization = true;</span>
+
+    // ==================== Chat Assistant Settings ====================
+
+    /**
+     * Preferred language for AI chat
+     */
+    @Builder.Default
+<span class="nc" id="L149">    private String chatLanguage = &quot;en&quot;;</span>
+
+    /**
+     * Chat response style (concise, detailed, friendly)
+     */
+    @Builder.Default
+<span class="nc" id="L155">    private String chatStyle = &quot;friendly&quot;;</span>
+
+    /**
+     * Whether chat assistant can auto-complete orders
+     */
+    @Builder.Default
+<span class="nc" id="L161">    private boolean chatAutoOrderEnabled = false;</span>
+
+    /**
+     * Budget limit for chat-initiated orders (0 = no limit)
+     */
+    @Builder.Default
+<span class="nc" id="L167">    private Double chatOrderBudgetLimit = 0.0;</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">User Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.user.mapper</a> &gt; <span class="el_source">UserMapper.java</span></div><h1>UserMapper.java</h1><pre class="source lang-java linenums">package com.foodai.user.mapper;
+
+import com.foodai.user.domain.model.*;
+import com.foodai.user.dto.request.*;
+import com.foodai.user.dto.response.*;
+import org.mapstruct.*;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * MapStruct mapper for User entity and DTOs.
+ *
+ * @author FoodAI Team
+ */
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+public interface UserMapper {
+
+    /**
+     * Maps create request DTO to User entity.
+     *
+     * @param request the create request
+     * @return the User entity
+     */
+    @Mapping(target = &quot;id&quot;, ignore = true)
+    @Mapping(target = &quot;addresses&quot;, ignore = true)
+    @Mapping(target = &quot;paymentMethods&quot;, ignore = true)
+    @Mapping(target = &quot;favoriteRestaurantIds&quot;, ignore = true)
+    @Mapping(target = &quot;favoriteMenuItemIds&quot;, ignore = true)
+    @Mapping(target = &quot;recentSearches&quot;, ignore = true)
+    @Mapping(target = &quot;referralCode&quot;, expression = &quot;java(generateReferralCode())&quot;)
+    @Mapping(target = &quot;status&quot;, constant = &quot;PENDING_VERIFICATION&quot;)
+    @Mapping(target = &quot;emailVerified&quot;, constant = &quot;false&quot;)
+    @Mapping(target = &quot;phoneVerified&quot;, constant = &quot;false&quot;)
+    @Mapping(target = &quot;totalOrders&quot;, constant = &quot;0&quot;)
+    @Mapping(target = &quot;totalSpent&quot;, constant = &quot;0.0&quot;)
+    @Mapping(target = &quot;averageOrderValue&quot;, constant = &quot;0.0&quot;)
+    @Mapping(target = &quot;deleted&quot;, constant = &quot;false&quot;)
+    @Mapping(target = &quot;createdAt&quot;, ignore = true)
+    @Mapping(target = &quot;updatedAt&quot;, ignore = true)
+    @Mapping(target = &quot;lastLoginAt&quot;, ignore = true)
+    @Mapping(target = &quot;deletedBy&quot;, ignore = true)
+    @Mapping(target = &quot;deletedAt&quot;, ignore = true)
+    @Mapping(target = &quot;updatedBy&quot;, ignore = true)
+    @Mapping(target = &quot;defaultAddressId&quot;, ignore = true)
+    @Mapping(target = &quot;defaultPaymentMethodId&quot;, ignore = true)
+    @Mapping(target = &quot;notificationPreferences&quot;, ignore = true)
+    @Mapping(target = &quot;personalizationSettings&quot;, ignore = true)
+    @Mapping(target = &quot;dietaryPreferences&quot;, source = &quot;dietaryPreferences&quot;)
+    User toEntity(CreateUserRequest request);
+
+    /**
+     * Updates User entity from update request.
+     *
+     * @param user    the user to update
+     * @param request the update request
+     */
+    @Mapping(target = &quot;id&quot;, ignore = true)
+    @Mapping(target = &quot;phone&quot;, ignore = true)
+    @Mapping(target = &quot;addresses&quot;, ignore = true)
+    @Mapping(target = &quot;paymentMethods&quot;, ignore = true)
+    @Mapping(target = &quot;favoriteRestaurantIds&quot;, ignore = true)
+    @Mapping(target = &quot;favoriteMenuItemIds&quot;, ignore = true)
+    @Mapping(target = &quot;recentSearches&quot;, ignore = true)
+    @Mapping(target = &quot;referralCode&quot;, ignore = true)
+    @Mapping(target = &quot;referredBy&quot;, ignore = true)
+    @Mapping(target = &quot;status&quot;, ignore = true)
+    @Mapping(target = &quot;emailVerified&quot;, ignore = true)
+    @Mapping(target = &quot;phoneVerified&quot;, ignore = true)
+    @Mapping(target = &quot;totalOrders&quot;, ignore = true)
+    @Mapping(target = &quot;totalSpent&quot;, ignore = true)
+    @Mapping(target = &quot;averageOrderValue&quot;, ignore = true)
+    @Mapping(target = &quot;deleted&quot;, ignore = true)
+    @Mapping(target = &quot;createdAt&quot;, ignore = true)
+    @Mapping(target = &quot;createdBy&quot;, ignore = true)
+    @Mapping(target = &quot;deletedBy&quot;, ignore = true)
+    @Mapping(target = &quot;deletedAt&quot;, ignore = true)
+    @Mapping(target = &quot;lastLoginAt&quot;, ignore = true)
+    @Mapping(target = &quot;defaultAddressId&quot;, ignore = true)
+    @Mapping(target = &quot;defaultPaymentMethodId&quot;, ignore = true)
+    void updateEntityFromRequest(@MappingTarget User user, UpdateUserRequest request);
+
+    /**
+     * Maps User entity to response DTO.
+     *
+     * @param user the User entity
+     * @return the response DTO
+     */
+    @Mapping(target = &quot;fullName&quot;, expression = &quot;java(user.getFullName())&quot;)
+    UserResponse toResponse(User user);
+
+    /**
+     * Maps list of User entities to response DTOs.
+     *
+     * @param users the list of users
+     * @return list of response DTOs
+     */
+    List&lt;UserResponse&gt; toResponseList(List&lt;User&gt; users);
+
+    // ==================== Address Mappings ====================
+
+    /**
+     * Maps AddressDTO to AddressVO.
+     *
+     * @param dto the address DTO
+     * @return the AddressVO
+     */
+    @Mapping(target = &quot;id&quot;, expression = &quot;java(dto.getId() != null ? dto.getId() : generateAddressId())&quot;)
+    @Mapping(target = &quot;verified&quot;, constant = &quot;false&quot;)
+    @Mapping(target = &quot;createdAt&quot;, expression = &quot;java(java.time.Instant.now())&quot;)
+    @Mapping(target = &quot;updatedAt&quot;, expression = &quot;java(java.time.Instant.now())&quot;)
+    @Mapping(target = &quot;isDefault&quot;, source = &quot;isDefault&quot;, defaultValue = &quot;false&quot;)
+    AddressVO toAddressVO(AddressDTO dto);
+
+    /**
+     * Maps AddressVO to AddressResponse.
+     *
+     * @param vo the address VO
+     * @return the response DTO
+     */
+    @Mapping(target = &quot;formattedAddress&quot;, expression = &quot;java(vo.getFormattedAddress())&quot;)
+    AddressResponse toAddressResponse(AddressVO vo);
+
+    List&lt;AddressResponse&gt; toAddressResponseList(List&lt;AddressVO&gt; addresses);
+
+    // ==================== Dietary Preferences Mappings ====================
+
+    DietaryPreferencesVO toDietaryPreferencesVO(DietaryPreferencesDTO dto);
+
+    @Mapping(target = &quot;hasRestrictions&quot;, expression = &quot;java(vo != null &amp;&amp; vo.hasRestrictions())&quot;)
+    @Mapping(target = &quot;activeDietaryFlags&quot;, expression = &quot;java(vo != null ? vo.getActiveDietaryFlags() : java.util.Collections.emptyList())&quot;)
+    DietaryPreferencesResponse toDietaryPreferencesResponse(DietaryPreferencesVO vo);
+
+    // ==================== Notification Preferences Mappings ====================
+
+    NotificationPreferencesVO toNotificationPreferencesVO(NotificationPreferencesDTO dto);
+
+    NotificationPreferencesResponse toNotificationPreferencesResponse(NotificationPreferencesVO vo);
+
+    // ==================== Personalization Settings Mappings ====================
+
+    PersonalizationSettingsVO toPersonalizationSettingsVO(PersonalizationSettingsDTO dto);
+
+    PersonalizationSettingsResponse toPersonalizationSettingsResponse(PersonalizationSettingsVO vo);
+
+    // ==================== Helper Methods ====================
+
+    /**
+     * Generates a unique referral code.
+     *
+     * @return referral code
+     */
+    default String generateReferralCode() {
+<span class="fc" id="L156">        return &quot;FD&quot; + UUID.randomUUID().toString().substring(0, 8).toUpperCase();</span>
+    }
+
+    /**
+     * Generates a unique address ID.
+     *
+     * @return address ID
+     */
+    default String generateAddressId() {
+<span class="fc" id="L165">        return &quot;addr_&quot; + UUID.randomUUID().toString().replace(&quot;-&quot;, &quot;&quot;).substring(0, 12);</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

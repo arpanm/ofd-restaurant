@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    FoodAI Platform - SpotBugs Exclusion Filter
+    
+    This file defines patterns to exclude from SpotBugs analysis.
+    Use sparingly - only exclude false positives or generated code.
+-->
+<FindBugsFilter>
+    <!-- Exclude generated sources -->
+    <Match>
+        <Source name="~.*[\\/]generated-sources[\\/].*"/>
+    </Match>
+    
+    <!-- Exclude MapStruct generated mappers -->
+    <Match>
+        <Class name="~.*MapperImpl"/>
+    </Match>
+    
+    <!-- Exclude Lombok-generated code patterns -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP"/>
+        <Or>
+            <Method name="~get.*"/>
+            <Method name="builder"/>
+            <Method name="toBuilder"/>
+        </Or>
+    </Match>
+    
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+        <Or>
+            <Method name="~set.*"/>
+            <Method name="~.*Builder"/>
+        </Or>
+    </Match>
+    
+    <!-- Allow mutable objects in DTOs (request/response classes) -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+        <Or>
+            <Class name="~.*Request"/>
+            <Class name="~.*Response"/>
+            <Class name="~.*DTO"/>
+        </Or>
+    </Match>
+    
+    <!-- Exclude configuration classes from certain checks -->
+    <Match>
+        <Class name="~.*Config"/>
+        <Bug pattern="MS_SHOULD_BE_FINAL"/>
+    </Match>
+    
+    <!-- Exclude test classes -->
+    <Match>
+        <Source name="~.*[\\/]test[\\/].*"/>
+    </Match>
+    
+    <!-- Spring-specific exclusions -->
+    <Match>
+        <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+        <Class name="~.*Controller"/>
+    </Match>
+    
+    <!-- Allow null returns in Optional scenarios -->
+    <Match>
+        <Bug pattern="NP_NONNULL_RETURN_VIOLATION"/>
+        <Method name="~find.*"/>
+    </Match>
+    
+    <!-- Exclude Spring Boot main application classes -->
+    <Match>
+        <Class name="~.*Application"/>
+        <Bug pattern="OBL_UNSATISFIED_OBLIGATION"/>
+    </Match>
+    
+    <!-- MongoDB document classes use reflection -->
+    <Match>
+        <Bug pattern="URF_UNREAD_FIELD"/>
+        <Or>
+            <Annotation name="org.springframework.data.mongodb.core.mapping.Document"/>
+            <Annotation name="jakarta.persistence.Entity"/>
+        </Or>
+    </Match>
+    
+    <!-- Allow serialization issues in DTOs -->
+    <Match>
+        <Bug pattern="SE_NO_SERIALVERSIONID,SE_BAD_FIELD"/>
+        <Or>
+            <Class name="~.*Request"/>
+            <Class name="~.*Response"/>
+            <Class name="~.*DTO"/>
+            <Class name="~.*Event"/>
+        </Or>
+    </Match>
+    
+    <!-- Value Objects can use equals on incompatible types (domain validation) -->
+    <Match>
+        <Bug pattern="EC_UNRELATED_TYPES"/>
+        <Class name="~.*VO"/>
+    </Match>
+    
+    <!-- Ignore certain low-priority patterns -->
+    <Match>
+        <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+        <Priority value="3"/>
+    </Match>
+    
+    <!-- Exceptions are allowed to have mutable fields -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+        <Class name="~.*Exception"/>
+    </Match>
+</FindBugsFilter>
+

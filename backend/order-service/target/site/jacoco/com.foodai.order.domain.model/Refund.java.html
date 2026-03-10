@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Refund.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Order Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.order.domain.model</a> &gt; <span class="el_source">Refund.java</span></div><h1>Refund.java</h1><pre class="source lang-java linenums">package com.foodai.order.domain.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+
+/**
+ * Entity representing a refund transaction.
+ *
+ * @author FoodAI Team
+ */
+@Entity
+@Table(name = &quot;refunds&quot;, indexes = {
+    @Index(name = &quot;idx_refund_payment_id&quot;, columnList = &quot;paymentId&quot;),
+    @Index(name = &quot;idx_refund_order_id&quot;, columnList = &quot;orderId&quot;),
+    @Index(name = &quot;idx_refund_user_id&quot;, columnList = &quot;userId&quot;),
+    @Index(name = &quot;idx_refund_status&quot;, columnList = &quot;status&quot;)
+})
+<span class="pc bnc" id="L25" title="All 126 branches missed.">@Data</span>
+<span class="pc bpc" id="L26" title="1 of 2 branches missed.">@Builder</span>
+<span class="nc" id="L27">@NoArgsConstructor</span>
+<span class="fc" id="L28">@AllArgsConstructor</span>
+public class Refund {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+<span class="fc" id="L33">    private String id;</span>
+
+    /**
+     * Payment ID this refund is for.
+     */
+    @Column(nullable = false)
+<span class="fc" id="L39">    private String paymentId;</span>
+
+    /**
+     * Order ID this refund is for.
+     */
+    @Column(nullable = false)
+<span class="fc" id="L45">    private String orderId;</span>
+
+    /**
+     * User ID who will receive the refund.
+     */
+    @Column(nullable = false)
+<span class="fc" id="L51">    private String userId;</span>
+
+    /**
+     * Refund amount.
+     */
+    @Column(nullable = false, precision = 10, scale = 2)
+<span class="fc" id="L57">    private BigDecimal amount;</span>
+
+    /**
+     * Original payment amount.
+     */
+    @Column(nullable = false, precision = 10, scale = 2)
+<span class="fc" id="L63">    private BigDecimal originalAmount;</span>
+
+    /**
+     * Reason for refund.
+     */
+    @Column(length = 500)
+<span class="fc" id="L69">    private String reason;</span>
+
+    /**
+     * Type of refund.
+     */
+    @Enumerated(EnumType.STRING)
+<span class="fc" id="L75">    private RefundType refundType;</span>
+
+    /**
+     * Payment gateway refund ID.
+     */
+<span class="fc" id="L80">    private String gatewayRefundId;</span>
+
+    /**
+     * Refund status.
+     */
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+<span class="fc" id="L87">    private RefundStatus status = RefundStatus.PENDING;</span>
+
+    /**
+     * Who initiated the refund.
+     */
+<span class="fc" id="L92">    private String initiatedBy;</span>
+
+    /**
+     * Failure reason if refund failed.
+     */
+    @Column(length = 500)
+<span class="fc" id="L98">    private String failureReason;</span>
+
+    /**
+     * Additional notes.
+     */
+    @Column(length = 1000)
+<span class="fc" id="L104">    private String notes;</span>
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+<span class="fc" id="L108">    private Instant createdAt;</span>
+
+    /**
+     * Timestamp when refund was processed.
+     */
+<span class="fc" id="L113">    private Instant processedAt;</span>
+
+    @PrePersist
+    protected void onCreate() {
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        if (createdAt == null) {</span>
+<span class="nc" id="L118">            createdAt = Instant.now();</span>
+        }
+<span class="nc" id="L120">    }</span>
+
+    /**
+     * Marks refund as processed.
+     *
+     * @param gatewayRefundId the refund ID from gateway
+     */
+    public void markProcessed(String gatewayRefundId) {
+<span class="fc" id="L128">        this.gatewayRefundId = gatewayRefundId;</span>
+<span class="fc" id="L129">        this.status = RefundStatus.PROCESSED;</span>
+<span class="fc" id="L130">        this.processedAt = Instant.now();</span>
+<span class="fc" id="L131">    }</span>
+
+    /**
+     * Marks refund as failed.
+     *
+     * @param reason failure reason
+     */
+    public void markFailed(String reason) {
+<span class="nc" id="L139">        this.status = RefundStatus.FAILED;</span>
+<span class="nc" id="L140">        this.failureReason = reason;</span>
+<span class="nc" id="L141">    }</span>
+
+    /**
+     * Checks if this is a full refund.
+     *
+     * @return true if full refund
+     */
+    public boolean isFullRefund() {
+<span class="fc bfc" id="L149" title="All 2 branches covered.">        return amount.compareTo(originalAmount) == 0;</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

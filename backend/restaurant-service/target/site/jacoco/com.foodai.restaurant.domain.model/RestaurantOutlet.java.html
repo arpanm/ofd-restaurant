@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RestaurantOutlet.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Restaurant Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.restaurant.domain.model</a> &gt; <span class="el_source">RestaurantOutlet.java</span></div><h1>RestaurantOutlet.java</h1><pre class="source lang-java linenums">package com.foodai.restaurant.domain.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.Instant;
+import java.util.List;
+
+/**
+ * Entity representing a restaurant outlet.
+ * Multiple outlets can belong to a single restaurant (chain/brand).
+ * This is NOT an aggregate root - it's part of the Restaurant aggregate.
+ */
+<span class="nc bnc" id="L16" title="All 218 branches missed.">@lombok.Data</span>
+<span class="pc" id="L17">@lombok.Builder</span>
+<span class="fc" id="L18">@lombok.NoArgsConstructor</span>
+<span class="fc" id="L19">@lombok.AllArgsConstructor</span>
+public class RestaurantOutlet {
+    /**
+     * Unique outlet identifier
+     */
+<span class="fc" id="L24">    private String outletId;</span>
+    
+    /**
+     * Outlet name (e.g., &quot;Main Branch&quot;, &quot;MG Road Branch&quot;)
+     */
+<span class="fc" id="L29">    private String outletName;</span>
+    
+    /**
+     * Outlet code (e.g., &quot;RES001-OUT001&quot;)
+     */
+<span class="nc" id="L34">    private String outletCode;</span>
+    
+    /**
+     * Physical address of this outlet
+     */
+<span class="fc" id="L39">    private AddressVO address;</span>
+    
+    /**
+     * Multiple contact details for this outlet
+     */
+<span class="nc" id="L44">    private List&lt;ContactVO&gt; contacts;</span>
+    
+    /**
+     * Operating hours for each day
+     */
+<span class="fc" id="L49">    private List&lt;OperatingHoursVO&gt; operatingHours;</span>
+    
+    /**
+     * Current status of the outlet
+     */
+<span class="nc" id="L54">    private OutletStatus status;</span>
+    
+    /**
+     * User ID who approved this outlet
+     */
+<span class="nc" id="L59">    private String approvedBy;</span>
+    
+    /**
+     * Approval timestamp
+     */
+<span class="nc" id="L64">    private Instant approvedAt;</span>
+    
+    /**
+     * Rejection reason (if rejected)
+     */
+<span class="nc" id="L69">    private String rejectionReason;</span>
+    
+    /**
+     * Serviceability configuration
+     */
+<span class="fc" id="L74">    private ServiceabilityConfig serviceabilityConfig;</span>
+    
+    /**
+     * TAT (Turn Around Time) configuration
+     */
+<span class="nc" id="L79">    private TATConfig tatConfig;</span>
+    
+    /**
+     * Whether outlet is accepting orders
+     */
+<span class="fc" id="L84">    private Boolean acceptsOrders;</span>
+    
+    /**
+     * Minimum order value for this outlet
+     */
+<span class="fc" id="L89">    private Double minimumOrderValue;</span>
+    
+    /**
+     * Delivery fee charged by this outlet
+     */
+<span class="fc" id="L94">    private Double deliveryFee;</span>
+    
+    /**
+     * Whether outlet has self-delivery
+     */
+<span class="nc" id="L99">    private Boolean selfDelivery;</span>
+    
+    /**
+     * Average rating for this outlet
+     */
+<span class="fc" id="L104">    private Double averageRating;</span>
+    
+    /**
+     * Total reviews for this outlet
+     */
+<span class="fc" id="L109">    private Integer totalReviews;</span>
+    
+    /**
+     * Total orders fulfilled by this outlet
+     */
+<span class="nc" id="L114">    private Integer totalOrders;</span>
+    
+    /**
+     * Current order queue size
+     */
+<span class="nc" id="L119">    private Integer currentOrderQueue;</span>
+    
+    /**
+     * User ID who created this outlet
+     */
+<span class="nc" id="L124">    private String createdBy;</span>
+    
+    /**
+     * Creation timestamp
+     */
+<span class="nc" id="L129">    private Instant createdAt;</span>
+    
+    /**
+     * User ID who last updated this outlet
+     */
+<span class="nc" id="L134">    private String updatedBy;</span>
+    
+    /**
+     * Last update timestamp
+     */
+<span class="nc" id="L139">    private Instant updatedAt;</span>
+    
+    /**
+     * Soft delete flag
+     */
+<span class="nc" id="L144">    private boolean deleted;</span>
+    
+    /**
+     * User ID who deleted this outlet
+     */
+<span class="nc" id="L149">    private String deletedBy;</span>
+    
+    /**
+     * Deletion timestamp
+     */
+<span class="nc" id="L154">    private Instant deletedAt;</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

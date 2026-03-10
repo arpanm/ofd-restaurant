@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CouponController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Promotion Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.promotion.controller</a> &gt; <span class="el_source">CouponController.java</span></div><h1>CouponController.java</h1><pre class="source lang-java linenums">package com.foodai.promotion.controller;
+
+import com.foodai.promotion.dto.request.ApplyCouponRequest;
+import com.foodai.promotion.dto.request.CreateCouponRequest;
+import com.foodai.promotion.dto.request.ValidateCouponRequest;
+import com.foodai.promotion.dto.response.ApiResponse;
+import com.foodai.promotion.dto.response.CouponResponse;
+import com.foodai.promotion.dto.response.CouponValidationResponse;
+import com.foodai.promotion.service.CouponService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * REST controller for managing coupons.
+ *
+ * @author FoodAI Team
+ */
+@RestController
+@RequestMapping(&quot;/api/v1/coupons&quot;)
+<span class="fc" id="L38">@RequiredArgsConstructor</span>
+<span class="fc" id="L39">@Slf4j</span>
+@Tag(name = &quot;Coupons&quot;, description = &quot;Coupon management endpoints&quot;)
+public class CouponController {
+
+  private final CouponService couponService;
+
+  /**
+   * Creates a new coupon.
+   *
+   * @param request the create request
+   * @return the created coupon
+   */
+  @PostMapping
+  @Operation(summary = &quot;Create a new coupon&quot;)
+  public ResponseEntity&lt;ApiResponse&lt;CouponResponse&gt;&gt; createCoupon(
+      @Valid @RequestBody CreateCouponRequest request) {
+<span class="fc" id="L55">    log.info(&quot;REST request to create coupon: {}&quot;, request.getCode());</span>
+<span class="fc" id="L56">    CouponResponse response = couponService.createCoupon(request);</span>
+<span class="fc" id="L57">    return ResponseEntity.status(HttpStatus.CREATED)</span>
+<span class="fc" id="L58">        .body(ApiResponse.success(response, &quot;Coupon created successfully&quot;));</span>
+  }
+
+  /**
+   * Gets a coupon by ID.
+   *
+   * @param id the coupon ID
+   * @return the coupon
+   */
+  @GetMapping(&quot;/{id}&quot;)
+  @Operation(summary = &quot;Get coupon by ID&quot;)
+  public ResponseEntity&lt;ApiResponse&lt;CouponResponse&gt;&gt; getCoupon(
+      @Parameter(description = &quot;Coupon ID&quot;) @PathVariable String id) {
+<span class="fc" id="L71">    log.debug(&quot;REST request to get coupon: {}&quot;, id);</span>
+<span class="fc" id="L72">    CouponResponse response = couponService.getCoupon(id);</span>
+<span class="fc" id="L73">    return ResponseEntity.ok(ApiResponse.success(response));</span>
+  }
+
+  /**
+   * Gets a coupon by code.
+   *
+   * @param code the coupon code
+   * @return the coupon
+   */
+  @GetMapping(&quot;/code/{code}&quot;)
+  @Operation(summary = &quot;Get coupon by code&quot;)
+  public ResponseEntity&lt;ApiResponse&lt;CouponResponse&gt;&gt; getCouponByCode(
+      @Parameter(description = &quot;Coupon code&quot;) @PathVariable String code) {
+<span class="fc" id="L86">    log.debug(&quot;REST request to get coupon by code: {}&quot;, code);</span>
+<span class="fc" id="L87">    CouponResponse response = couponService.getCouponByCode(code);</span>
+<span class="fc" id="L88">    return ResponseEntity.ok(ApiResponse.success(response));</span>
+  }
+
+  /**
+   * Gets all coupons.
+   *
+   * @param pageable pagination info
+   * @return page of coupons
+   */
+  @GetMapping
+  @Operation(summary = &quot;Get all coupons&quot;)
+  public ResponseEntity&lt;ApiResponse&lt;Page&lt;CouponResponse&gt;&gt;&gt; getAllCoupons(
+      @PageableDefault(size = 20) Pageable pageable) {
+<span class="fc" id="L101">    log.debug(&quot;REST request to get all coupons&quot;);</span>
+<span class="fc" id="L102">    Page&lt;CouponResponse&gt; page = couponService.getAllCoupons(pageable);</span>
+<span class="fc" id="L103">    return ResponseEntity.ok(ApiResponse.success(page));</span>
+  }
+
+  /**
+   * Gets coupons by restaurant.
+   *
+   * @param restaurantId the restaurant ID
+   * @param pageable pagination info
+   * @return page of coupons
+   */
+  @GetMapping(&quot;/restaurant/{restaurantId}&quot;)
+  @Operation(summary = &quot;Get coupons by restaurant&quot;)
+  public ResponseEntity&lt;ApiResponse&lt;Page&lt;CouponResponse&gt;&gt;&gt; getCouponsByRestaurant(
+      @Parameter(description = &quot;Restaurant ID&quot;) @PathVariable String restaurantId,
+      @PageableDefault(size = 20) Pageable pageable) {
+<span class="nc" id="L118">    log.debug(&quot;REST request to get coupons for restaurant: {}&quot;, restaurantId);</span>
+<span class="nc" id="L119">    Page&lt;CouponResponse&gt; page = couponService.getCouponsByRestaurant(restaurantId, pageable);</span>
+<span class="nc" id="L120">    return ResponseEntity.ok(ApiResponse.success(page));</span>
+  }
+
+  /**
+   * Gets valid coupons for a restaurant.
+   *
+   * @param restaurantId the restaurant ID
+   * @return list of valid coupons
+   */
+  @GetMapping(&quot;/restaurant/{restaurantId}/valid&quot;)
+  @Operation(summary = &quot;Get valid coupons for restaurant&quot;)
+  public ResponseEntity&lt;ApiResponse&lt;List&lt;CouponResponse&gt;&gt;&gt; getValidCoupons(
+      @Parameter(description = &quot;Restaurant ID&quot;) @PathVariable String restaurantId) {
+<span class="nc" id="L133">    log.debug(&quot;REST request to get valid coupons for restaurant: {}&quot;, restaurantId);</span>
+<span class="nc" id="L134">    List&lt;CouponResponse&gt; coupons = couponService.getValidCoupons(restaurantId);</span>
+<span class="nc" id="L135">    return ResponseEntity.ok(ApiResponse.success(coupons));</span>
+  }
+
+  /**
+   * Gets platform-wide coupons.
+   *
+   * @return list of platform-wide coupons
+   */
+  @GetMapping(&quot;/platform&quot;)
+  @Operation(summary = &quot;Get platform-wide coupons&quot;)
+  public ResponseEntity&lt;ApiResponse&lt;List&lt;CouponResponse&gt;&gt;&gt; getPlatformWideCoupons() {
+<span class="fc" id="L146">    log.debug(&quot;REST request to get platform-wide coupons&quot;);</span>
+<span class="fc" id="L147">    List&lt;CouponResponse&gt; coupons = couponService.getPlatformWideCoupons();</span>
+<span class="fc" id="L148">    return ResponseEntity.ok(ApiResponse.success(coupons));</span>
+  }
+
+  /**
+   * Validates a coupon.
+   *
+   * @param request the validation request
+   * @return the validation response
+   */
+  @PostMapping(&quot;/validate&quot;)
+  @Operation(summary = &quot;Validate a coupon&quot;)
+  public ResponseEntity&lt;ApiResponse&lt;CouponValidationResponse&gt;&gt; validateCoupon(
+      @Valid @RequestBody ValidateCouponRequest request) {
+<span class="nc" id="L161">    log.debug(&quot;REST request to validate coupon: {}&quot;, request.getCode());</span>
+<span class="nc" id="L162">    CouponValidationResponse response = couponService.validateCoupon(request);</span>
+<span class="nc" id="L163">    return ResponseEntity.ok(ApiResponse.success(response));</span>
+  }
+
+  /**
+   * Applies a coupon to an order.
+   *
+   * @param request the apply request
+   * @return the validation response
+   */
+  @PostMapping(&quot;/apply&quot;)
+  @Operation(summary = &quot;Apply a coupon to an order&quot;)
+  public ResponseEntity&lt;ApiResponse&lt;CouponValidationResponse&gt;&gt; applyCoupon(
+      @Valid @RequestBody ApplyCouponRequest request) {
+<span class="nc" id="L176">    log.info(&quot;REST request to apply coupon: {} to order: {}&quot;, request.getCode(), request.getOrderId());</span>
+<span class="nc" id="L177">    CouponValidationResponse response = couponService.applyCoupon(request);</span>
+<span class="nc" id="L178">    return ResponseEntity.ok(ApiResponse.success(response, &quot;Coupon applied successfully&quot;));</span>
+  }
+
+  /**
+   * Activates a coupon.
+   *
+   * @param id the coupon ID
+   * @return the updated coupon
+   */
+  @PutMapping(&quot;/{id}/activate&quot;)
+  @Operation(summary = &quot;Activate a coupon&quot;)
+  public ResponseEntity&lt;ApiResponse&lt;CouponResponse&gt;&gt; activateCoupon(
+      @Parameter(description = &quot;Coupon ID&quot;) @PathVariable String id) {
+<span class="fc" id="L191">    log.info(&quot;REST request to activate coupon: {}&quot;, id);</span>
+<span class="fc" id="L192">    CouponResponse response = couponService.activateCoupon(id);</span>
+<span class="fc" id="L193">    return ResponseEntity.ok(ApiResponse.success(response, &quot;Coupon activated&quot;));</span>
+  }
+
+  /**
+   * Deactivates a coupon.
+   *
+   * @param id the coupon ID
+   * @return the updated coupon
+   */
+  @PutMapping(&quot;/{id}/deactivate&quot;)
+  @Operation(summary = &quot;Deactivate a coupon&quot;)
+  public ResponseEntity&lt;ApiResponse&lt;CouponResponse&gt;&gt; deactivateCoupon(
+      @Parameter(description = &quot;Coupon ID&quot;) @PathVariable String id) {
+<span class="fc" id="L206">    log.info(&quot;REST request to deactivate coupon: {}&quot;, id);</span>
+<span class="fc" id="L207">    CouponResponse response = couponService.deactivateCoupon(id);</span>
+<span class="fc" id="L208">    return ResponseEntity.ok(ApiResponse.success(response, &quot;Coupon deactivated&quot;));</span>
+  }
+
+  /**
+   * Deletes a coupon.
+   *
+   * @param id the coupon ID
+   * @return no content
+   */
+  @DeleteMapping(&quot;/{id}&quot;)
+  @Operation(summary = &quot;Delete a coupon&quot;)
+  public ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; deleteCoupon(
+      @Parameter(description = &quot;Coupon ID&quot;) @PathVariable String id) {
+<span class="fc" id="L221">    log.info(&quot;REST request to delete coupon: {}&quot;, id);</span>
+<span class="fc" id="L222">    couponService.deleteCoupon(id);</span>
+<span class="fc" id="L223">    return ResponseEntity.ok(ApiResponse.success(null, &quot;Coupon deleted&quot;));</span>
+  }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

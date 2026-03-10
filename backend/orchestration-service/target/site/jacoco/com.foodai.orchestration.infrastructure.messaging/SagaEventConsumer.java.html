@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SagaEventConsumer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Orchestration Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.orchestration.infrastructure.messaging</a> &gt; <span class="el_source">SagaEventConsumer.java</span></div><h1>SagaEventConsumer.java</h1><pre class="source lang-java linenums">package com.foodai.orchestration.infrastructure.messaging;
+
+import com.foodai.orchestration.saga.executor.SagaExecutor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.stereotype.Component;
+
+import java.util.Map;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
+/**
+ * Consumer for saga-related events from Kafka.
+ *
+ * @author FoodAI Team
+ */
+@Component
+<span class="nc" id="L20">@RequiredArgsConstructor</span>
+<span class="nc" id="L21">@Slf4j</span>
+public class SagaEventConsumer {
+
+    private final SagaExecutor sagaExecutor;
+
+    /**
+     * Handles step completion callbacks from services.
+     *
+     * @param payload callback payload
+     */
+    @KafkaListener(
+        topics = &quot;orchestration.step.callback&quot;,
+        groupId = &quot;orchestration-service&quot;,
+        containerFactory = &quot;kafkaListenerContainerFactory&quot;
+    )
+    public void handleStepCallback(@Payload Map&lt;String, Object&gt; payload) {
+<span class="nc" id="L37">        String sagaId = (String) payload.get(&quot;sagaId&quot;);</span>
+<span class="nc" id="L38">        String stepId = (String) payload.get(&quot;stepId&quot;);</span>
+<span class="nc" id="L39">        boolean success = Boolean.TRUE.equals(payload.get(&quot;success&quot;));</span>
+
+<span class="nc" id="L41">        log.info(&quot;Received step callback&quot;,</span>
+<span class="nc" id="L42">            kv(&quot;sagaId&quot;, sagaId),</span>
+<span class="nc" id="L43">            kv(&quot;stepId&quot;, stepId),</span>
+<span class="nc" id="L44">            kv(&quot;success&quot;, success));</span>
+
+        try {
+            @SuppressWarnings(&quot;unchecked&quot;)
+<span class="nc" id="L48">            Map&lt;String, Object&gt; output = (Map&lt;String, Object&gt;) payload.get(&quot;output&quot;);</span>
+<span class="nc" id="L49">            String errorCode = (String) payload.get(&quot;errorCode&quot;);</span>
+<span class="nc" id="L50">            String errorMessage = (String) payload.get(&quot;errorMessage&quot;);</span>
+
+<span class="nc" id="L52">            sagaExecutor.handleStepResult(sagaId, stepId, success, output, errorCode, errorMessage);</span>
+
+<span class="nc" id="L54">            log.info(&quot;Step callback processed successfully&quot;,</span>
+<span class="nc" id="L55">                kv(&quot;sagaId&quot;, sagaId),</span>
+<span class="nc" id="L56">                kv(&quot;stepId&quot;, stepId));</span>
+
+<span class="nc" id="L58">        } catch (Exception e) {</span>
+<span class="nc" id="L59">            log.error(&quot;Failed to process step callback&quot;,</span>
+<span class="nc" id="L60">                kv(&quot;sagaId&quot;, sagaId),</span>
+<span class="nc" id="L61">                kv(&quot;stepId&quot;, stepId),</span>
+                e);
+<span class="nc" id="L63">        }</span>
+<span class="nc" id="L64">    }</span>
+
+    /**
+     * Handles payment completion events.
+     *
+     * @param payload payment event payload
+     */
+    @KafkaListener(
+        topics = &quot;payment.completed&quot;,
+        groupId = &quot;orchestration-service&quot;,
+        containerFactory = &quot;kafkaListenerContainerFactory&quot;
+    )
+    public void handlePaymentCompleted(@Payload Map&lt;String, Object&gt; payload) {
+<span class="nc" id="L77">        String sagaId = (String) payload.get(&quot;sagaId&quot;);</span>
+<span class="nc" id="L78">        String paymentId = (String) payload.get(&quot;paymentId&quot;);</span>
+<span class="nc" id="L79">        String status = (String) payload.get(&quot;status&quot;);</span>
+
+<span class="nc" id="L81">        log.info(&quot;Received payment completed event&quot;,</span>
+<span class="nc" id="L82">            kv(&quot;sagaId&quot;, sagaId),</span>
+<span class="nc" id="L83">            kv(&quot;paymentId&quot;, paymentId),</span>
+<span class="nc" id="L84">            kv(&quot;status&quot;, status));</span>
+
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (sagaId != null) {</span>
+            try {
+<span class="nc bnc" id="L88" title="All 4 branches missed.">                boolean success = &quot;COMPLETED&quot;.equals(status) || &quot;SUCCESS&quot;.equals(status);</span>
+<span class="nc" id="L89">                Map&lt;String, Object&gt; output = Map.of(</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">                    &quot;paymentId&quot;, paymentId != null ? paymentId : &quot;&quot;,</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">                    &quot;status&quot;, status != null ? status : &quot;&quot;,</span>
+<span class="nc" id="L92">                    &quot;amount&quot;, payload.getOrDefault(&quot;amount&quot;, 0)</span>
+                );
+
+<span class="nc" id="L95">                String stepId = (String) payload.get(&quot;stepId&quot;);</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">                if (stepId != null) {</span>
+<span class="nc" id="L97">                    sagaExecutor.handleStepResult(sagaId, stepId, success, output,</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">                        success ? null : &quot;PAYMENT_FAILED&quot;,</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">                        success ? null : &quot;Payment processing failed&quot;);</span>
+                }
+<span class="nc" id="L101">            } catch (Exception e) {</span>
+<span class="nc" id="L102">                log.error(&quot;Failed to process payment completed event&quot;,</span>
+<span class="nc" id="L103">                    kv(&quot;sagaId&quot;, sagaId),</span>
+                    e);
+<span class="nc" id="L105">            }</span>
+        }
+<span class="nc" id="L107">    }</span>
+
+    /**
+     * Handles order status change events.
+     *
+     * @param payload order event payload
+     */
+    @KafkaListener(
+        topics = &quot;order.status.changed&quot;,
+        groupId = &quot;orchestration-service&quot;,
+        containerFactory = &quot;kafkaListenerContainerFactory&quot;
+    )
+    public void handleOrderStatusChanged(@Payload Map&lt;String, Object&gt; payload) {
+<span class="nc" id="L120">        String orderId = (String) payload.get(&quot;orderId&quot;);</span>
+<span class="nc" id="L121">        String status = (String) payload.get(&quot;status&quot;);</span>
+<span class="nc" id="L122">        String sagaId = (String) payload.get(&quot;sagaId&quot;);</span>
+
+<span class="nc" id="L124">        log.info(&quot;Received order status changed event&quot;,</span>
+<span class="nc" id="L125">            kv(&quot;orderId&quot;, orderId),</span>
+<span class="nc" id="L126">            kv(&quot;status&quot;, status),</span>
+<span class="nc" id="L127">            kv(&quot;sagaId&quot;, sagaId));</span>
+
+        // Handle order status changes that might affect sagas
+        // For example, if order is confirmed, continue saga
+        // If order is cancelled externally, compensate saga
+<span class="nc" id="L132">    }</span>
+
+    /**
+     * Handles rider assignment events.
+     *
+     * @param payload rider event payload
+     */
+    @KafkaListener(
+        topics = &quot;rider.assigned&quot;,
+        groupId = &quot;orchestration-service&quot;,
+        containerFactory = &quot;kafkaListenerContainerFactory&quot;
+    )
+    public void handleRiderAssigned(@Payload Map&lt;String, Object&gt; payload) {
+<span class="nc" id="L145">        String orderId = (String) payload.get(&quot;orderId&quot;);</span>
+<span class="nc" id="L146">        String riderId = (String) payload.get(&quot;riderId&quot;);</span>
+<span class="nc" id="L147">        String sagaId = (String) payload.get(&quot;sagaId&quot;);</span>
+
+<span class="nc" id="L149">        log.info(&quot;Received rider assigned event&quot;,</span>
+<span class="nc" id="L150">            kv(&quot;orderId&quot;, orderId),</span>
+<span class="nc" id="L151">            kv(&quot;riderId&quot;, riderId),</span>
+<span class="nc" id="L152">            kv(&quot;sagaId&quot;, sagaId));</span>
+
+<span class="nc bnc" id="L154" title="All 2 branches missed.">        if (sagaId != null) {</span>
+            try {
+<span class="nc" id="L156">                String stepId = (String) payload.get(&quot;stepId&quot;);</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">                if (stepId != null) {</span>
+<span class="nc" id="L158">                    Map&lt;String, Object&gt; output = Map.of(</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">                        &quot;riderId&quot;, riderId != null ? riderId : &quot;&quot;,</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">                        &quot;orderId&quot;, orderId != null ? orderId : &quot;&quot;</span>
+                    );
+<span class="nc" id="L162">                    sagaExecutor.handleStepResult(sagaId, stepId, true, output, null, null);</span>
+                }
+<span class="nc" id="L164">            } catch (Exception e) {</span>
+<span class="nc" id="L165">                log.error(&quot;Failed to process rider assigned event&quot;,</span>
+<span class="nc" id="L166">                    kv(&quot;sagaId&quot;, sagaId),</span>
+                    e);
+<span class="nc" id="L168">            }</span>
+        }
+<span class="nc" id="L170">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

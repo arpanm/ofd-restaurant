@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PaymentController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Order Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.order.controller</a> &gt; <span class="el_source">PaymentController.java</span></div><h1>PaymentController.java</h1><pre class="source lang-java linenums">package com.foodai.order.controller;
+
+import com.foodai.order.dto.request.InitiatePaymentRequest;
+import com.foodai.order.dto.request.InitiateRefundRequest;
+import com.foodai.order.dto.request.VerifyPaymentRequest;
+import com.foodai.order.dto.response.*;
+import com.foodai.order.service.PaymentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * REST controller for payment and refund operations.
+ *
+ * @author FoodAI Team
+ */
+@RestController
+@RequestMapping(&quot;/api/v1/payments&quot;)
+<span class="fc" id="L32">@RequiredArgsConstructor</span>
+<span class="fc" id="L33">@Slf4j</span>
+@Tag(name = &quot;Payment Management&quot;, description = &quot;APIs for managing payments and refunds&quot;)
+public class PaymentController {
+
+    private final PaymentService paymentService;
+
+    /**
+     * Initiates a payment.
+     */
+    @PostMapping(&quot;/initiate&quot;)
+    @Operation(summary = &quot;Initiate Payment&quot;, description = &quot;Initiates a payment for an order&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;201&quot;, description = &quot;Payment initiated successfully&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid request&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;PaymentInitiationResponse&gt;&gt; initiatePayment(
+            @Valid @RequestBody InitiatePaymentRequest request) {
+<span class="fc" id="L50">        log.info(&quot;Request to initiate payment for order: {}&quot;, request.getOrderId());</span>
+<span class="fc" id="L51">        PaymentInitiationResponse response = paymentService.initiatePayment(request);</span>
+<span class="fc" id="L52">        return ResponseEntity</span>
+<span class="fc" id="L53">            .status(HttpStatus.CREATED)</span>
+<span class="fc" id="L54">            .body(ApiResponse.success(&quot;Payment initiated&quot;, response));</span>
+    }
+
+    /**
+     * Verifies a payment.
+     */
+    @PostMapping(&quot;/verify&quot;)
+    @Operation(summary = &quot;Verify Payment&quot;, description = &quot;Verifies a payment from the payment gateway&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Payment verified successfully&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;400&quot;, description = &quot;Payment verification failed&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;402&quot;, description = &quot;Payment failed&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;PaymentResponse&gt;&gt; verifyPayment(
+            @Valid @RequestBody VerifyPaymentRequest request) {
+<span class="fc" id="L69">        log.info(&quot;Request to verify payment for gateway order: {}&quot;, request.getGatewayOrderId());</span>
+<span class="fc" id="L70">        PaymentResponse response = paymentService.verifyPayment(request);</span>
+<span class="fc" id="L71">        return ResponseEntity.ok(ApiResponse.success(&quot;Payment verified successfully&quot;, response));</span>
+    }
+
+    /**
+     * Gets a payment by ID.
+     */
+    @GetMapping(&quot;/{paymentId}&quot;)
+    @Operation(summary = &quot;Get Payment&quot;, description = &quot;Gets a payment by its ID&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Payment found&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Payment not found&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;PaymentResponse&gt;&gt; getPayment(
+            @Parameter(description = &quot;Payment ID&quot;) @PathVariable String paymentId) {
+<span class="fc" id="L85">        log.info(&quot;Request to get payment: {}&quot;, paymentId);</span>
+<span class="fc" id="L86">        PaymentResponse response = paymentService.getPayment(paymentId);</span>
+<span class="fc" id="L87">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Gets payment by order ID.
+     */
+    @GetMapping(&quot;/order/{orderId}&quot;)
+    @Operation(summary = &quot;Get Payment by Order&quot;, description = &quot;Gets the payment for an order&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Payment found&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Payment not found&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;PaymentResponse&gt;&gt; getPaymentByOrderId(
+            @Parameter(description = &quot;Order ID&quot;) @PathVariable String orderId) {
+<span class="fc" id="L101">        log.info(&quot;Request to get payment for order: {}&quot;, orderId);</span>
+<span class="fc" id="L102">        PaymentResponse response = paymentService.getPaymentByOrderId(orderId);</span>
+<span class="fc" id="L103">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Gets payments for a user.
+     */
+    @GetMapping(&quot;/user/{userId}&quot;)
+    @Operation(summary = &quot;Get User Payments&quot;, description = &quot;Gets all payments for a user&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;Page&lt;PaymentResponse&gt;&gt;&gt; getUserPayments(
+            @Parameter(description = &quot;User ID&quot;) @PathVariable String userId,
+            @Parameter(description = &quot;Page number&quot;) @RequestParam(defaultValue = &quot;0&quot;) int page,
+            @Parameter(description = &quot;Page size&quot;) @RequestParam(defaultValue = &quot;20&quot;) int size) {
+<span class="fc" id="L115">        log.info(&quot;Request to get payments for user: {}&quot;, userId);</span>
+<span class="fc" id="L116">        Pageable pageable = PageRequest.of(page, size, Sort.by(&quot;createdAt&quot;).descending());</span>
+<span class="fc" id="L117">        Page&lt;PaymentResponse&gt; response = paymentService.getUserPayments(userId, pageable);</span>
+<span class="fc" id="L118">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Initiates a refund.
+     */
+    @PostMapping(&quot;/refunds&quot;)
+    @Operation(summary = &quot;Initiate Refund&quot;, description = &quot;Initiates a refund for an order&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;201&quot;, description = &quot;Refund initiated successfully&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid request&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;409&quot;, description = &quot;Cannot refund&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;RefundResponse&gt;&gt; initiateRefund(
+            @Valid @RequestBody InitiateRefundRequest request) {
+<span class="fc" id="L133">        log.info(&quot;Request to initiate refund for order: {}&quot;, request.getOrderId());</span>
+<span class="fc" id="L134">        RefundResponse response = paymentService.initiateRefund(request);</span>
+<span class="fc" id="L135">        return ResponseEntity</span>
+<span class="fc" id="L136">            .status(HttpStatus.CREATED)</span>
+<span class="fc" id="L137">            .body(ApiResponse.success(&quot;Refund initiated&quot;, response));</span>
+    }
+
+    /**
+     * Gets a refund by ID.
+     */
+    @GetMapping(&quot;/refunds/{refundId}&quot;)
+    @Operation(summary = &quot;Get Refund&quot;, description = &quot;Gets a refund by its ID&quot;)
+    @ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;200&quot;, description = &quot;Refund found&quot;),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = &quot;404&quot;, description = &quot;Refund not found&quot;)
+    })
+    public ResponseEntity&lt;ApiResponse&lt;RefundResponse&gt;&gt; getRefund(
+            @Parameter(description = &quot;Refund ID&quot;) @PathVariable String refundId) {
+<span class="fc" id="L151">        log.info(&quot;Request to get refund: {}&quot;, refundId);</span>
+<span class="fc" id="L152">        RefundResponse response = paymentService.getRefund(refundId);</span>
+<span class="fc" id="L153">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Gets refunds for an order.
+     */
+    @GetMapping(&quot;/refunds/order/{orderId}&quot;)
+    @Operation(summary = &quot;Get Order Refunds&quot;, description = &quot;Gets all refunds for an order&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;List&lt;RefundResponse&gt;&gt;&gt; getOrderRefunds(
+            @Parameter(description = &quot;Order ID&quot;) @PathVariable String orderId) {
+<span class="fc" id="L163">        log.info(&quot;Request to get refunds for order: {}&quot;, orderId);</span>
+<span class="fc" id="L164">        List&lt;RefundResponse&gt; response = paymentService.getRefundsByOrderId(orderId);</span>
+<span class="fc" id="L165">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+
+    /**
+     * Gets refunds for a user.
+     */
+    @GetMapping(&quot;/refunds/user/{userId}&quot;)
+    @Operation(summary = &quot;Get User Refunds&quot;, description = &quot;Gets all refunds for a user&quot;)
+    public ResponseEntity&lt;ApiResponse&lt;Page&lt;RefundResponse&gt;&gt;&gt; getUserRefunds(
+            @Parameter(description = &quot;User ID&quot;) @PathVariable String userId,
+            @Parameter(description = &quot;Page number&quot;) @RequestParam(defaultValue = &quot;0&quot;) int page,
+            @Parameter(description = &quot;Page size&quot;) @RequestParam(defaultValue = &quot;20&quot;) int size) {
+<span class="fc" id="L177">        log.info(&quot;Request to get refunds for user: {}&quot;, userId);</span>
+<span class="fc" id="L178">        Pageable pageable = PageRequest.of(page, size, Sort.by(&quot;createdAt&quot;).descending());</span>
+<span class="fc" id="L179">        Page&lt;RefundResponse&gt; response = paymentService.getUserRefunds(userId, pageable);</span>
+<span class="fc" id="L180">        return ResponseEntity.ok(ApiResponse.success(response));</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

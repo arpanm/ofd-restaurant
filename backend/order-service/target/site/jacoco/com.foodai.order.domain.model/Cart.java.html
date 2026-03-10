@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Cart.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Order Service</a> &gt; <a href="index.source.html" class="el_package">com.foodai.order.domain.model</a> &gt; <span class="el_source">Cart.java</span></div><h1>Cart.java</h1><pre class="source lang-java linenums">package com.foodai.order.domain.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * MongoDB document representing a user's shopping cart.
+ *
+ * &lt;p&gt;Carts support items from multiple restaurants (multi-restaurant ordering).
+ *
+ * @author FoodAI Team
+ */
+@Document(collection = &quot;carts&quot;)
+<span class="pc bnc" id="L27" title="All 134 branches missed.">@Data</span>
+<span class="pc bpc" id="L28" title="1 of 4 branches missed.">@Builder</span>
+<span class="nc" id="L29">@NoArgsConstructor</span>
+<span class="fc" id="L30">@AllArgsConstructor</span>
+public class Cart {
+
+    @Id
+<span class="fc" id="L34">    private String id;</span>
+
+    /**
+     * User ID who owns this cart.
+     */
+    @Indexed(unique = true)
+<span class="fc" id="L40">    private String userId;</span>
+
+    /**
+     * Cart items from potentially multiple restaurants.
+     */
+    @Builder.Default
+<span class="fc" id="L46">    private List&lt;CartItem&gt; items = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Applied coupon code.
+     */
+<span class="fc" id="L51">    private String appliedCouponCode;</span>
+
+    /**
+     * Discount from applied coupon.
+     */
+<span class="fc" id="L56">    private BigDecimal couponDiscount;</span>
+
+    /**
+     * Selected delivery address ID.
+     */
+<span class="fc" id="L61">    private String selectedAddressId;</span>
+
+    /**
+     * Selected payment method.
+     */
+<span class="fc" id="L66">    private PaymentMethod selectedPaymentMethod;</span>
+
+    /**
+     * Special instructions for the order.
+     */
+<span class="fc" id="L71">    private String specialInstructions;</span>
+
+    /**
+     * Scheduled delivery time (null for ASAP).
+     */
+<span class="fc" id="L76">    private Instant scheduledDeliveryTime;</span>
+
+    /**
+     * Source of cart (web, mobile, ai_chat, diet_planner, party_planner).
+     */
+<span class="nc" id="L81">    private String source;</span>
+
+    /**
+     * Diet plan ID if adding items from diet planner.
+     */
+<span class="nc" id="L86">    private String dietPlanId;</span>
+
+    /**
+     * Party plan ID if adding items for a party.
+     */
+<span class="nc" id="L91">    private String partyPlanId;</span>
+
+    /**
+     * AI chat session ID if adding items from chat.
+     */
+<span class="nc" id="L96">    private String chatSessionId;</span>
+
+    /**
+     * Tip amount for delivery partner.
+     */
+    @Builder.Default
+<span class="fc" id="L102">    private BigDecimal tip = BigDecimal.ZERO;</span>
+
+    @CreatedDate
+<span class="fc" id="L105">    private Instant createdAt;</span>
+
+    @LastModifiedDate
+<span class="fc" id="L108">    private Instant updatedAt;</span>
+
+    /**
+     * Adds an item to the cart. If the same item with same customizations exists,
+     * increases the quantity.
+     *
+     * @param newItem the item to add
+     */
+    public void addItem(CartItem newItem) {
+<span class="fc" id="L117">        Optional&lt;CartItem&gt; existingItem = findMatchingItem(newItem);</span>
+        
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        if (existingItem.isPresent()) {</span>
+<span class="fc" id="L120">            CartItem item = existingItem.get();</span>
+<span class="fc" id="L121">            item.setQuantity(item.getQuantity() + newItem.getQuantity());</span>
+<span class="fc" id="L122">            item.calculateTotalPrice();</span>
+<span class="fc" id="L123">        } else {</span>
+<span class="fc" id="L124">            newItem.calculateTotalPrice();</span>
+<span class="fc" id="L125">            items.add(newItem);</span>
+        }
+<span class="fc" id="L127">    }</span>
+
+    /**
+     * Updates the quantity of an item.
+     *
+     * @param itemId the item ID
+     * @param quantity new quantity
+     * @return true if item was updated
+     */
+    public boolean updateItemQuantity(String itemId, int quantity) {
+<span class="fc bfc" id="L137" title="All 2 branches covered.">        for (CartItem item : items) {</span>
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">            if (item.getId().equals(itemId)) {</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">                if (quantity &lt;= 0) {</span>
+<span class="fc" id="L140">                    items.remove(item);</span>
+                } else {
+<span class="fc" id="L142">                    item.setQuantity(quantity);</span>
+<span class="fc" id="L143">                    item.calculateTotalPrice();</span>
+                }
+<span class="fc" id="L145">                return true;</span>
+            }
+<span class="nc" id="L147">        }</span>
+<span class="fc" id="L148">        return false;</span>
+    }
+
+    /**
+     * Removes an item from the cart.
+     *
+     * @param itemId the item ID to remove
+     * @return true if item was removed
+     */
+    public boolean removeItem(String itemId) {
+<span class="fc" id="L158">        return items.removeIf(item -&gt; item.getId().equals(itemId));</span>
+    }
+
+    /**
+     * Clears all items from the cart.
+     */
+    public void clear() {
+<span class="fc" id="L165">        items.clear();</span>
+<span class="fc" id="L166">        appliedCouponCode = null;</span>
+<span class="fc" id="L167">        couponDiscount = null;</span>
+<span class="fc" id="L168">        tip = BigDecimal.ZERO;</span>
+<span class="fc" id="L169">    }</span>
+
+    /**
+     * Calculates the subtotal of all items.
+     *
+     * @return subtotal amount
+     */
+    public BigDecimal getSubtotal() {
+<span class="fc" id="L177">        return items.stream()</span>
+<span class="fc" id="L178">            .map(CartItem::getTotalPrice)</span>
+<span class="fc" id="L179">            .reduce(BigDecimal.ZERO, BigDecimal::add);</span>
+    }
+
+    /**
+     * Gets the total number of items in the cart.
+     *
+     * @return total item count
+     */
+    public int getTotalItemCount() {
+<span class="fc" id="L188">        return items.stream()</span>
+<span class="fc" id="L189">            .mapToInt(CartItem::getQuantity)</span>
+<span class="fc" id="L190">            .sum();</span>
+    }
+
+    /**
+     * Gets distinct restaurant IDs in the cart.
+     *
+     * @return list of restaurant IDs
+     */
+    public List&lt;String&gt; getRestaurantIds() {
+<span class="fc" id="L199">        return items.stream()</span>
+<span class="fc" id="L200">            .map(CartItem::getRestaurantId)</span>
+<span class="fc" id="L201">            .distinct()</span>
+<span class="fc" id="L202">            .toList();</span>
+    }
+
+    /**
+     * Checks if cart has items from multiple restaurants.
+     *
+     * @return true if multi-restaurant cart
+     */
+    public boolean isMultiRestaurant() {
+<span class="fc bfc" id="L211" title="All 2 branches covered.">        return getRestaurantIds().size() &gt; 1;</span>
+    }
+
+    /**
+     * Checks if the cart is empty.
+     *
+     * @return true if cart has no items
+     */
+    public boolean isEmpty() {
+<span class="fc" id="L220">        return items.isEmpty();</span>
+    }
+
+    /**
+     * Finds a matching item (same menuItemId and customizations).
+     */
+    private Optional&lt;CartItem&gt; findMatchingItem(CartItem newItem) {
+<span class="fc" id="L227">        return items.stream()</span>
+<span class="fc bfc" id="L228" title="All 2 branches covered.">            .filter(item -&gt; item.getMenuItemId().equals(newItem.getMenuItemId())</span>
+<span class="fc bfc" id="L229" title="All 2 branches covered.">                &amp;&amp; customizationsMatch(item.getCustomizations(), newItem.getCustomizations()))</span>
+<span class="fc" id="L230">            .findFirst();</span>
+    }
+
+    /**
+     * Checks if two customization lists match.
+     */
+    private boolean customizationsMatch(List&lt;CartItemCustomization&gt; list1, List&lt;CartItemCustomization&gt; list2) {
+<span class="pc bpc" id="L237" title="3 of 4 branches missed.">        if (list1 == null &amp;&amp; list2 == null) return true;</span>
+<span class="pc bpc" id="L238" title="2 of 4 branches missed.">        if (list1 == null || list2 == null) return false;</span>
+<span class="pc bpc" id="L239" title="1 of 2 branches missed.">        if (list1.size() != list2.size()) return false;</span>
+        
+<span class="fc bfc" id="L241" title="All 2 branches covered.">        for (CartItemCustomization c1 : list1) {</span>
+<span class="fc" id="L242">            boolean found = list2.stream()</span>
+<span class="pc bpc" id="L243" title="1 of 2 branches missed.">                .anyMatch(c2 -&gt; c2.getCustomizationId().equals(c1.getCustomizationId())</span>
+<span class="pc bpc" id="L244" title="1 of 2 branches missed.">                    &amp;&amp; c2.getOptionId().equals(c1.getOptionId()));</span>
+<span class="pc bpc" id="L245" title="1 of 2 branches missed.">            if (!found) return false;</span>
+<span class="nc" id="L246">        }</span>
+<span class="fc" id="L247">        return true;</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
