@@ -3,7 +3,6 @@ spring:
     name: orchestration-service
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
-
 server:
   port: ${SERVER_PORT:8085}
   compression:
@@ -42,6 +41,16 @@ management:
         enabled: true
     tags:
       application: ${spring.application.name}
+
+# CORS (gateway): overridden per profile in application-{profile}.yml
+app:
+  cors:
+    allowed-origins: []
+    allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+    allowed-headers: "*"
+    exposed-headers: "*"
+    allow-credentials: true
+    max-age: 3600
 
 springdoc:
   api-docs:

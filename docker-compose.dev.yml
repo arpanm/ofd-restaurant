@@ -1,0 +1,80 @@
+# Override for local dev: volume-mounted source, backend runs mvn spring-boot:run, frontend runs Vite dev server (HMR).
+# Use: docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+# Profile: dev (SPRING_PROFILES_ACTIVE=dev already in base compose).
+# Backend: restart container to pick up code changes. Frontend: HMR on save.
+#
+# Healthchecks: longer start_period and retries because mvn spring-boot:run takes several minutes
+# on first start (dependency download + compile). Subsequent restarts are faster (deps cached).
+
+services:
+  user-service:
+    build:
+      context: ./backend/user-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend/user-service:/app
+    healthcheck:
+      start_period: 600s
+      retries: 30
+
+  restaurant-service:
+    build:
+      context: ./backend/restaurant-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend/restaurant-service:/app
+    healthcheck:
+      start_period: 600s
+      retries: 30
+
+  menu-service:
+    build:
+      context: ./backend/menu-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend/menu-service:/app
+    healthcheck:
+      start_period: 600s
+      retries: 30
+
+  order-service:
+    build:
+      context: ./backend/order-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend/order-service:/app
+    healthcheck:
+      start_period: 600s
+      retries: 30
+
+  promotion-service:
+    build:
+      context: ./backend/promotion-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend/promotion-service:/app
+    healthcheck:
+      start_period: 600s
+      retries: 30
+
+  orchestration-service:
+    build:
+      context: ./backend/orchestration-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend/orchestration-service:/app
+    healthcheck:
+      start_period: 300s
+      retries: 30
+
+  frontend:
+    build:
+      context: ./ofd-restaurant-app
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./ofd-restaurant-app:/app
+      - /app/node_modules
+    # Use 3001 so port 3000 is free; map to 8081 to match vite.config.ts server.port
+    ports:
+      - "3001:8081"
+    command: ["sh", "-c", "npm ci 2>/dev/null || true && npm run dev -- --host 0.0.0.0"]

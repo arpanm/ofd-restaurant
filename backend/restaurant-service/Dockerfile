@@ -3,10 +3,10 @@ FROM eclipse-temurin:21-jdk-alpine AS builder
 WORKDIR /build
 
 COPY pom.xml .
-RUN apk add --no-cache maven && mvn -B dependency:go-offline -DskipTests || true
+RUN apk add --no-cache maven && mvn -B dependency:go-offline -Dmaven.test.skip=true || true
 
 COPY src ./src
-RUN mvn -B package -DskipTests -Dmaven.javadoc.skip=true
+RUN mvn -B package -Dmaven.test.skip=true -Dmaven.javadoc.skip=true
 
 # Runtime
 FROM eclipse-temurin:21-jre-alpine

@@ -66,6 +66,10 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      # Single broker: use replication factor 1 for internal topics (e.g. __consumer_offsets)
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
     healthcheck:
       test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
       interval: 10s
@@ -99,8 +103,8 @@ services:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:8083/actuator/health"]
       interval: 10s
       timeout: 5s
-      retries: 5
-      start_period: 30s
+      retries: 15
+      start_period: 90s
 
   restaurant-service:
     build:
@@ -130,8 +134,8 @@ services:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:8081/actuator/health"]
       interval: 10s
       timeout: 5s
-      retries: 5
-      start_period: 30s
+      retries: 15
+      start_period: 90s
 
   menu-service:
     build:
@@ -158,8 +162,8 @@ services:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:8082/actuator/health"]
       interval: 10s
       timeout: 5s
-      retries: 5
-      start_period: 30s
+      retries: 15
+      start_period: 90s
 
   order-service:
     build:
@@ -195,8 +199,8 @@ services:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:8084/actuator/health"]
       interval: 10s
       timeout: 5s
-      retries: 5
-      start_period: 40s
+      retries: 10
+      start_period: 90s
 
   promotion-service:
     build:
@@ -219,8 +223,8 @@ services:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:8089/actuator/health"]
       interval: 10s
       timeout: 5s
-      retries: 5
-      start_period: 30s
+      retries: 10
+      start_period: 90s
 
   # API Gateway - must start after all backend services
   orchestration-service:

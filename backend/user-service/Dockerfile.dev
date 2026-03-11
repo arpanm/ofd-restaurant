@@ -1,0 +1,6 @@
+# Dev image: source mounted at /app, run with mvn spring-boot:run for hot-reload (restart container to pick up changes)
+FROM eclipse-temurin:21-jdk-alpine
+RUN apk add --no-cache maven
+WORKDIR /app
+EXPOSE 8083
+CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Dspring.profiles.active=dev"]

@@ -1,0 +1,6 @@
+# Dev image: source mounted at /app, Vite dev server with HMR (port from vite.config.ts)
+FROM node:20-alpine
+WORKDIR /app
+EXPOSE 8081
+# Install deps on first run; then npm run dev (with volume, local src is used)
+CMD ["sh", "-c", "npm ci 2>/dev/null || true && npm run dev -- --host 0.0.0.0"]

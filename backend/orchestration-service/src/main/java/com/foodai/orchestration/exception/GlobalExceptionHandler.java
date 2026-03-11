@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -85,6 +86,15 @@ public class GlobalExceptionHandler {
             kv("path", request.getDescription(false)));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(ApiResponse.error("INVALID_ARGUMENT", ex.getMessage()));
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ApiResponse<Void>> handleNoHandlerFound(
+            NoHandlerFoundException ex, WebRequest request) {
+        log.debug("No handler found: {} {}", ex.getHttpMethod(), ex.getRequestURL());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(ApiResponse.error("NOT_FOUND", "No handler for " + ex.getHttpMethod() + " " + ex.getRequestURL()));
     }
 
     @ExceptionHandler(Exception.class)

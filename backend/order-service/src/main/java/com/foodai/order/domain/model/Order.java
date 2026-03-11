@@ -75,6 +75,7 @@ public class Order {
      * Delivery address for this order.
      */
     @Embedded
+    @AttributeOverride(name = "deliveryInstructions", column = @Column(name = "addr_delivery_instructions", length = 500))
     private DeliveryAddressVO deliveryAddress;
 
     /**
