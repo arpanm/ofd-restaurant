@@ -7,6 +7,7 @@ import type {
   ApiResponse,
   User,
   RegisterUserRequest,
+  AuthRegisterRequest,
   LoginRequest,
   AuthResponse,
   UpdateUserRequest,
@@ -21,9 +22,17 @@ export const userService = {
   // ============================================
   
   /**
-   * Register a new user
+   * Register a new user (legacy, with password)
    */
   register: async (data: RegisterUserRequest): Promise<ApiResponse<AuthResponse>> => {
+    const response = await userApi.post('/auth/register', data);
+    return response.data;
+  },
+
+  /**
+   * Register and get tokens (for onboarding flow; no password)
+   */
+  registerAuth: async (data: AuthRegisterRequest): Promise<ApiResponse<AuthResponse>> => {
     const response = await userApi.post('/auth/register', data);
     return response.data;
   },
@@ -53,18 +62,18 @@ export const userService = {
   },
 
   /**
-   * Send OTP for phone verification
+   * Send OTP for login (email or phone)
    */
-  sendOtp: async (phone: string): Promise<ApiResponse<{ message: string }>> => {
-    const response = await userApi.post('/auth/send-otp', { phone });
+  sendOtp: async (contact: string, type: 'EMAIL' | 'PHONE'): Promise<ApiResponse<{ message: string }>> => {
+    const response = await userApi.post('/auth/send-otp', { contact: contact.trim(), type });
     return response.data;
   },
 
   /**
-   * Verify OTP
+   * Verify OTP and return tokens and user
    */
-  verifyOtp: async (phone: string, otp: string): Promise<ApiResponse<AuthResponse>> => {
-    const response = await userApi.post('/auth/verify-otp', { phone, otp });
+  verifyOtp: async (contact: string, otp: string): Promise<ApiResponse<AuthResponse>> => {
+    const response = await userApi.post('/auth/verify-otp', { contact: contact.trim(), otp });
     return response.data;
   },
 
@@ -102,6 +111,18 @@ export const userService = {
   getUserById: async (userId: string): Promise<ApiResponse<User>> => {
     const response = await userApi.get(`/users/${userId}`);
     return response.data;
+  },
+
+  /**
+   * Get user by phone (e.g. for referral search). Returns null if not found.
+   */
+  getUserByPhone: async (phone: string): Promise<ApiResponse<User> | { data: null }> => {
+    try {
+      const response = await userApi.get(`/users/by-phone/${encodeURIComponent(phone)}`);
+      return response.data;
+    } catch {
+      return { data: null };
+    }
   },
 
   /**

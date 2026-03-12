@@ -159,6 +159,15 @@ export interface RegisterUserRequest {
   referralCode?: string;
 }
 
+/** Request for auth register (no password; then redirect to onboarding) */
+export interface AuthRegisterRequest {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  referredBy?: string;
+}
+
 export interface LoginRequest {
   email?: string;
   phone?: string;

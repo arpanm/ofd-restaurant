@@ -27,6 +27,20 @@ export const SERVICE_PATHS = {
   checkout: '/checkout',   // Orchestration service direct
 };
 
+// Paths that do not require a token (auth and onboarding)
+const PUBLIC_PATHS = [
+  '/user/auth/register',
+  '/user/auth/send-otp',
+  '/user/auth/verify-otp',
+  '/user/auth/refresh',
+  '/restaurant/restaurants/onboarding',
+];
+
+function isPublicPath(url: string | undefined): boolean {
+  if (!url) return false;
+  return PUBLIC_PATHS.some((p) => url.startsWith(p));
+}
+
 // Token storage keys
 const ACCESS_TOKEN_KEY = 'foodai_access_token';
 const REFRESH_TOKEN_KEY = 'foodai_refresh_token';
@@ -57,10 +71,13 @@ const createApiGatewayInstance = (): AxiosInstance => {
     },
   });
 
-  // Request interceptor - Add auth token and request metadata
+  // Request interceptor - Add auth token; block non-public calls when not authenticated
   instance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
       const token = tokenManager.getAccessToken();
+      if (!isPublicPath(config.url) && !token) {
+        return Promise.reject(new Error('NOT_AUTHENTICATED'));
+      }
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }

@@ -39,3 +39,13 @@ springdoc:
     tagsSorter: alpha
     displayRequestDuration: true
 
+# Auth: JWT and OTP (override JWT_SECRET in production)
+app:
+  jwt:
+    secret: ${JWT_SECRET:change-me-in-production-at-least-256-bits-long-for-hs256}
+    access-token-expiry-seconds: ${JWT_ACCESS_EXPIRY:3600}
+    refresh-token-expiry-seconds: ${JWT_REFRESH_EXPIRY:604800}
+  otp:
+    expiry-seconds: ${OTP_EXPIRY:600}
+    length: 6
+
